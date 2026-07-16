@@ -7,6 +7,7 @@
     <meta name="description" content="Personal 3D animated portfolio for Abubakar Siddique.">
     <link rel="preconnect" href="https://unpkg.com">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="game.css">
 </head>
 <body>
     <canvas id="scene" aria-hidden="true"></canvas>
@@ -22,6 +23,7 @@
             <a href="#skills">Skills</a>
             <a href="#certifications">Certificates</a>
             <a href="#prompts">Prompts</a>
+            <a href="#game">Game</a>
             <a href="#contact">Contact</a>
         </nav>
     </header>
@@ -34,7 +36,8 @@
                 <p class="hero-role">Computer Science Student | Prompt Engineer | Python Developer</p>
                 <p class="hero-intro">I build practical digital solutions with Python, web development, AI prompt engineering, design thinking, and career guidance. My goal is to help people learn modern skills with clarity and confidence.</p>
                 <div class="hero-actions">
-                    <a class="button primary" href="#skills">Explore skills</a>
+                    <a class="button primary" href="#game">🎮 Play Solver Game</a>
+                    <a class="button secondary" href="#skills">Explore skills</a>
                     <a class="button secondary" href="#prompts">Prompt library</a>
                 </div>
             </div>
@@ -291,6 +294,97 @@
             </div>
         </section>
 
+        <section class="section game-section" id="game">
+            <div class="game-shell">
+                <div class="section-heading" style="max-width:900px;margin-bottom:22px">
+                    <p class="game-kicker">Problem Solver Arena • Interactive Game</p>
+                    <h2 class="game-title">Train your brain with <span>6 logic challenges</span></h2>
+                    <p class="game-sub">Built for Computer Science thinkers. Solve logic gates, crack patterns, debug Python, optimize resources, navigate neural paths, and master the Tower of Logic. Score, streaks, and hints included. Progress saves automatically.</p>
+                </div>
+
+                <div class="stats-bar">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Score</div>
+                        <div class="stat-value" id="statScore">0</div>
+                        <div class="stat-sub">+ bonus for speed & efficiency</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Streak</div>
+                        <div class="stat-value" id="statStreak">0 🔥</div>
+                        <div class="stat-sub" id="statLevelName">Logic Lock</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Solved</div>
+                        <div class="stat-value" id="statSolved">0/6</div>
+                        <div class="stat-sub">levels completed</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Time</div>
+                        <div class="stat-value" id="statTime">0:00</div>
+                        <div class="stat-sub">session time</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Difficulty</div>
+                        <div class="stat-value" style="font-size:1.15rem">Adaptive</div>
+                        <div class="stat-sub">Easy → Expert</div>
+                    </div>
+                </div>
+
+                <div class="arena-layout">
+                    <aside class="level-sidebar">
+                        <div class="sidebar-head">
+                            <h4>Challenge Levels</h4>
+                            <span class="badge-live">LIVE</span>
+                        </div>
+                        <div class="level-list" id="levelList"></div>
+                        <div style="margin-top:14px;padding:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(247,243,234,0.08);border-radius:10px;font-size:0.82rem;color:var(--muted);line-height:1.6">
+                            💡 <strong style="color:var(--ink)">How to play:</strong><br>
+                            Complete levels in order to unlock next. Each teaches a CS concept. Use hints if stuck, but they reduce bonus slightly.
+                        </div>
+                    </aside>
+
+                    <div class="game-board-wrap">
+                        <div class="board-header">
+                            <div class="board-title">
+                                <h3 id="boardTitle">Logic Lock</h3>
+                                <p id="boardDesc">Toggle inputs to match target</p>
+                            </div>
+                            <div class="board-actions">
+                                <button class="btn-game" id="btnHint" type="button">💡 Hint</button>
+                                <button class="btn-game" id="btnReset" type="button">↻ Reset</button>
+                                <button class="btn-game" id="btnSkip" type="button">Skip →</button>
+                            </div>
+                        </div>
+                        <div class="board-content" id="boardContent">
+                            <!-- dynamic content -->
+                        </div>
+                        <div style="padding:0 24px 24px">
+                            <div class="feedback" id="feedback"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Win Modal -->
+            <div class="modal-overlay" id="winModal">
+                <div class="modal-box">
+                    <div style="width:64px;height:64px;margin:0 auto 16px;background:linear-gradient(135deg,var(--teal),var(--green));border-radius:16px;display:grid;place-items:center;font-size:1.8rem;font-weight:900;color:#07100f">✓</div>
+                    <h3 id="modalTitle">Solved!</h3>
+                    <p id="modalDesc">Challenge completed. Great logic!</p>
+                    <div class="modal-stats">
+                        <div class="modal-stat"><strong id="modalPoints">+100</strong><span>Points</span></div>
+                        <div class="modal-stat"><strong id="modalStreak">1x</strong><span>Streak</span></div>
+                        <div class="modal-stat"><strong id="modalTotal">100</strong><span>Total</span></div>
+                    </div>
+                    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+                        <button class="btn-game primary" id="modalNext" type="button">Next Challenge →</button>
+                        <button class="btn-game" id="modalReplay" type="button">Replay</button>
+                        <button class="btn-game" id="modalClose" type="button">Close</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="section contact-section" id="contact">
             <div class="section-shell contact-panel">
                 <div>
@@ -310,5 +404,6 @@
     </main>
 
     <script type="module" src="main.js"></script>
+    <script type="module" src="solver-game.js"></script>
 </body>
 </html>
