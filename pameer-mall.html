@@ -106,16 +106,35 @@
   .tile{background:var(--obsidian);border:1px solid var(--line);border-radius:9px;overflow:hidden;cursor:pointer;transition:border-color .3s,box-shadow .3s,transform .12s ease-out;display:block;transform-style:preserve-3d;will-change:transform}
   .tile:hover{border-color:var(--forge);box-shadow:0 18px 50px -20px rgba(200,114,74,.5)}
   .tile .thumb{aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
-  .tile .thumb::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.09) 50%,transparent 60%);transform:translateX(-120%);transition:transform .7s}
+  .tile .thumb img.ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:0;transform:scale(1.07);transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
+  .tile .thumb img.ph.loaded{opacity:1;transform:scale(1)}
+  .tile:hover .thumb img.ph{transform:scale(1.1)}
+  .tile .thumb::before{content:"";position:absolute;inset:0;z-index:3;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.14) 50%,transparent 60%);transform:translateX(-120%);transition:transform .7s}
   .tile:hover .thumb::before{transform:translateX(120%)}
-  .tile .thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(4,4,4,.94))}
-  .tile .thumb svg{transition:transform .5s cubic-bezier(.16,1,.3,1)}
-  .tile:hover .thumb svg{transform:translateY(-6px) scale(1.04)}
+  .tile .thumb::after{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,transparent 46%,rgba(4,4,4,.86))}
   .tile .meta{padding:12px 13px 14px;position:relative;z-index:2}
   .tile .meta h4{font-family:var(--disp);font-weight:500;font-size:14px;text-transform:uppercase;letter-spacing:.03em;line-height:1.15}
   .tile .meta .p{font-size:10px;color:var(--dust);margin-top:5px}
   .tile .meta .p b{color:var(--forge-hot)}
   .tile .meta .o{font-size:8.5px;color:#25D366;margin-top:7px;letter-spacing:.1em}
+
+  /* LOOKBOOK — real photography, horizontally scrolled */
+  #lookbook{padding:70px 0 40px}
+  .lb-strip{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:22px 24px 30px;-webkit-overflow-scrolling:touch}
+  .lb-strip::-webkit-scrollbar{height:6px}
+  .lb-strip::-webkit-scrollbar-thumb{background:var(--ash);border-radius:4px}
+  .lb{position:relative;flex:0 0 clamp(240px,32vw,360px);aspect-ratio:3/4.1;border-radius:12px;overflow:hidden;scroll-snap-align:center;border:1px solid var(--line);background:var(--obsidian)}
+  .lb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1s ease;will-change:transform;animation:kenburns 16s ease-in-out infinite alternate}
+  .lb img.loaded{opacity:1}
+  .lb:hover img{animation-play-state:paused;transform:scale(1.12)}
+  @keyframes kenburns{0%{transform:scale(1.03) translate(0,0)}100%{transform:scale(1.15) translate(-2.5%,-2%)}}
+  .lb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(3,3,4,.9));z-index:2}
+  .lb figcaption{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:18px 18px 20px;display:flex;flex-direction:column;gap:4px}
+  .lb figcaption .no{font-size:9px;letter-spacing:.34em;color:var(--forge)}
+  .lb figcaption .nm{font-family:var(--disp);font-weight:500;font-size:19px;text-transform:uppercase;letter-spacing:.04em}
+  .lb figcaption .pr{font-size:10px;color:var(--dust);letter-spacing:.08em}
+  .lb figcaption .pr b{color:var(--forge-hot)}
+  .lb-note{text-align:center;font-size:9px;letter-spacing:.24em;color:var(--dim);text-transform:uppercase;margin-top:4px}
 
   /* CONTACT + FINAL */
   #final{padding:74px 24px 96px;text-align:center}
@@ -205,7 +224,7 @@
   </div>
   <div class="nav-right">
     <button class="theme-tog magnetic" id="themeTog" aria-label="Toggle light and dark theme"><svg><use href="#moon"/></svg></button>
-    <a class="nav-wa magnetic" href="https://wa.me/923018528123" target="_blank" rel="noopener"><svg><use href="#wa"/></svg><span>WhatsApp</span></a>
+    <a class="nav-wa magnetic" href="https://wa.me/923488068206" target="_blank" rel="noopener"><svg><use href="#wa"/></svg><span>WhatsApp</span></a>
   </div>
 </nav>
 
@@ -249,6 +268,22 @@
     <p class="sub reveal">The Pameer mark — pressed into every piece we sell ↓</p>
   </section>
 
+  <section id="lookbook">
+    <div class="c-head reveal">
+      <div class="eyebrow" style="color:var(--forge)">The Lookbook</div>
+      <h2 class="title" style="font-size:clamp(28px,5vw,46px)">Worn in the <em style="color:var(--forge)">valley.</em></h2>
+    </div>
+    <div class="lb-strip">
+      <figure class="lb reveal"><img loading="lazy" alt="Leather jacket" src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=680&q=75&auto=format&fit=crop" onload="this.classList.add('loaded')"><figcaption><span class="no">CHAPTER I</span><span class="nm">Leather Jackets</span><span class="pr">from <b>PKR 18,500</b></span></figcaption></figure>
+      <figure class="lb reveal"><img loading="lazy" alt="Winter coat" src="https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=680&q=75&auto=format&fit=crop" onload="this.classList.add('loaded')"><figcaption><span class="no">CHAPTER II</span><span class="nm">Winter Coats</span><span class="pr">from <b>PKR 22,000</b></span></figcaption></figure>
+      <figure class="lb reveal"><img loading="lazy" alt="Islampuri wool shawl" src="https://images.unsplash.com/photo-1457545195570-67f207084966?w=680&q=75&auto=format&fit=crop" onload="this.classList.add('loaded')"><figcaption><span class="no">CHAPTER III</span><span class="nm">Islampuri Shawls</span><span class="pr">from <b>PKR 6,900</b></span></figcaption></figure>
+      <figure class="lb reveal"><img loading="lazy" alt="Three-piece suit" src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=680&q=75&auto=format&fit=crop" onload="this.classList.add('loaded')"><figcaption><span class="no">CHAPTER IV</span><span class="nm">Three-Piece Suits</span><span class="pr">from <b>PKR 16,900</b></span></figcaption></figure>
+      <figure class="lb reveal"><img loading="lazy" alt="Women's wear" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=680&q=75&auto=format&fit=crop" onload="this.classList.add('loaded')"><figcaption><span class="no">CHAPTER V</span><span class="nm">Women's Wear</span><span class="pr">from <b>PKR 7,900</b></span></figcaption></figure>
+      <figure class="lb reveal"><img loading="lazy" alt="Kids' wear" src="https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=680&q=75&auto=format&fit=crop" onload="this.classList.add('loaded')"><figcaption><span class="no">CHAPTER VI</span><span class="nm">Kids' Collection</span><span class="pr">from <b>PKR 2,400</b></span></figcaption></figure>
+    </div>
+    <div class="lb-note">↔ Drag to explore · demo imagery — replace with your own product photography</div>
+  </section>
+
   <section id="collection">
     <div class="c-head reveal">
       <div class="eyebrow" style="color:var(--forge)">Chapter V · The Floor</div>
@@ -265,7 +300,7 @@
     <div class="final-sub reveal">Built in Swat · Worn everywhere</div>
     <div class="final-rule reveal"></div>
     <div class="contact-btns reveal">
-      <a class="cbtn wa magnetic" href="https://wa.me/923018528123" target="_blank" rel="noopener">WhatsApp · +92 301 8528123</a>
+      <a class="cbtn wa magnetic" href="https://wa.me/923488068206" target="_blank" rel="noopener">WhatsApp · +92 348 8068206</a>
       <a class="cbtn line magnetic" href="tel:0946726123">Call · (0946) 726123</a>
       <a class="cbtn line magnetic" href="mailto:pameermall@gmail.com">pameermall@gmail.com</a>
     </div>
@@ -276,7 +311,7 @@
   </section>
 </main>
 
-<a id="wa-float" href="https://wa.me/923018528123" target="_blank" rel="noopener" aria-label="WhatsApp Pameer Mall"><svg style="color:#04140a"><use href="#wa"/></svg></a>
+<a id="wa-float" href="https://wa.me/923488068206" target="_blank" rel="noopener" aria-label="WhatsApp Pameer Mall"><svg style="color:#04140a"><use href="#wa"/></svg></a>
 
 <script type="importmap">
 { "imports": {
@@ -305,12 +340,35 @@ var CAT={
  "Women's Wear":{n:5,price:"7,900",c:"#402c38",k:"women"},
  "Women's Shawls":{n:5,price:"5,900",c:"#3a2c3a",k:"womenshawl"},
  "Kids' Jackets":{n:5,price:"5,500",c:"#3a4230",k:"kidjacket"},
- "Kids' Three-Piece":{n:5,price:"6,900",c:"#2e3a3a",k:"suit"},
+ "Kids' Three-Piece":{n:5,price:"6,900",c:"#2e3a3a",k:"kidwear"},
  "Kids' Wear":{n:5,price:"2,400",c:"#3a3628",k:"kidwear"},
  "Local Handicrafts":{n:5,price:"3,200",c:"#3f3626",k:"craft"}
 };
 var TOTAL=Object.keys(CAT).reduce(function(s,k){return s+CAT[k].n;},0);
-var WA="https://wa.me/923018528123?text=";
+var WA="https://wa.me/923488068206?text=";
+/* Real demo product photography (Unsplash) — client replaces with own 4K shots.
+   One verified, subject-checked photo per garment kind. */
+var UB="https://images.unsplash.com/photo-",UQ="?w=680&q=75&auto=format&fit=crop";
+var IMG={
+ jacket:UB+"1551028719-00167b16eac5"+UQ,
+ coat:UB+"1544022613-e87ca75a784a"+UQ,
+ pcoat:UB+"1539533018447-63fcce2678e3"+UQ,
+ waistcoat:UB+"1594938298603-c8148c4dae35"+UQ,
+ suit:UB+"1507679799987-c73779587ccf"+UQ,
+ trouser:UB+"1473966968600-fa801b869a1a"+UQ,
+ denim:UB+"1542272604-787c3835535d"+UQ,
+ garguppa:UB+"1624378439575-d8705ad7ae80"+UQ,
+ tee:UB+"1521572163474-6864f9cf17ab"+UQ,
+ shirt:UB+"1596755094514-f87e34085b2c"+UQ,
+ jersey:UB+"1576871337622-98d48d1cf531"+UQ,
+ sweater:UB+"1434389677669-e08b4cac3105"+UQ,
+ shawl:UB+"1457545195570-67f207084966"+UQ,
+ women:UB+"1483985988355-763728e1935b"+UQ,
+ womenshawl:UB+"1457545195570-67f207084966"+UQ,
+ kidjacket:UB+"1519238263530-99bdd11df2ea"+UQ,
+ kidwear:UB+"1519238263530-99bdd11df2ea"+UQ,
+ craft:UB+"1610701596007-11502861dcfa"+UQ
+};
 /* per-category garment silhouettes */
 var ICON={
  jacket:'<path d="M28 34 L40 26 L60 26 L72 34 L70 52 L60 48 L60 108 L40 108 L40 48 L30 52 Z"/><line x1="50" y1="28" x2="50" y2="108"/>',
@@ -337,9 +395,10 @@ function tile(name,cat,price,col,kind){
   a.className='tile';
   a.href=WA+encodeURIComponent("Assalam o Alaikum Pameer Mall — I'm interested in: "+name+" ("+cat+"). Is it available?");
   a.target="_blank";a.rel="noopener";
-  var path=ICON[kind]||ICON.jacket;
-  a.innerHTML='<div class="thumb" style="background:radial-gradient(80% 60% at 50% 18%,rgba(255,255,255,.07),transparent),'+col+'">'
-    +'<svg viewBox="0 0 100 130" width="56%" fill="rgba(0,0,0,.26)" stroke="#c8724a" stroke-width="1" stroke-linejoin="round" stroke-linecap="round">'+path+'</svg></div>'
+  var src=IMG[kind]||IMG.jacket;
+  a.innerHTML='<div class="thumb" style="background:'+col+'">'
+    +'<img class="ph" loading="lazy" alt="'+name+' — '+cat+'" src="'+src+'" onload="this.classList.add(\'loaded\')" onerror="this.remove()">'
+    +'</div>'
     +'<div class="meta"><h4>'+name+'</h4><div class="p">from <b>PKR '+price+'</b></div><div class="o">TAP TO ORDER ↗</div></div>';
   return a;
 }
@@ -348,7 +407,8 @@ function build(filter){
   Object.keys(CAT).forEach(function(cat){
     if(filter&&filter!=='All'&&cat!==filter)return;
     var d=CAT[cat];
-    for(var i=0;i<d.n;i++){g.appendChild(tile(cat.split(/[ \/]/)[0]+" No."+String(i+1).padStart(2,'0'),cat,d.price,d.c,d.k));}
+    var lbl=cat.split(/[ \/]/).filter(Boolean).slice(0,2).join(' ');
+    for(var i=0;i<d.n;i++){g.appendChild(tile(lbl+" No."+String(i+1).padStart(2,'0'),cat,d.price,d.c,d.k));}
   });
   bindTilt();
 }
@@ -443,7 +503,7 @@ function startSite(){
 })();
 
 /* nav / progress / chapter marker */
-var CH=[['hero','I — NIGHT'],['ch-jacket','II — LEATHER'],['ch-coat','III — WINTER'],['ch-shawl','IV — WOOL'],['ch-mark','V — MARK'],['collection','VI — COLLECTION'],['final','VII — PAMEER']];
+var CH=[['hero','I — NIGHT'],['ch-jacket','II — LEATHER'],['ch-coat','III — WINTER'],['ch-shawl','IV — WOOL'],['ch-mark','V — MARK'],['lookbook','VI — LOOKBOOK'],['collection','VII — COLLECTION'],['final','VIII — PAMEER']];
 window.addEventListener('scroll',function(){
   var y=scrollY,max=document.body.scrollHeight-innerHeight||1;
   document.getElementById('progress').style.width=((y/max)*100)+'%';
@@ -752,7 +812,8 @@ if(renderer){
     renderer.toneMappingExposure=(0.28+0.74*intro)*(lightTheme?1.26:1.0);
 
     /* camera */
-    var baseZ=(7+5*intro)-scroll*2.0;
+    var logoZoom=logo.visible?(pL*(1-pLout)):0; /* dolly INTO the brand mark */
+    var baseZ=(7+5*intro)-scroll*2.0 - logoZoom*4.2;
     camera.position.x=ease(camera.position.x,mx*0.9,0.05);
     camera.position.y=ease(camera.position.y,-my*0.5,0.05);
     camera.position.z=ease(camera.position.z,baseZ,0.05);
