@@ -139,12 +139,38 @@
   #wa-float:hover{transform:scale(1.08)}
   #wa-float svg{width:27px;height:27px}
 
+  /* right-side nav group + theme toggle */
+  .nav-right{display:flex;align-items:center;gap:10px}
+  .theme-tog{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--ash);border-radius:7px;background:transparent;color:var(--bone);cursor:pointer;transition:.3s}
+  .theme-tog:hover{border-color:var(--forge);color:var(--forge-hot)}
+  .theme-tog svg{width:15px;height:15px}
+
+  /* ---------- LIGHT ("white") THEME ---------- */
+  :root[data-theme="light"]{
+    --void:#ece9e1; --obsidian:#ffffff; --slate:#e7e3da; --ash:#c6c1b4;
+    --bone:#17150f; --dust:#5f5a4d; --dim:#938d7e;
+    --line:rgba(23,21,15,0.12);
+  }
+  :root[data-theme="light"] #canvas3d{
+    background:radial-gradient(85% 60% at 50% -8%, rgba(255,255,255,.95), rgba(233,230,222,.65) 55%),
+    radial-gradient(60% 50% at 15% 84%, rgba(200,114,74,.14), transparent 60%),#ece9e1;
+  }
+  :root[data-theme="light"] #vignette{background:radial-gradient(120% 120% at 50% 42%,transparent 46%,rgba(120,116,104,.26) 100%)}
+  :root[data-theme="light"] #scanline{display:none}
+  :root[data-theme="light"] #grain{opacity:.028}
+  :root[data-theme="light"] #nav.solid{background:rgba(244,241,234,.82);border-bottom:1px solid var(--line)}
+  :root[data-theme="light"] .tile{box-shadow:0 10px 30px -18px rgba(40,30,20,.4)}
+  :root[data-theme="light"] .tile:hover{box-shadow:0 20px 55px -22px rgba(200,114,74,.55)}
+  :root[data-theme="light"] .cbtn.line{color:var(--bone)}
+  :root[data-theme="light"] ::selection{background:var(--forge);color:#fff}
+
   @media(max-width:720px){.nav-links{display:none}.nav-wa span{display:none}#cur-dot,#cur-ring{display:none}#scrollcue{display:none}}
   @media(hover:none){#cur-dot,#cur-ring{display:none}}
   @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
 </head>
 <body>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('pameer-theme')||'dark');}catch(e){}</script>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="logo" viewBox="0 0 100 100">
@@ -156,6 +182,8 @@
   <symbol id="wa" viewBox="0 0 24 24">
     <path fill="currentColor" d="M17.5 14.4c-.3-.15-1.7-.85-2-.94-.26-.1-.45-.15-.64.15-.2.3-.74.94-.9 1.13-.17.2-.34.22-.63.08-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.14.3-.34.44-.51.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.64-1.55-.88-2.12-.23-.55-.47-.48-.64-.49h-.55c-.2 0-.5.07-.76.37-.26.3-1 .98-1 2.38 0 1.4 1.02 2.76 1.17 2.95.14.2 2.02 3.08 4.9 4.32.68.3 1.22.47 1.63.6.68.22 1.3.19 1.8.11.55-.08 1.7-.69 1.93-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.34M12 2a10 10 0 0 0-8.6 15.05L2 22l5.05-1.32A10 10 0 1 0 12 2"/>
   </symbol>
+  <symbol id="moon" viewBox="0 0 24 24"><path fill="currentColor" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8"/></symbol>
+  <symbol id="sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/></g></symbol>
 </svg>
 
 <canvas id="canvas3d"></canvas>
@@ -175,7 +203,10 @@
     <a href="#collection">Collection</a>
     <a href="#final">Visit</a>
   </div>
-  <a class="nav-wa magnetic" href="https://wa.me/923018528123" target="_blank" rel="noopener"><svg><use href="#wa"/></svg><span>WhatsApp</span></a>
+  <div class="nav-right">
+    <button class="theme-tog magnetic" id="themeTog" aria-label="Toggle light and dark theme"><svg><use href="#moon"/></svg></button>
+    <a class="nav-wa magnetic" href="https://wa.me/923018528123" target="_blank" rel="noopener"><svg><use href="#wa"/></svg><span>WhatsApp</span></a>
+  </div>
 </nav>
 
 <div id="loader">
@@ -222,7 +253,7 @@
     <div class="c-head reveal">
       <div class="eyebrow" style="color:var(--forge)">Chapter V · The Floor</div>
       <h2 class="title" style="font-size:clamp(28px,5vw,46px)">The <em style="color:var(--forge)">collection.</em></h2>
-      <p class="sub" style="margin:12px auto 0">167 pieces · 11 categories · tap any piece to order on WhatsApp</p>
+      <p class="sub" style="margin:12px auto 0">100 pieces · 20 categories · tap any piece to order on WhatsApp</p>
     </div>
     <div class="filters reveal" id="filters"></div>
     <div class="grid" id="grid"></div>
@@ -257,18 +288,28 @@
 <script>
 /* ---------- CATALOG ---------- */
 var CAT={
- "Citadel Jackets":{n:30,price:"18,500",c:"#5a3a28",k:"jacket"},
- "Winter Coats":{n:20,price:"22,000",c:"#3a4048",k:"coat"},
- "Three-Piece Suits":{n:20,price:"16,900",c:"#2e323a",k:"suit"},
- "Two-Piece Suits":{n:10,price:"12,900",c:"#33373f",k:"suit"},
+ "Leather Jackets":{n:5,price:"18,500",c:"#5a3a28",k:"jacket"},
+ "Winter Coats":{n:5,price:"22,000",c:"#3a4048",k:"coat"},
+ "Pashtun Coats":{n:5,price:"9,500",c:"#4a3d28",k:"pcoat"},
+ "Pashtun Waistcoats":{n:5,price:"4,900",c:"#3f3626",k:"waistcoat"},
+ "Three-Piece Suits":{n:5,price:"16,900",c:"#2e323a",k:"suit"},
+ "Two-Piece Suits":{n:5,price:"12,900",c:"#33373f",k:"suit"},
  "Trousers":{n:5,price:"3,200",c:"#3a3d44",k:"trouser"},
  "Denim / Jeans":{n:5,price:"4,500",c:"#324055",k:"trouser"},
- "T-Shirts":{n:20,price:"1,800",c:"#3d4045",k:"tee"},
- "Shirts & Polos":{n:15,price:"2,900",c:"#353840",k:"shirt"},
- "Garguppa & Traditional":{n:12,price:"6,900",c:"#4a3d28",k:"robe"},
- "Islampuri Wool Shawls":{n:15,price:"6,900",c:"#4a3f2c",k:"shawl"},
- "Local Handicrafts":{n:15,price:"3,200",c:"#3f3626",k:"craft"}
+ "Garguppa Pants":{n:5,price:"2,900",c:"#4a3f2c",k:"garguppa"},
+ "T-Shirts":{n:5,price:"1,800",c:"#3d4045",k:"tee"},
+ "Shirts & Polos":{n:5,price:"2,900",c:"#353840",k:"shirt"},
+ "Jerseys":{n:5,price:"3,900",c:"#3a3340",k:"jersey"},
+ "Wool Sweaters":{n:5,price:"4,200",c:"#443a2c",k:"sweater"},
+ "Islampuri Wool Shawls":{n:5,price:"6,900",c:"#4a3f2c",k:"shawl"},
+ "Women's Wear":{n:5,price:"7,900",c:"#402c38",k:"women"},
+ "Women's Shawls":{n:5,price:"5,900",c:"#3a2c3a",k:"womenshawl"},
+ "Kids' Jackets":{n:5,price:"5,500",c:"#3a4230",k:"kidjacket"},
+ "Kids' Three-Piece":{n:5,price:"6,900",c:"#2e3a3a",k:"suit"},
+ "Kids' Wear":{n:5,price:"2,400",c:"#3a3628",k:"kidwear"},
+ "Local Handicrafts":{n:5,price:"3,200",c:"#3f3626",k:"craft"}
 };
+var TOTAL=Object.keys(CAT).reduce(function(s,k){return s+CAT[k].n;},0);
 var WA="https://wa.me/923018528123?text=";
 /* per-category garment silhouettes */
 var ICON={
@@ -280,7 +321,16 @@ var ICON={
  shirt:'<path d="M32 32 L44 26 L56 26 L68 32 L64 44 L60 42 L60 108 L40 108 L40 42 L36 44 Z"/><path d="M44 28 L50 40 L56 28"/><line x1="50" y1="44" x2="50" y2="104"/>',
  robe:'<path d="M30 30 L44 24 L56 24 L70 30 L66 54 L64 54 L66 114 L34 114 L36 54 L34 54 Z"/><path d="M50 26 L50 114"/><path d="M42 40 Q50 46 58 40"/>',
  shawl:'<path d="M24 34 Q50 24 76 34 L70 104 Q50 114 30 104 Z"/><path d="M32 44 Q50 52 68 44"/><path d="M30 66 Q50 74 70 66"/><path d="M30 86 Q50 94 70 86"/>',
- craft:'<path d="M34 40 L66 40 L70 104 L30 104 Z"/><path d="M40 40 Q50 26 60 40"/><line x1="30" y1="66" x2="70" y2="66"/>'
+ craft:'<path d="M34 40 L66 40 L70 104 L30 104 Z"/><path d="M40 40 Q50 26 60 40"/><line x1="30" y1="66" x2="70" y2="66"/>',
+ pcoat:'<path d="M30 30 L44 24 L56 24 L70 30 L67 58 L64 58 L64 118 L36 118 L36 58 L33 58 Z"/><line x1="50" y1="26" x2="50" y2="118"/><path d="M40 42 L60 42"/>',
+ waistcoat:'<path d="M36 30 L50 26 L64 30 L60 44 L60 104 L40 104 L40 44 Z"/><path d="M50 28 L44 46 M50 28 L56 46"/><line x1="50" y1="48" x2="50" y2="104"/>',
+ garguppa:'<path d="M34 26 L66 26 L68 52 L60 112 L52 112 L50 66 L48 112 L40 112 L32 52 Z"/><path d="M34 40 Q50 48 66 40"/>',
+ jersey:'<path d="M30 34 L42 26 L58 26 L70 34 L64 46 L60 42 L60 106 L40 106 L40 42 L36 46 Z"/><path d="M42 28 Q50 36 58 28"/>',
+ sweater:'<path d="M30 34 L42 26 L58 26 L70 34 L64 46 L60 42 L60 104 L40 104 L40 42 L36 46 Z"/><path d="M44 27 Q50 33 56 27"/><line x1="40" y1="98" x2="60" y2="98"/><line x1="41" y1="101" x2="59" y2="101"/>',
+ women:'<path d="M36 30 L44 24 L56 24 L64 30 L60 42 L58 40 L70 110 L30 110 L42 40 L40 42 Z"/><path d="M44 26 Q50 32 56 26"/>',
+ womenshawl:'<path d="M26 32 Q50 26 74 32 L66 100 Q50 110 34 100 Z"/><path d="M30 48 Q50 56 70 48"/><path d="M32 72 Q50 82 68 72"/>',
+ kidjacket:'<path d="M34 40 L44 32 L56 32 L66 40 L64 54 L58 50 L58 100 L42 100 L42 50 L36 54 Z"/><path d="M44 32 Q50 26 56 32"/><line x1="50" y1="34" x2="50" y2="100"/>',
+ kidwear:'<path d="M36 40 L44 34 L56 34 L64 40 L60 48 L57 46 L57 98 L43 98 L43 46 L40 48 Z"/>'
 };
 function tile(name,cat,price,col,kind){
   var a=document.createElement('a');
@@ -297,8 +347,8 @@ function build(filter){
   var g=document.getElementById('grid');g.innerHTML='';
   Object.keys(CAT).forEach(function(cat){
     if(filter&&filter!=='All'&&cat!==filter)return;
-    var d=CAT[cat];var count=(filter&&filter!=='All')?d.n:Math.min(4,d.n);
-    for(var i=0;i<count;i++){g.appendChild(tile(cat.split(/[ \/]/)[0]+" No."+String(i+1).padStart(2,'0'),cat,d.price,d.c,d.k));}
+    var d=CAT[cat];
+    for(var i=0;i<d.n;i++){g.appendChild(tile(cat.split(/[ \/]/)[0]+" No."+String(i+1).padStart(2,'0'),cat,d.price,d.c,d.k));}
   });
   bindTilt();
 }
@@ -307,7 +357,7 @@ function build(filter){
   ['All'].concat(Object.keys(CAT)).forEach(function(c,idx){
     var b=document.createElement('button');
     b.className='filter'+(idx===0?' active':'');
-    b.textContent=c==='All'?'All 167':c;
+    b.textContent=c==='All'?'All '+TOTAL:c;
     b.onclick=function(){
       Array.prototype.forEach.call(fbox.children,function(x){x.classList.remove('active');});
       b.classList.add('active');build(c==='All'?null:c);
@@ -331,6 +381,16 @@ function bindTilt(){
     t.addEventListener('pointerleave',function(){t.style.transform='';});
   });
 }
+
+/* ---------- THEME TOGGLE (dark <-> white) ---------- */
+(function(){
+  var root=document.documentElement, tog=document.getElementById('themeTog');
+  function icon(t){var u=tog.querySelector('use');if(u)u.setAttribute('href',t==='light'?'#sun':'#moon');}
+  function apply(t){root.setAttribute('data-theme',t);try{localStorage.setItem('pameer-theme',t);}catch(e){}icon(t);
+    window.dispatchEvent(new CustomEvent('pameer:theme',{detail:t==='light'}));}
+  icon(root.getAttribute('data-theme')||'dark');
+  tog.addEventListener('click',function(){apply(root.getAttribute('data-theme')==='light'?'dark':'light');});
+})();
 
 /* ---------- LOADER ---------- */
 (function(){
@@ -492,8 +552,16 @@ if(renderer){
   var sR=sL.clone();sR.position.x=1.55;sR.rotation.z=-0.12;jacket.add(sR);
   var collar=new THREE.Mesh(new THREE.BoxGeometry(2.4,0.5,1),leatherMat);collar.position.y=1.6;jacket.add(collar);
   var zip=new THREE.Mesh(new THREE.BoxGeometry(0.12,3,0.12),metalMat);zip.position.z=0.46;jacket.add(zip);
-  var badge=new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.32,0.08,6),metalMat);badge.rotation.x=Math.PI/2;badge.position.set(-0.6,0.5,0.5);jacket.add(badge);
+  var badgeMat=metalMat.clone();badgeMat.emissiveIntensity=1.25;
+  var badge=new THREE.Mesh(new THREE.CylinderGeometry(0.42,0.42,0.1,6),badgeMat);badge.rotation.x=Math.PI/2;badge.position.set(-0.55,0.55,0.5);jacket.add(badge);
+  var badgeBar=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.04,0.04),badgeMat);badgeBar.position.set(-0.55,0.55,0.56);jacket.add(badgeBar);
   jacket.visible=false;scene.add(jacket);
+  /* materialize-from-mist: each piece flies in from a scattered start and assembles */
+  jacket.traverse(function(m){ if(m.isMesh){
+    m.userData.home=m.position.clone();
+    m.userData.scatter=new THREE.Vector3((Math.random()-.5)*7,(Math.random()-.5)*8,(Math.random()-.5)*6);
+    m.userData.spin=(Math.random()-.5)*3.2;
+  }});
 
   var coat=new THREE.Group();
   var cTorso=new THREE.Mesh(new THREE.BoxGeometry(2.6,4.4,1.0),coatMat);cTorso.position.y=-0.5;coat.add(cTorso);
@@ -572,6 +640,10 @@ if(renderer){
   }
 
   /* ---- STATE ---- */
+  var lightTheme=(document.documentElement.getAttribute('data-theme')==='light');
+  window.addEventListener('pameer:theme',function(ev){lightTheme=ev.detail;});
+  var FOG_DARK=new THREE.Color(0x020304),FOG_LIGHT=new THREE.Color(0xdfe0d8);
+
   var scroll=0,target=0;
   window.addEventListener('scroll',function(){var max=document.body.scrollHeight-innerHeight;target=max>0?scrollY/max:0;},{passive:true});
   var mx=0,my=0;
@@ -628,7 +700,18 @@ if(renderer){
     rainMat.opacity=0.34*intro*(1-seg(scroll,0.06,0.5));
 
     var jVis=pJ>0.01 && pJout<0.99; jacket.visible=jVis;
-    if(jVis){var js=ease(0.01,1.1,pJ);jacket.scale.set(js,js,js);jacket.position.y=ease(-6,0.2,pJ)+pJout*4;jacket.rotation.y=t*0.12+scroll*2;jacket.rotation.z=Math.sin(t*0.4)*0.03;setOpacity(jacket,Math.min(pJ,1-pJout));}
+    if(jVis){
+      var asm=pJ*pJ*(3-2*pJ); /* smoothstep assembly 0..1 */
+      jacket.scale.set(1,1,1);
+      jacket.position.y=ease(-1.4,0.2,pJ)+pJout*5;
+      jacket.rotation.y=t*0.28+scroll*1.4;jacket.rotation.z=Math.sin(t*0.4)*0.03;
+      var disp=(1-asm);
+      jacket.traverse(function(m){ if(m.isMesh&&m.userData.home){
+        m.position.copy(m.userData.home).addScaledVector(m.userData.scatter,disp*disp);
+        m.rotation.z=(m.userData.spin||0)*disp;
+      }});
+      setOpacity(jacket,Math.min(pJ,1-pJout));
+    }
 
     /* embers glow during jacket */
     var em=emGeo.attributes.position.array;
@@ -664,7 +747,9 @@ if(renderer){
     back.intensity=1.4+cold*1.8+gold*1.0+pHero*3.4;
     back.color.setHex(cold>0.3?0x9fd0ff:0xffffff);
     rimWarm.intensity=1.0+pHero*2.2;
-    renderer.toneMappingExposure=(0.28+0.74*intro);
+    scene.fog.color.lerp(lightTheme?FOG_LIGHT:FOG_DARK,0.05);
+    ambient.intensity=ease(ambient.intensity,lightTheme?1.7:0.9,0.05);
+    renderer.toneMappingExposure=(0.28+0.74*intro)*(lightTheme?1.26:1.0);
 
     /* camera */
     var baseZ=(7+5*intro)-scroll*2.0;
