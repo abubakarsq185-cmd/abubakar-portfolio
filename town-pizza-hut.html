@@ -37,6 +37,13 @@ body{
 img{max-width:100%;display:block}
 a{text-decoration:none;color:inherit}
 ::selection{background:var(--gold);color:var(--maroon-deep)}
+/* keyboard focus visibility (accessibility) */
+a:focus-visible,button:focus-visible,.tab:focus-visible{outline:3px solid var(--gold-light);outline-offset:3px;border-radius:6px}
+/* skip link */
+.skip-link{position:absolute;left:12px;top:-60px;z-index:9999;background:var(--gold);color:var(--maroon-deep);
+  padding:10px 18px;border-radius:0 0 10px 10px;font-family:'Oswald';font-size:13px;letter-spacing:1px;
+  text-transform:uppercase;transition:top .25s}
+.skip-link:focus{top:0}
 
 /* film-grain + vignette overlay for premium depth */
 .grain{position:fixed;inset:0;z-index:1000;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
@@ -362,7 +369,7 @@ footer{background:#0f0405;padding:60px 6vw 30px;text-align:center}
 .foot-links{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
 .foot-links a{font-family:'Oswald';font-size:13px;letter-spacing:1px;color:#c9b79c;text-transform:uppercase;transition:.3s}
 .foot-links a:hover{color:var(--gold)}
-.foot-copy{font-size:12px;color:#7a6555;border-top:1px solid rgba(255,255,255,.08);padding-top:22px;line-height:1.7}
+.foot-copy{font-size:12px;color:#a68d78;border-top:1px solid rgba(255,255,255,.08);padding-top:22px;line-height:1.7}
 
 /* FLOATING WA */
 .float-wa{position:fixed;bottom:24px;right:24px;z-index:800;width:58px;height:58px;border-radius:50%;background:#25D366;
@@ -402,6 +409,7 @@ footer{background:#0f0405;padding:60px 6vw 30px;text-align:center}
 </style>
 </head>
 <body>
+<a href="#menu" class="skip-link">Skip to menu</a>
 <div class="grain"></div>
 <div class="progress" id="progress"></div>
 
