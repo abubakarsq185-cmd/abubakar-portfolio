@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>PAMEER MALL — Dressed by the Mountains | Mingora, Swat</title>
+<meta name="description" content="Pameer Mall, Mingora — Swat Valley. A cinematic 3D flagship experience: full-grain leather jackets, highland winter coats, hand-woven Islampuri wool shawls, suits, garguppa and local handicrafts. Order on WhatsApp." />
+<meta name="theme-color" content="#020202" />
+<meta property="og:title" content="PAMEER MALL — Dressed by the Mountains" />
+<meta property="og:description" content="Cinematic flagship of Swat Valley. Leather, wool, winter — built in the mountains, worn everywhere." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500;700&family=Oswald:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#020202; --obsidian:#08090b; --slate:#131519; --ash:#3a3d44;
+    --bone:#eae8e2; --dust:#8f8b81; --dim:#5a5850;
+    --forge:#c8724a; --forge-hot:#ff9a5c; --cold:#6fb4e8; --gold:#d8a24a;
+    --line:rgba(234,232,226,0.10);
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --serif:'Cormorant Garamond',Georgia,serif;
+    --disp:'Oswald',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html,body{background:var(--void);color:var(--bone);font-family:var(--mono);overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--forge);color:#000}
+  canvas{display:block}
+  body.no-cursor{cursor:none}
+
+  #canvas3d{position:fixed;inset:0;width:100vw;height:100vh;z-index:1;
+    background:radial-gradient(80% 55% at 50% -5%, rgba(140,180,220,.07), transparent 55%),
+    radial-gradient(60% 50% at 15% 82%, rgba(200,114,74,.09), transparent 60%),var(--void)}
+  #grain{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
+  #vignette{position:fixed;inset:0;z-index:3;pointer-events:none;background:radial-gradient(120% 120% at 50% 42%,transparent 36%,rgba(0,0,0,.72) 100%)}
+  #scanline{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.5;mix-blend-mode:overlay;
+    background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.5) 2px 3px)}
+
+  #progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--forge),var(--forge-hot));z-index:9;box-shadow:0 0 10px var(--forge)}
+  #chapter-marker{position:fixed;left:22px;bottom:16px;z-index:6;font-size:10px;letter-spacing:.34em;color:var(--forge);text-transform:uppercase;pointer-events:none}
+  #scrollcue{position:fixed;right:22px;bottom:16px;z-index:6;font-size:9px;letter-spacing:.28em;color:var(--dim);text-transform:uppercase;pointer-events:none;display:flex;align-items:center;gap:8px}
+  #scrollcue i{display:block;width:1px;height:26px;background:linear-gradient(var(--forge),transparent);animation:cue 1.8s ease-in-out infinite}
+  @keyframes cue{0%,100%{opacity:.2;transform:scaleY(.5)}50%{opacity:1;transform:scaleY(1)}}
+
+  /* custom cursor */
+  #cur-dot,#cur-ring{position:fixed;top:0;left:0;z-index:80;pointer-events:none;border-radius:50%;mix-blend-mode:difference;will-change:transform}
+  #cur-dot{width:6px;height:6px;background:var(--bone);transform:translate(-50%,-50%)}
+  #cur-ring{width:34px;height:34px;border:1px solid rgba(234,232,226,.6);transform:translate(-50%,-50%);transition:width .25s,height .25s,border-color .25s,opacity .25s}
+  #cur-ring.hot{width:54px;height:54px;border-color:var(--forge)}
+
+  #nav{position:fixed;top:0;left:0;right:0;z-index:7;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;transition:.5s;opacity:0;transform:translateY(-12px);pointer-events:none}
+  #nav.show{opacity:1;transform:none;pointer-events:auto}
+  #nav.solid{background:rgba(4,5,7,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+  .nav-logo svg{width:26px;height:26px}
+  .nav-logo .wm{font-family:var(--disp);font-weight:600;font-size:14px;letter-spacing:.22em}
+  .nav-logo .wm span{color:var(--forge)}
+  .nav-links{display:flex;gap:24px;font-size:10px;letter-spacing:.26em;text-transform:uppercase}
+  .nav-links a{color:var(--dust);transition:.3s;position:relative}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:-5px;height:1px;width:0;background:var(--forge);transition:.3s}
+  .nav-links a:hover{color:var(--bone)}
+  .nav-links a:hover::after{width:100%}
+  .nav-wa{display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.18em;color:var(--bone);border:1px solid var(--ash);padding:9px 13px;transition:.3s}
+  .nav-wa:hover{border-color:#25D366;color:#25D366}
+  .nav-wa svg{width:13px;height:13px}
+
+  #loader{position:fixed;inset:0;z-index:60;background:radial-gradient(circle at 50% 42%,#0a0b0d,#020202 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;transition:opacity 1.1s ease,visibility 1.1s}
+  #loader.done{opacity:0;visibility:hidden}
+  .load-logo{width:84px;height:84px;filter:drop-shadow(0 0 22px rgba(200,114,74,.45));animation:spin 8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .load-mark{font-family:var(--disp);font-weight:600;font-size:clamp(26px,6vw,46px);letter-spacing:.22em}
+  .load-mark span{color:var(--forge)}
+  .load-tag{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--dust)}
+  .load-bar{width:min(280px,66vw);height:1px;background:var(--ash);position:relative;overflow:hidden}
+  .load-bar i{position:absolute;inset:0;width:0;background:linear-gradient(90deg,var(--forge),var(--forge-hot));box-shadow:0 0 12px var(--forge)}
+  .load-pct{font-size:10px;letter-spacing:.3em;color:var(--dim)}
+  .enter-btn{margin-top:6px;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--bone);background:transparent;border:1px solid var(--forge);padding:15px 44px;cursor:pointer;opacity:0;transform:translateY(10px);transition:.5s;pointer-events:none;position:relative}
+  .enter-btn.ready{opacity:1;transform:none;pointer-events:auto}
+  .enter-btn:hover{background:var(--forge);color:#000;box-shadow:0 0 34px rgba(200,114,74,.5)}
+
+  main{position:relative;z-index:5}
+  .chapter{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px}
+  .chapter.bottom{justify-content:flex-end;padding-bottom:84px}
+  .eyebrow{font-size:10px;letter-spacing:.5em;text-transform:uppercase;margin-bottom:16px}
+  .title{font-family:var(--serif);font-weight:300;line-height:1;font-size:clamp(32px,7vw,70px)}
+  .title em{font-style:italic}
+  .sub{font-size:11px;letter-spacing:.2em;color:var(--dust);margin-top:16px;max-width:360px;line-height:1.9}
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+  /* split-char reveal */
+  .split .ch{display:inline-block;transform:translateY(115%);transition:transform .9s cubic-bezier(.16,1,.3,1)}
+  .split .wsp{display:inline-block;width:.28em}
+  .split.in .ch{transform:none}
+
+  /* COLLECTION */
+  #collection{min-height:100vh;padding:88px 20px 60px;background:linear-gradient(180deg,transparent,var(--void) 12%)}
+  .c-head{text-align:center;margin-bottom:26px}
+  .filters{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;max-width:940px;margin:0 auto 26px}
+  .filter{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:8px 12px;border-radius:5px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--dust);transition:.2s}
+  .filter:hover{color:var(--bone);border-color:var(--ash)}
+  .filter.active{background:var(--forge);color:#000;border-color:var(--forge)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:13px;max-width:1220px;margin:0 auto}
+  .tile{background:var(--obsidian);border:1px solid var(--line);border-radius:9px;overflow:hidden;cursor:pointer;transition:border-color .3s,box-shadow .3s,transform .12s ease-out;display:block;transform-style:preserve-3d;will-change:transform}
+  .tile:hover{border-color:var(--forge);box-shadow:0 18px 50px -20px rgba(200,114,74,.5)}
+  .tile .thumb{aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .tile .thumb::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.09) 50%,transparent 60%);transform:translateX(-120%);transition:transform .7s}
+  .tile:hover .thumb::before{transform:translateX(120%)}
+  .tile .thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(4,4,4,.94))}
+  .tile .thumb svg{transition:transform .5s cubic-bezier(.16,1,.3,1)}
+  .tile:hover .thumb svg{transform:translateY(-6px) scale(1.04)}
+  .tile .meta{padding:12px 13px 14px;position:relative;z-index:2}
+  .tile .meta h4{font-family:var(--disp);font-weight:500;font-size:14px;text-transform:uppercase;letter-spacing:.03em;line-height:1.15}
+  .tile .meta .p{font-size:10px;color:var(--dust);margin-top:5px}
+  .tile .meta .p b{color:var(--forge-hot)}
+  .tile .meta .o{font-size:8.5px;color:#25D366;margin-top:7px;letter-spacing:.1em}
+
+  /* CONTACT + FINAL */
+  #final{padding:74px 24px 96px;text-align:center}
+  .final-logo{width:80px;height:80px;margin:0 auto 20px;filter:drop-shadow(0 0 20px rgba(200,114,74,.45))}
+  .final-word{font-family:var(--disp);font-weight:600;font-size:clamp(28px,7vw,58px);letter-spacing:.18em;text-indent:.18em}
+  .final-word span{color:var(--forge)}
+  .final-sub{font-size:10px;letter-spacing:.4em;color:var(--dust);text-transform:uppercase;margin-top:8px}
+  .final-rule{width:36px;height:1px;background:var(--forge);margin:24px auto}
+  .contact-btns{display:flex;flex-direction:column;gap:9px;max-width:390px;margin:0 auto}
+  .cbtn{padding:15px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;border-radius:7px;transition:.3s}
+  .cbtn.wa{background:#25D366;color:#04140a}
+  .cbtn.wa:hover{box-shadow:0 0 28px rgba(37,211,102,.45)}
+  .cbtn.line{border:1px solid var(--ash);color:var(--bone)}
+  .cbtn.line:hover{border-color:var(--forge);color:var(--forge-hot)}
+  .map-frame{margin:32px auto 0;max-width:620px;border:1px solid var(--line);border-radius:9px;position:relative;aspect-ratio:16/10;overflow:hidden}
+  .map-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:grayscale(.5) contrast(1.05) brightness(.82)}
+  .foot-note{font-size:9px;letter-spacing:.2em;color:var(--dim);margin-top:26px;text-transform:uppercase;line-height:2}
+
+  #wa-float{position:fixed;bottom:22px;right:22px;z-index:8;width:52px;height:52px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(37,211,102,.42);transition:.3s;opacity:0;transform:scale(.6)}
+  #wa-float.show{opacity:1;transform:none}
+  #wa-float:hover{transform:scale(1.08)}
+  #wa-float svg{width:27px;height:27px}
+
+  @media(max-width:720px){.nav-links{display:none}.nav-wa span{display:none}#cur-dot,#cur-ring{display:none}#scrollcue{display:none}}
+  @media(hover:none){#cur-dot,#cur-ring{display:none}}
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="logo" viewBox="0 0 100 100">
+    <polygon points="50,4 88,26 88,74 50,96 12,74 12,26" fill="none" stroke="#c8724a" stroke-width="2.5"/>
+    <polygon points="50,15 78,31 78,69 50,85 22,69 22,31" fill="none" stroke="#3a3d44" stroke-width="1"/>
+    <path d="M38 68 V34 h12 a10 10 0 0 1 0 20 h-12 M62 34 V68" fill="none" stroke="#eae8e2" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="50" cy="50" r="2.4" fill="#c8724a"/>
+  </symbol>
+  <symbol id="wa" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M17.5 14.4c-.3-.15-1.7-.85-2-.94-.26-.1-.45-.15-.64.15-.2.3-.74.94-.9 1.13-.17.2-.34.22-.63.08-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.14.3-.34.44-.51.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.64-1.55-.88-2.12-.23-.55-.47-.48-.64-.49h-.55c-.2 0-.5.07-.76.37-.26.3-1 .98-1 2.38 0 1.4 1.02 2.76 1.17 2.95.14.2 2.02 3.08 4.9 4.32.68.3 1.22.47 1.63.6.68.22 1.3.19 1.8.11.55-.08 1.7-.69 1.93-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.34M12 2a10 10 0 0 0-8.6 15.05L2 22l5.05-1.32A10 10 0 1 0 12 2"/>
+  </symbol>
+</svg>
+
+<canvas id="canvas3d"></canvas>
+<div id="grain"></div><div id="vignette"></div><div id="scanline"></div>
+<div id="progress"></div>
+<div id="chapter-marker">I — NIGHT</div>
+<div id="scrollcue"><span>Scroll</span><i></i></div>
+
+<div id="cur-dot"></div><div id="cur-ring"></div>
+
+<nav id="nav">
+  <a class="nav-logo" href="#hero"><svg><use href="#logo"/></svg><span class="wm">PAMEER<span>·</span>MALL</span></a>
+  <div class="nav-links">
+    <a href="#ch-jacket">Leather</a>
+    <a href="#ch-coat">Winter</a>
+    <a href="#ch-shawl">Wool</a>
+    <a href="#collection">Collection</a>
+    <a href="#final">Visit</a>
+  </div>
+  <a class="nav-wa magnetic" href="https://wa.me/923018528123" target="_blank" rel="noopener"><svg><use href="#wa"/></svg><span>WhatsApp</span></a>
+</nav>
+
+<div id="loader">
+  <svg class="load-logo"><use href="#logo"/></svg>
+  <div class="load-mark">PAMEER<span>·</span>MALL</div>
+  <div class="load-tag">Dressed by the mountains.</div>
+  <div class="load-bar"><i id="loadfill"></i></div>
+  <div class="load-pct" id="loadpct">00%</div>
+  <button class="enter-btn magnetic" id="enterBtn">Enter the Valley</button>
+</div>
+
+<main>
+  <section class="chapter" id="hero">
+    <div class="eyebrow reveal" style="color:var(--forge)">Pameer Mall · Mingora · Swat Valley</div>
+    <h1 class="title split">Dressed by<br><em style="color:var(--forge)">the mountains.</em></h1>
+    <p class="sub reveal">A flagship carved from the valley — leather, wool and winter. Scroll to enter ↓</p>
+  </section>
+
+  <section class="chapter bottom" id="ch-jacket">
+    <div class="eyebrow reveal" style="color:var(--forge)">Chapter I · Full-Grain Leather</div>
+    <h2 class="title split">Cut from<br><em style="color:var(--forge)">the cold.</em></h2>
+    <p class="sub reveal">Full-grain Swati goatskin, hand-finished and turning slowly in the light.</p>
+  </section>
+
+  <section class="chapter bottom" id="ch-coat">
+    <div class="eyebrow reveal" style="color:var(--cold)">Chapter II · Highland Winter</div>
+    <h2 class="title split">Made for<br><em style="color:var(--cold)">the frost.</em></h2>
+    <p class="sub reveal">A long highland overcoat rising against the blue of a Swat winter dawn.</p>
+  </section>
+
+  <section class="chapter bottom" id="ch-shawl">
+    <div class="eyebrow reveal" style="color:var(--gold)">Chapter III · Islampuri Wool</div>
+    <h2 class="title split">Woven by<br><em style="color:var(--gold)">hand.</em></h2>
+    <p class="sub reveal">Pure Islampuri wool, unfurling thread by thread on looms older than the road.</p>
+  </section>
+
+  <section class="chapter" id="ch-mark">
+    <div class="eyebrow reveal" style="color:var(--forge)">Chapter IV · The Mark</div>
+    <h2 class="title split">One valley.<br><em style="color:var(--forge)">One name.</em></h2>
+    <p class="sub reveal">The Pameer mark — pressed into every piece we sell ↓</p>
+  </section>
+
+  <section id="collection">
+    <div class="c-head reveal">
+      <div class="eyebrow" style="color:var(--forge)">Chapter V · The Floor</div>
+      <h2 class="title" style="font-size:clamp(28px,5vw,46px)">The <em style="color:var(--forge)">collection.</em></h2>
+      <p class="sub" style="margin:12px auto 0">167 pieces · 11 categories · tap any piece to order on WhatsApp</p>
+    </div>
+    <div class="filters reveal" id="filters"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="final">
+    <svg class="final-logo reveal"><use href="#logo"/></svg>
+    <div class="final-word reveal">PAMEER<span>·</span>MALL</div>
+    <div class="final-sub reveal">Built in Swat · Worn everywhere</div>
+    <div class="final-rule reveal"></div>
+    <div class="contact-btns reveal">
+      <a class="cbtn wa magnetic" href="https://wa.me/923018528123" target="_blank" rel="noopener">WhatsApp · +92 301 8528123</a>
+      <a class="cbtn line magnetic" href="tel:0946726123">Call · (0946) 726123</a>
+      <a class="cbtn line magnetic" href="mailto:pameermall@gmail.com">pameermall@gmail.com</a>
+    </div>
+    <div class="map-frame reveal">
+      <iframe title="Pameer Mall, Mingora, Swat" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Mingora,+Swat,+Khyber+Pakhtunkhwa,+Pakistan&z=13&output=embed"></iframe>
+    </div>
+    <div class="foot-note">Pameer Mall · Mingora · Swat Valley · Khyber Pakhtunkhwa · Pakistan<br>Open daily · © 2026 Pameer Mall</div>
+  </section>
+</main>
+
+<a id="wa-float" href="https://wa.me/923018528123" target="_blank" rel="noopener" aria-label="WhatsApp Pameer Mall"><svg style="color:#04140a"><use href="#wa"/></svg></a>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script>
+/* ---------- CATALOG ---------- */
+var CAT={
+ "Citadel Jackets":{n:30,price:"18,500",c:"#5a3a28",k:"jacket"},
+ "Winter Coats":{n:20,price:"22,000",c:"#3a4048",k:"coat"},
+ "Three-Piece Suits":{n:20,price:"16,900",c:"#2e323a",k:"suit"},
+ "Two-Piece Suits":{n:10,price:"12,900",c:"#33373f",k:"suit"},
+ "Trousers":{n:5,price:"3,200",c:"#3a3d44",k:"trouser"},
+ "Denim / Jeans":{n:5,price:"4,500",c:"#324055",k:"trouser"},
+ "T-Shirts":{n:20,price:"1,800",c:"#3d4045",k:"tee"},
+ "Shirts & Polos":{n:15,price:"2,900",c:"#353840",k:"shirt"},
+ "Garguppa & Traditional":{n:12,price:"6,900",c:"#4a3d28",k:"robe"},
+ "Islampuri Wool Shawls":{n:15,price:"6,900",c:"#4a3f2c",k:"shawl"},
+ "Local Handicrafts":{n:15,price:"3,200",c:"#3f3626",k:"craft"}
+};
+var WA="https://wa.me/923018528123?text=";
+/* per-category garment silhouettes */
+var ICON={
+ jacket:'<path d="M28 34 L40 26 L60 26 L72 34 L70 52 L60 48 L60 108 L40 108 L40 48 L30 52 Z"/><line x1="50" y1="28" x2="50" y2="108"/>',
+ coat:'<path d="M30 32 L42 26 L58 26 L70 32 L68 60 L64 60 L64 112 L36 112 L36 60 L32 60 Z"/><line x1="50" y1="30" x2="50" y2="112"/><line x1="34" y1="70" x2="66" y2="70"/>',
+ suit:'<path d="M32 32 L44 26 L56 26 L68 32 L66 56 L60 54 L60 110 L40 110 L40 54 L34 56 Z"/><path d="M44 28 L50 46 L56 28"/>',
+ trouser:'<path d="M38 26 L62 26 L62 54 L58 112 L52 112 L50 60 L48 112 L42 112 L38 54 Z"/>',
+ tee:'<path d="M30 34 L42 26 L58 26 L70 34 L64 46 L60 42 L60 104 L40 104 L40 42 L36 46 Z"/>',
+ shirt:'<path d="M32 32 L44 26 L56 26 L68 32 L64 44 L60 42 L60 108 L40 108 L40 42 L36 44 Z"/><path d="M44 28 L50 40 L56 28"/><line x1="50" y1="44" x2="50" y2="104"/>',
+ robe:'<path d="M30 30 L44 24 L56 24 L70 30 L66 54 L64 54 L66 114 L34 114 L36 54 L34 54 Z"/><path d="M50 26 L50 114"/><path d="M42 40 Q50 46 58 40"/>',
+ shawl:'<path d="M24 34 Q50 24 76 34 L70 104 Q50 114 30 104 Z"/><path d="M32 44 Q50 52 68 44"/><path d="M30 66 Q50 74 70 66"/><path d="M30 86 Q50 94 70 86"/>',
+ craft:'<path d="M34 40 L66 40 L70 104 L30 104 Z"/><path d="M40 40 Q50 26 60 40"/><line x1="30" y1="66" x2="70" y2="66"/>'
+};
+function tile(name,cat,price,col,kind){
+  var a=document.createElement('a');
+  a.className='tile';
+  a.href=WA+encodeURIComponent("Assalam o Alaikum Pameer Mall — I'm interested in: "+name+" ("+cat+"). Is it available?");
+  a.target="_blank";a.rel="noopener";
+  var path=ICON[kind]||ICON.jacket;
+  a.innerHTML='<div class="thumb" style="background:radial-gradient(80% 60% at 50% 18%,rgba(255,255,255,.07),transparent),'+col+'">'
+    +'<svg viewBox="0 0 100 130" width="56%" fill="rgba(0,0,0,.26)" stroke="#c8724a" stroke-width="1" stroke-linejoin="round" stroke-linecap="round">'+path+'</svg></div>'
+    +'<div class="meta"><h4>'+name+'</h4><div class="p">from <b>PKR '+price+'</b></div><div class="o">TAP TO ORDER ↗</div></div>';
+  return a;
+}
+function build(filter){
+  var g=document.getElementById('grid');g.innerHTML='';
+  Object.keys(CAT).forEach(function(cat){
+    if(filter&&filter!=='All'&&cat!==filter)return;
+    var d=CAT[cat];var count=(filter&&filter!=='All')?d.n:Math.min(4,d.n);
+    for(var i=0;i<count;i++){g.appendChild(tile(cat.split(/[ \/]/)[0]+" No."+String(i+1).padStart(2,'0'),cat,d.price,d.c,d.k));}
+  });
+  bindTilt();
+}
+(function(){
+  var fbox=document.getElementById('filters');
+  ['All'].concat(Object.keys(CAT)).forEach(function(c,idx){
+    var b=document.createElement('button');
+    b.className='filter'+(idx===0?' active':'');
+    b.textContent=c==='All'?'All 167':c;
+    b.onclick=function(){
+      Array.prototype.forEach.call(fbox.children,function(x){x.classList.remove('active');});
+      b.classList.add('active');build(c==='All'?null:c);
+    };
+    fbox.appendChild(b);
+  });
+  build(null);
+})();
+
+/* ---------- 3D card tilt ---------- */
+var reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var fineHover=matchMedia('(hover:hover)').matches && matchMedia('(pointer:fine)').matches;
+function bindTilt(){
+  if(reducedMotion||!fineHover)return;
+  document.querySelectorAll('.tile').forEach(function(t){
+    t.addEventListener('pointermove',function(e){
+      var r=t.getBoundingClientRect();
+      var px=(e.clientX-r.left)/r.width-.5, py=(e.clientY-r.top)/r.height-.5;
+      t.style.transform='perspective(700px) rotateY('+(px*7)+'deg) rotateX('+(-py*9)+'deg) translateY(-4px)';
+    });
+    t.addEventListener('pointerleave',function(){t.style.transform='';});
+  });
+}
+
+/* ---------- LOADER ---------- */
+(function(){
+  var fill=document.getElementById('loadfill'),pct=document.getElementById('loadpct'),enter=document.getElementById('enterBtn');
+  var lp=0;var li=setInterval(function(){lp+=Math.random()*12+5;if(lp>=100){lp=100;clearInterval(li);enter.classList.add('ready');}fill.style.width=lp+'%';pct.textContent=String(Math.floor(lp)).padStart(2,'0')+'%';},110);
+  enter.addEventListener('click',startSite);
+  setTimeout(function(){enter.classList.add('ready');},2600);
+})();
+var _entered=false;
+function startSite(){
+  var l=document.getElementById('loader');if(l.classList.contains('done'))return;
+  l.classList.add('done');_entered=true;
+  document.getElementById('nav').classList.add('show');
+  window.dispatchEvent(new Event('pameer:enter'));
+  document.querySelectorAll('#hero .reveal,#hero .split').forEach(function(el){el.classList.add('in');});
+}
+
+/* ---------- split text ---------- */
+(function(){
+  document.querySelectorAll('.split').forEach(function(el){
+    var html=el.innerHTML;
+    /* wrap text nodes only, keep <br> and <em> */
+    function wrap(node){
+      Array.prototype.slice.call(node.childNodes).forEach(function(n){
+        if(n.nodeType===3){
+          var frag=document.createDocumentFragment();
+          n.textContent.split('').forEach(function(chr){
+            var s=document.createElement('span');
+            s.className=chr===' '?'wsp':'ch';
+            if(chr!==' ')s.textContent=chr;
+            frag.appendChild(s);
+          });
+          node.replaceChild(frag,n);
+        }else if(n.nodeType===1 && n.tagName!=='BR'){wrap(n);}
+      });
+    }
+    wrap(el);
+    /* stagger */
+    var chs=el.querySelectorAll('.ch');
+    chs.forEach(function(c,i){c.style.transitionDelay=(i*28)+'ms';});
+  });
+})();
+
+/* reveal on scroll */
+(function(){
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');}});},{threshold:.14});
+    document.querySelectorAll('.reveal,.split').forEach(function(el){io.observe(el);});
+  }else{document.querySelectorAll('.reveal,.split').forEach(function(el){el.classList.add('in');});}
+})();
+
+/* nav / progress / chapter marker */
+var CH=[['hero','I — NIGHT'],['ch-jacket','II — LEATHER'],['ch-coat','III — WINTER'],['ch-shawl','IV — WOOL'],['ch-mark','V — MARK'],['collection','VI — COLLECTION'],['final','VII — PAMEER']];
+window.addEventListener('scroll',function(){
+  var y=scrollY,max=document.body.scrollHeight-innerHeight||1;
+  document.getElementById('progress').style.width=((y/max)*100)+'%';
+  document.getElementById('nav').classList.toggle('solid',y>60);
+  document.getElementById('wa-float').classList.toggle('show',y>500);
+  document.getElementById('scrollcue').style.opacity=y>140?'0':'1';
+  var cur=CH[0][1];
+  CH.forEach(function(p){var el=document.getElementById(p[0]);if(el&&el.getBoundingClientRect().top<innerHeight*0.5)cur=p[1];});
+  document.getElementById('chapter-marker').textContent=cur;
+},{passive:true});
+
+/* ---------- custom cursor + magnetic ---------- */
+(function(){
+  if(!fineHover||reducedMotion)return;
+  document.body.classList.add('no-cursor');
+  var dot=document.getElementById('cur-dot'),ring=document.getElementById('cur-ring');
+  var rx=innerWidth/2,ry=innerHeight/2,tx=rx,ty=ry;
+  window.addEventListener('pointermove',function(e){tx=e.clientX;ty=e.clientY;dot.style.transform='translate('+(tx-3)+'px,'+(ty-3)+'px)';});
+  (function loop(){rx+=(tx-rx)*.18;ry+=(ty-ry)*.18;ring.style.transform='translate('+(rx-17)+'px,'+(ry-17)+'px)';requestAnimationFrame(loop);})();
+  document.addEventListener('pointerover',function(e){
+    if(e.target.closest('a,button,.tile,.filter'))ring.classList.add('hot');
+  });
+  document.addEventListener('pointerout',function(e){
+    if(e.target.closest('a,button,.tile,.filter'))ring.classList.remove('hot');
+  });
+  document.querySelectorAll('.magnetic').forEach(function(el){
+    el.addEventListener('pointermove',function(e){
+      var r=el.getBoundingClientRect();
+      var mx=e.clientX-(r.left+r.width/2), my=e.clientY-(r.top+r.height/2);
+      el.style.transform='translate('+(mx*.28)+'px,'+(my*.4)+'px)';
+    });
+    el.addEventListener('pointerleave',function(){el.style.transform='';});
+  });
+})();
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+var canvas=document.getElementById('canvas3d');
+var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var lowPower=matchMedia('(max-width:720px)').matches || !matchMedia('(hover:hover)').matches;
+var useBloom=!reduced && !lowPower;
+var renderer;
+try{
+  var test=document.createElement('canvas');
+  if(!(test.getContext('webgl2')||test.getContext('webgl')))throw 0;
+  renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,useBloom?2:1.5));
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.02;
+}catch(e){console.warn('PAMEER: WebGL unavailable — cinematic fallback gradient active.');}
+
+if(renderer){
+  var scene=new THREE.Scene();
+  scene.fog=new THREE.FogExp2(0x020304,0.052);
+  var camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,0.1,120);
+  camera.position.set(0,0,12);
+
+  /* soft image-based lighting for premium reflections */
+  try{
+    var pmrem=new THREE.PMREMGenerator(renderer);
+    scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture;
+  }catch(e){/* env optional */}
+
+  var ambient=new THREE.AmbientLight(0x11141a,0.9);scene.add(ambient);
+  var key=new THREE.SpotLight(0xffffff,4.2,70,Math.PI/8,0.4,1.1);key.position.set(0,16,8);scene.add(key);scene.add(key.target);
+  var back=new THREE.PointLight(0x8fc0ff,2.4,48);back.position.set(0,4,-9);scene.add(back);
+  var rimWarm=new THREE.PointLight(0xff8a4a,1.6,40);rimWarm.position.set(-5,-2,-4);scene.add(rimWarm);
+  var accent1=new THREE.PointLight(0xff7a3c,2.2,36);accent1.position.set(-6,-1,5);scene.add(accent1);
+  var accent2=new THREE.PointLight(0x6fb4e8,1.4,36);accent2.position.set(6,2,4);scene.add(accent2);
+
+  /* materials */
+  var leatherMat=new THREE.MeshPhysicalMaterial({color:0x241a13,roughness:0.52,metalness:0.15,clearcoat:0.65,clearcoatRoughness:0.4,envMapIntensity:1.0});
+  var coatMat=new THREE.MeshPhysicalMaterial({color:0x2b3138,roughness:0.95,metalness:0.0,sheen:1.0,sheenColor:new THREE.Color(0x4a5a70),sheenRoughness:0.8,envMapIntensity:0.7});
+  var shawlMat=new THREE.MeshPhysicalMaterial({color:0x6a5836,roughness:0.92,metalness:0.02,sheen:0.9,sheenColor:new THREE.Color(0xd8a24a),sheenRoughness:0.7,side:THREE.DoubleSide,envMapIntensity:0.6});
+  var figureMat=new THREE.MeshPhysicalMaterial({color:0x191d26,roughness:0.82,metalness:0.0,sheen:0.9,sheenColor:new THREE.Color(0x3a4453),sheenRoughness:0.6,clearcoat:0.25,clearcoatRoughness:0.6,envMapIntensity:0.85});
+  var metalMat=new THREE.MeshStandardMaterial({color:0xc8724a,roughness:0.24,metalness:1.0,emissive:0x5a2a10,emissiveIntensity:0.7,envMapIntensity:1.3});
+
+  /* ---- HERO: hooded figure ---- */
+  var figure=new THREE.Group();
+  var prof=[[0.16,2.35],[0.5,2.18],[1.02,1.78],[1.14,1.3],[1.0,0.4],[0.82,-0.55],[0.9,-1.35],[0.86,-2.35],[0.98,-2.7],[0.0,-2.78]]
+    .map(function(p){return new THREE.Vector2(p[0],p[1]);});
+  var torso=new THREE.Mesh(new THREE.LatheGeometry(prof,54),figureMat);figure.add(torso);
+  var head=new THREE.Mesh(new THREE.SphereGeometry(0.5,32,24),figureMat);head.position.y=2.5;figure.add(head);
+  var hood=new THREE.Mesh(new THREE.SphereGeometry(0.82,36,26,0,Math.PI*2,0,Math.PI*0.64),figureMat);
+  hood.position.set(0,2.55,-0.06);hood.rotation.x=-0.18;figure.add(hood);
+  var chest=new THREE.Mesh(new THREE.CircleGeometry(0.2,6),metalMat);chest.position.set(0,0.55,1.0);figure.add(chest);
+  figure.position.y=-0.3;scene.add(figure);
+
+  /* volumetric light shaft */
+  var shaft=new THREE.Mesh(new THREE.ConeGeometry(4.4,17,40,1,true),
+    new THREE.MeshBasicMaterial({color:0xaecbe6,transparent:true,opacity:0.04,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending}));
+  shaft.position.y=5.5;scene.add(shaft);
+
+  /* ---- PRODUCTS ---- */
+  var jacket=new THREE.Group();
+  jacket.add(new THREE.Mesh(new THREE.BoxGeometry(2.4,3,0.9,1,1,1),leatherMat));
+  var sL=new THREE.Mesh(new THREE.BoxGeometry(0.7,2.6,0.7),leatherMat);sL.position.set(-1.55,-0.1,0);sL.rotation.z=0.12;jacket.add(sL);
+  var sR=sL.clone();sR.position.x=1.55;sR.rotation.z=-0.12;jacket.add(sR);
+  var collar=new THREE.Mesh(new THREE.BoxGeometry(2.4,0.5,1),leatherMat);collar.position.y=1.6;jacket.add(collar);
+  var zip=new THREE.Mesh(new THREE.BoxGeometry(0.12,3,0.12),metalMat);zip.position.z=0.46;jacket.add(zip);
+  var badge=new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.32,0.08,6),metalMat);badge.rotation.x=Math.PI/2;badge.position.set(-0.6,0.5,0.5);jacket.add(badge);
+  jacket.visible=false;scene.add(jacket);
+
+  var coat=new THREE.Group();
+  var cTorso=new THREE.Mesh(new THREE.BoxGeometry(2.6,4.4,1.0),coatMat);cTorso.position.y=-0.5;coat.add(cTorso);
+  var cSL=new THREE.Mesh(new THREE.BoxGeometry(0.8,3.2,0.8),coatMat);cSL.position.set(-1.7,-0.1,0);cSL.rotation.z=0.1;coat.add(cSL);
+  var cSR=cSL.clone();cSR.position.x=1.7;cSR.rotation.z=-0.1;coat.add(cSR);
+  var cCollar=new THREE.Mesh(new THREE.BoxGeometry(3.0,0.9,1.2),coatMat);cCollar.position.y=1.75;coat.add(cCollar);
+  var cBelt=new THREE.Mesh(new THREE.BoxGeometry(2.7,0.35,1.05),new THREE.MeshStandardMaterial({color:0x14161a,roughness:0.6,metalness:0.4}));cBelt.position.y=-0.4;coat.add(cBelt);
+  var cBuckle=new THREE.Mesh(new THREE.BoxGeometry(0.4,0.4,0.14),metalMat);cBuckle.position.set(0,-0.4,0.55);coat.add(cBuckle);
+  coat.visible=false;scene.add(coat);
+
+  var shawl=new THREE.Group();
+  var shawlGeo=new THREE.PlaneGeometry(4.2,5.2,24,28);
+  var shawlMesh=new THREE.Mesh(shawlGeo,shawlMat);shawl.add(shawlMesh);
+  var fg=new THREE.BufferGeometry();var fpts=[];
+  for(var fx=-2;fx<=2;fx+=0.32){fpts.push(fx,-2.6,0.05, fx,-3.15,0.05);}
+  fg.setAttribute('position',new THREE.Float32BufferAttribute(fpts,3));
+  shawl.add(new THREE.LineSegments(fg,new THREE.LineBasicMaterial({color:0xd8a24a,transparent:true,opacity:0.5})));
+  shawl.visible=false;scene.add(shawl);
+  var basePos=shawlGeo.attributes.position.array.slice();
+
+  var logo=new THREE.Group();
+  var hexShape=new THREE.Shape();
+  for(var i=0;i<6;i++){var ang=Math.PI/6+i*Math.PI/3;var hx=Math.cos(ang)*1.6,hy=Math.sin(ang)*1.6;if(i===0)hexShape.moveTo(hx,hy);else hexShape.lineTo(hx,hy);}
+  hexShape.closePath();
+  var hex=new THREE.Mesh(new THREE.ExtrudeGeometry(hexShape,{depth:0.32,bevelEnabled:true,bevelThickness:0.08,bevelSize:0.08,bevelSegments:2}),
+    new THREE.MeshStandardMaterial({color:0x1a1c20,roughness:0.35,metalness:0.85,emissive:0x2a1408,emissiveIntensity:0.5,envMapIntensity:1.2}));
+  logo.add(hex);
+  var ring=new THREE.Mesh(new THREE.TorusGeometry(1.32,0.035,10,64),metalMat.clone());ring.position.z=0.22;logo.add(ring);
+  logo.scale.set(0.01,0.01,0.01);logo.visible=false;scene.add(logo);
+
+  /* wet-floor: catches bloom + reflections via env map */
+  var floor=new THREE.Mesh(new THREE.PlaneGeometry(80,80),
+    new THREE.MeshStandardMaterial({color:0x050607,roughness:0.16,metalness:0.9,envMapIntensity:0.5}));
+  floor.rotation.x=-Math.PI/2;floor.position.y=-3.25;scene.add(floor);
+
+  /* ---- RAIN ---- */
+  var RAIN_N=lowPower?220:640;
+  var rainGeo=new THREE.BufferGeometry();
+  var rainPos=new Float32Array(RAIN_N*6);
+  var rainSpd=new Float32Array(RAIN_N);
+  for(var r=0;r<RAIN_N;r++){
+    var rxp=(Math.random()-.5)*34, ryp=(Math.random()-.5)*26, rzp=(Math.random()-.5)*16;
+    var len=0.5+Math.random()*0.7;
+    rainPos[r*6]=rxp;rainPos[r*6+1]=ryp;rainPos[r*6+2]=rzp;
+    rainPos[r*6+3]=rxp;rainPos[r*6+4]=ryp-len;rainPos[r*6+5]=rzp;
+    rainSpd[r]=7+Math.random()*10;
+  }
+  rainGeo.setAttribute('position',new THREE.BufferAttribute(rainPos,3));
+  var rainMat=new THREE.LineBasicMaterial({color:0x9fd0ff,transparent:true,opacity:0.34,blending:THREE.AdditiveBlending,depthWrite:false});
+  var rain=new THREE.LineSegments(rainGeo,rainMat);scene.add(rain);
+
+  /* ---- EMBERS (forge glow) ---- */
+  var EM_N=lowPower?70:150;
+  var emGeo=new THREE.BufferGeometry();var emPos=new Float32Array(EM_N*3);var emSpd=new Float32Array(EM_N);
+  for(var e2=0;e2<EM_N;e2++){emPos[e2*3]=(Math.random()-.5)*8;emPos[e2*3+1]=(Math.random()-.5)*8-1;emPos[e2*3+2]=(Math.random()-.5)*5;emSpd[e2]=0.4+Math.random()*0.9;}
+  emGeo.setAttribute('position',new THREE.BufferAttribute(emPos,3));
+  var emMat=new THREE.PointsMaterial({color:0xff9a5c,size:0.07,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false});
+  var embers=new THREE.Points(emGeo,emMat);scene.add(embers);
+
+  /* ---- DUST ---- */
+  var pc=lowPower?700:1600,pg=new THREE.BufferGeometry(),pp=new Float32Array(pc*3),pv=new Float32Array(pc);
+  for(var jj=0;jj<pc;jj++){pp[jj*3]=(Math.random()-.5)*24;pp[jj*3+1]=(Math.random()-.5)*20;pp[jj*3+2]=(Math.random()-.5)*13;pv[jj]=.002+Math.random()*.01;}
+  pg.setAttribute('position',new THREE.BufferAttribute(pp,3));
+  var dust=new THREE.Points(pg,new THREE.PointsMaterial({color:0xcfc8b8,size:0.025,transparent:true,opacity:0.4,blending:THREE.AdditiveBlending,depthWrite:false}));scene.add(dust);
+
+  /* ---- POST ---- */
+  var composer=null;
+  if(useBloom){
+    try{
+      composer=new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene,camera));
+      var bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.72,0.6,0.62);
+      composer.addPass(bloom);
+      composer.addPass(new OutputPass());
+    }catch(e){composer=null;console.warn('PAMEER: bloom unavailable, direct render.');}
+  }
+
+  /* ---- STATE ---- */
+  var scroll=0,target=0;
+  window.addEventListener('scroll',function(){var max=document.body.scrollHeight-innerHeight;target=max>0?scrollY/max:0;},{passive:true});
+  var mx=0,my=0;
+  window.addEventListener('pointermove',function(ev){mx=(ev.clientX/innerWidth-.5)*2;my=(ev.clientY/innerHeight-.5)*2;});
+
+  var introT=0;
+  window.addEventListener('pameer:enter',function(){/* intro begins in loop once _entered */});
+
+  function ease(a,b,t){return a+(b-a)*t;}
+  function seg(s,lo,hi){return Math.min(1,Math.max(0,(s-lo)/(hi-lo)));}
+  function eio(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
+  function setOpacity(grp,o){grp.traverse(function(m){if(m.material){m.material.transparent=true;m.material.opacity=o;}});}
+  var clock=new THREE.Clock();
+
+  window.__pameer={ready:true,bloom:!!composer,frames:0};
+  function animate(){
+    requestAnimationFrame(animate);
+    window.__pameer.frames++;
+    var dt=Math.min(clock.getDelta(),0.05);
+    var t=clock.elapsedTime;
+    if(window._entered)introT=Math.min(1,introT+dt/2.2);
+    var intro=eio(introT);
+    scroll=ease(scroll,target,0.06);
+
+    /* dust */
+    var arr=pg.attributes.position.array;
+    for(var k=0;k<pc;k++){arr[k*3+1]+=pv[k];if(arr[k*3+1]>10)arr[k*3+1]=-10;}
+    pg.attributes.position.needsUpdate=true;dust.rotation.y=t*0.014;
+
+    /* rain */
+    var rarr=rainGeo.attributes.position.array;
+    for(var q=0;q<RAIN_N;q++){var b=q*6;var dy=rainSpd[q]*dt;rarr[b+1]-=dy;rarr[b+4]-=dy;if(rarr[b+4]<-13){rarr[b+1]+=26;rarr[b+4]+=26;}}
+    rainGeo.attributes.position.needsUpdate=true;
+
+    /* segments */
+    var pHero=(1-seg(scroll,0.05,0.15));
+    var pJ=seg(scroll,0.10,0.24), pJout=seg(scroll,0.28,0.36);
+    var pC=seg(scroll,0.30,0.44), pCout=seg(scroll,0.46,0.54);
+    var pS=seg(scroll,0.48,0.62), pSout=seg(scroll,0.62,0.70);
+    var pL=seg(scroll,0.64,0.78), pLout=seg(scroll,0.82,0.90);
+
+    /* hero figure */
+    figure.visible=pHero>0.01;
+    if(figure.visible){
+      figure.rotation.y=t*0.14+mx*0.25;
+      figure.rotation.z=Math.sin(t*0.5)*0.02;
+      figure.position.y=-0.3+Math.sin(t*0.8)*0.05;
+      var fo=pHero*intro;setOpacity(figure,fo);
+      chest.material.opacity=1;chest.material.transparent=false;
+    }
+    shaft.visible=pHero>0.01;
+    if(shaft.visible){shaft.material.opacity=0.05*pHero*intro;shaft.rotation.y=t*0.05;}
+
+    rainMat.opacity=0.34*intro*(1-seg(scroll,0.06,0.5));
+
+    var jVis=pJ>0.01 && pJout<0.99; jacket.visible=jVis;
+    if(jVis){var js=ease(0.01,1.1,pJ);jacket.scale.set(js,js,js);jacket.position.y=ease(-6,0.2,pJ)+pJout*4;jacket.rotation.y=t*0.12+scroll*2;jacket.rotation.z=Math.sin(t*0.4)*0.03;setOpacity(jacket,Math.min(pJ,1-pJout));}
+
+    /* embers glow during jacket */
+    var em=emGeo.attributes.position.array;
+    for(var w=0;w<EM_N;w++){em[w*3+1]+=emSpd[w]*dt*1.4;if(em[w*3+1]>6){em[w*3+1]=-4;}}
+    emGeo.attributes.position.needsUpdate=true;
+    emMat.opacity=0.7*(pJ*(1-pJout));
+
+    var cVis=pC>0.01 && pCout<0.99; coat.visible=cVis;
+    if(cVis){var cs=ease(0.01,0.92,pC);coat.scale.set(cs,cs,cs);coat.position.y=ease(-7,0.0,pC)+pCout*4;coat.rotation.y=t*0.1+scroll*1.6;coat.rotation.z=Math.sin(t*0.35)*0.025;setOpacity(coat,Math.min(pC,1-pCout));}
+
+    var sVis=pS>0.01 && pSout<0.99; shawl.visible=sVis;
+    if(sVis){
+      var ss=ease(0.01,1.0,pS);shawl.scale.set(ss,ss,ss);shawl.position.y=ease(-6,0.2,pS)+pSout*4;
+      shawl.rotation.y=Math.sin(t*0.25)*0.5+scroll*1.2;shawl.rotation.x=-0.15+Math.sin(t*0.3)*0.05;
+      var sp=shawlGeo.attributes.position.array;
+      for(var v=0;v<sp.length;v+=3){var bx=basePos[v],by=basePos[v+1];sp[v+2]=Math.sin(bx*1.2+t*1.5)*0.35*pS+Math.cos(by*0.9+t*1.1)*0.25*pS;}
+      shawlGeo.attributes.position.needsUpdate=true;shawlGeo.computeVertexNormals();
+      setOpacity(shawl,Math.min(pS,1-pSout));
+    }
+
+    logo.visible=pL>0.01 && pLout<0.99;
+    if(logo.visible){var ls=ease(0.01,1.05,pL);logo.scale.set(ls,ls,ls);logo.rotation.y=t*0.35+(1-pL)*3;logo.position.y=ease(2,0,pL);setOpacity(logo,Math.min(pL,1-pLout));}
+
+    /* lighting mood */
+    var warmth=pJ*(1-pJout)+pL*(1-pLout);
+    var cold=pC*(1-pCout)+pHero*0.5;
+    var gold=pS*(1-pSout);
+    accent1.intensity=1.2+warmth*3.0+gold*1.2+Math.sin(t*2.5)*0.4;
+    accent2.color.setHex(cold>gold?0x6fb4e8:0xd8a24a);
+    accent2.intensity=0.8+cold*3.0+gold*2.6;
+    accent2.position.x=6-cold*4;
+    key.intensity=2.8+Math.sin(t*1.2)*0.25+warmth*0.8+pHero*1.4;
+    back.intensity=1.4+cold*1.8+gold*1.0+pHero*3.4;
+    back.color.setHex(cold>0.3?0x9fd0ff:0xffffff);
+    rimWarm.intensity=1.0+pHero*2.2;
+    renderer.toneMappingExposure=(0.28+0.74*intro);
+
+    /* camera */
+    var baseZ=(7+5*intro)-scroll*2.0;
+    camera.position.x=ease(camera.position.x,mx*0.9,0.05);
+    camera.position.y=ease(camera.position.y,-my*0.5,0.05);
+    camera.position.z=ease(camera.position.z,baseZ,0.05);
+    var focusY=jacket.visible?jacket.position.y:coat.visible?coat.position.y:shawl.visible?shawl.position.y:0;
+    camera.lookAt(0,focusY*0.25,0);
+
+    if(composer)composer.render();else renderer.render(scene,camera);
+  }
+  animate();
+
+  window.addEventListener('resize',function(){
+    camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth,innerHeight);
+    if(composer)composer.setSize(innerWidth,innerHeight);
+  });
+}
+</script>
+</body>
+</html>
