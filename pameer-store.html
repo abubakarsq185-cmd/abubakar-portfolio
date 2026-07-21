@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PAMEER MALL — Luxury Fashion Store | Mingora, Swat</title>
+<meta name="description" content="PAMEER MALL — premium menswear, womenswear and kids fashion from Swat Valley. Leather jackets, winter coats, Pashtun coats, suits, wool shawls and more. Order on WhatsApp." />
+<meta name="theme-color" content="#141414" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f5f2; --card:#ffffff; --ink:#16150f; --muted:#6f6a5f; --faint:#9a9488;
+    --line:#e5e2da; --line2:#d8d4ca; --accent:#b0673f; --accent-dk:#8f4f2c;
+    --sale:#a12f2f; --ok:#2f7d4f;
+    --disp:'Cormorant Garamond',Georgia,serif; --body:'Jost',system-ui,sans-serif;
+    --wrap:1280px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);font-weight:300;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  ::selection{background:var(--accent);color:#fff}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 22px}
+  .eyebrow{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--accent)}
+  .serif{font-family:var(--disp)}
+
+  /* ANNOUNCE + HEADER */
+  #announce{background:var(--ink);color:#f6f5f2;text-align:center;font-size:11px;letter-spacing:.18em;padding:8px;text-transform:uppercase}
+  #announce b{color:#e6b48f}
+  header{position:sticky;top:0;z-index:40;background:rgba(246,245,242,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .hbar{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand svg{width:30px;height:30px}
+  .brand .wm{font-family:var(--disp);font-weight:600;font-size:22px;letter-spacing:.14em}
+  .brand .wm span{color:var(--accent)}
+  .hnav{display:flex;gap:26px;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+  .hnav a{color:var(--muted);transition:.2s;position:relative;padding:4px 0}
+  .hnav a:hover{color:var(--ink)}
+  .hicons{display:flex;align-items:center;gap:18px}
+  .hicons button{position:relative;display:flex;align-items:center}
+  .hicons svg{width:20px;height:20px;stroke:var(--ink);fill:none;stroke-width:1.4}
+  .badge-count{position:absolute;top:-8px;right:-9px;background:var(--accent);color:#fff;font-size:9px;min-width:16px;height:16px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;font-weight:500}
+  .badge-count.hide{display:none}
+
+  /* HERO */
+  #hero{position:relative;height:min(74vh,620px);overflow:hidden;display:flex;align-items:center;background:#111}
+  #hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+  #hero .hero-in{position:relative;z-index:2;color:#f6f5f2}
+  #hero h1{font-family:var(--disp);font-weight:300;font-size:clamp(38px,7vw,84px);line-height:.98;letter-spacing:.01em}
+  #hero h1 em{font-style:italic;color:#e6b48f}
+  #hero p{font-size:13px;letter-spacing:.18em;text-transform:uppercase;margin:18px 0 26px;color:#d8d4ca}
+  .btn{display:inline-flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;padding:15px 34px;border:1px solid currentColor;transition:.25s}
+  .btn.solid{background:var(--ink);color:#f6f5f2;border-color:var(--ink)}
+  .btn.solid:hover{background:var(--accent);border-color:var(--accent)}
+  .btn.ghost{color:#f6f5f2}
+  .btn.ghost:hover{background:#f6f5f2;color:#141414}
+
+  /* CATEGORY RAIL */
+  #catrail{border-bottom:1px solid var(--line);background:var(--card)}
+  .rail{display:flex;gap:8px;overflow-x:auto;padding:14px 0;scrollbar-width:none}
+  .rail::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:9px 16px;border:1px solid var(--line2);border-radius:40px;color:var(--muted);white-space:nowrap;transition:.2s}
+  .chip:hover{border-color:var(--ink);color:var(--ink)}
+  .chip.active{background:var(--ink);color:#f6f5f2;border-color:var(--ink)}
+
+  /* SECTIONS */
+  section.cat{padding:54px 0 10px}
+  .cat-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;gap:20px}
+  .cat-head h2{font-family:var(--disp);font-weight:400;font-size:clamp(26px,4vw,40px);line-height:1}
+  .cat-head .meta{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:20px 18px}
+
+  /* PRODUCT CARD */
+  .card{background:var(--card);border:1px solid var(--line);position:relative;transition:box-shadow .3s,transform .2s;cursor:pointer;display:flex;flex-direction:column}
+  .card:hover{box-shadow:0 24px 50px -30px rgba(20,20,15,.4)}
+  .card .ph{position:relative;aspect-ratio:3/4;overflow:hidden;background:#efece6}
+  .card .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s,transform .8s cubic-bezier(.16,1,.3,1)}
+  .card .ph img.loaded{opacity:1}
+  .card:hover .ph img{transform:scale(1.06)}
+  .card .tags{position:absolute;top:10px;left:10px;z-index:2;display:flex;flex-direction:column;gap:5px}
+  .tag{font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;background:var(--ink);color:#f6f5f2}
+  .tag.sale{background:var(--sale)}
+  .tag.new{background:var(--accent)}
+  .card .wish{position:absolute;top:9px;right:9px;z-index:2;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s}
+  .card:hover .wish{opacity:1}
+  .card .wish svg{width:16px;height:16px;stroke:var(--ink);fill:none;stroke-width:1.5}
+  .card .wish.on svg{fill:var(--sale);stroke:var(--sale)}
+  .card .quick{position:absolute;left:0;right:0;bottom:0;z-index:2;transform:translateY(101%);transition:.3s;background:var(--ink);color:#f6f5f2;text-align:center;font-size:11px;letter-spacing:.18em;text-transform:uppercase;padding:12px}
+  .card .ph:hover .quick{transform:none}
+  .card .info{padding:13px 14px 16px;display:flex;flex-direction:column;gap:5px;flex:1}
+  .card .swz{display:flex;gap:5px;margin-bottom:2px}
+  .card .swz i{width:12px;height:12px;border-radius:50%;border:1px solid rgba(0,0,0,.15);display:block}
+  .card h3{font-family:var(--disp);font-size:19px;font-weight:500;line-height:1.05}
+  .card .cat-lbl{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+  .card .price{margin-top:auto;font-size:14px;display:flex;align-items:baseline;gap:8px}
+  .card .price .now{font-weight:500}
+  .card .price .was{color:var(--faint);text-decoration:line-through;font-size:12px}
+  .card .price .now.red{color:var(--sale)}
+  .stars{font-size:10px;color:var(--accent);letter-spacing:1px}
+  .stars small{color:var(--faint);letter-spacing:.1em;margin-left:4px}
+
+  /* MODAL / DRAWERS */
+  .scrim{position:fixed;inset:0;z-index:60;background:rgba(20,19,15,.55);opacity:0;visibility:hidden;transition:.3s;backdrop-filter:blur(2px)}
+  .scrim.show{opacity:1;visibility:visible}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);background:var(--paper);z-index:61;transform:translateX(100%);transition:transform .4s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column}
+  .drawer.show{transform:none}
+  .drawer h3{font-family:var(--disp);font-size:24px;font-weight:500}
+  .dhead{display:flex;align-items:center;justify-content:space-between;padding:20px;border-bottom:1px solid var(--line)}
+  .dbody{flex:1;overflow-y:auto;padding:6px 20px}
+  .dfoot{border-top:1px solid var(--line);padding:18px 20px;background:var(--card)}
+  .close-x{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--muted)}
+  .close-x:hover{color:var(--ink)}
+
+  /* PRODUCT MODAL */
+  #pm{position:fixed;inset:0;z-index:62;display:flex;align-items:stretch;justify-content:center;opacity:0;visibility:hidden;transition:.3s}
+  #pm.show{opacity:1;visibility:visible}
+  .pm-panel{background:var(--paper);width:min(1180px,100%);margin:auto;max-height:96vh;overflow-y:auto;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);position:relative}
+  .pm-gallery,.pm-info{min-width:0}
+  .pm-info *{overflow-wrap:anywhere}
+  .pm-close{position:absolute;top:14px;right:14px;z-index:5;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);font-size:22px;color:var(--ink);display:flex;align-items:center;justify-content:center}
+  /* gallery */
+  .pm-gallery{background:#efece6;position:relative;padding:16px;display:flex;gap:14px}
+  .pm-thumbs{display:flex;flex-direction:column;gap:8px;width:66px;overflow-y:auto;max-height:78vh;scrollbar-width:none}
+  .pm-thumbs::-webkit-scrollbar{display:none}
+  .pm-thumb{position:relative;aspect-ratio:3/4;border:1px solid var(--line2);overflow:hidden;background:#e6e2db;flex:0 0 auto}
+  .pm-thumb.active{border-color:var(--ink)}
+  .pm-thumb img{width:100%;height:100%;object-fit:cover}
+  .pm-thumb span{position:absolute;left:0;right:0;bottom:0;font-size:6.5px;letter-spacing:.04em;text-transform:uppercase;text-align:center;background:rgba(0,0,0,.55);color:#fff;padding:2px 1px;line-height:1.1}
+  .pm-stage{flex:1;position:relative;aspect-ratio:3/4;overflow:hidden;background:#e9e5de;cursor:zoom-in}
+  .pm-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .15s ease-out}
+  .pm-stage .vlabel{position:absolute;left:12px;bottom:12px;z-index:2;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:rgba(20,19,15,.7);color:#fff;padding:5px 9px}
+  .pm-demo{position:absolute;top:12px;left:12px;z-index:2;font-size:8px;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,255,255,.8);color:var(--muted);padding:4px 7px}
+  /* details */
+  .pm-info{padding:34px 34px 40px;display:flex;flex-direction:column;gap:16px}
+  .pm-info .cat-lbl{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+  .pm-info h1{font-family:var(--disp);font-weight:500;font-size:clamp(28px,3.4vw,40px);line-height:1.02}
+  .pm-brandline{font-size:11px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+  .pm-price{display:flex;align-items:baseline;gap:12px;font-size:22px}
+  .pm-price .now{font-weight:500}.pm-price .now.red{color:var(--sale)}
+  .pm-price .was{font-size:15px;color:var(--faint);text-decoration:line-through}
+  .pm-price .off{font-size:11px;letter-spacing:.1em;background:var(--sale);color:#fff;padding:3px 8px;text-transform:uppercase}
+  .pm-desc{font-size:13.5px;line-height:1.75;color:var(--muted)}
+  .grp label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:9px}
+  .grp label b{color:var(--ink);font-weight:500}
+  .swatches{display:flex;flex-wrap:wrap;gap:9px}
+  .sw{width:30px;height:30px;border-radius:50%;border:1px solid var(--line2);position:relative;transition:.15s}
+  .sw.active{box-shadow:0 0 0 2px var(--paper),0 0 0 3px var(--ink)}
+  .sizes{display:flex;flex-wrap:wrap;gap:8px}
+  .sz{min-width:46px;padding:11px 10px;border:1px solid var(--line2);font-size:12px;letter-spacing:.06em;text-align:center;transition:.15s}
+  .sz:hover{border-color:var(--ink)}
+  .sz.active{background:var(--ink);color:#f6f5f2;border-color:var(--ink)}
+  .sz.oos{opacity:.35;text-decoration:line-through;pointer-events:none}
+  .qtyrow{display:flex;align-items:center;gap:16px}
+  .qty{display:flex;align-items:center;border:1px solid var(--line2)}
+  .qty button{width:40px;height:44px;font-size:18px;color:var(--muted)}
+  .qty input{width:44px;height:44px;text-align:center;border:none;background:none;font-family:inherit;font-size:14px;color:var(--ink)}
+  .stock{font-size:11px;letter-spacing:.1em;color:var(--ok)}
+  .stock.low{color:var(--sale)}
+  .pm-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .pm-actions .btn{flex:1;justify-content:center;min-width:150px}
+  .btn.wa{background:#25D366;color:#04140a;border-color:#25D366}
+  .btn.wa:hover{filter:brightness(1.05)}
+  .linkrow{display:flex;gap:20px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .linkrow button:hover{color:var(--ink)}
+  .linkrow button.on{color:var(--sale)}
+  /* spec accordion */
+  .acc{border-top:1px solid var(--line)}
+  .acc details{border-bottom:1px solid var(--line)}
+  .acc summary{list-style:none;cursor:pointer;padding:15px 2px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+  .acc summary::-webkit-details-marker{display:none}
+  .acc summary::after{content:"+";color:var(--accent);font-size:16px}
+  .acc details[open] summary::after{content:"–"}
+  .spec{display:grid;grid-template-columns:1fr 1fr;gap:2px 24px;padding:2px 2px 18px;font-size:12.5px}
+  .spec div{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);color:var(--muted)}
+  .spec div b{color:var(--ink);font-weight:400;text-align:right}
+  .flist{padding:2px 2px 18px;font-size:13px;line-height:1.9;color:var(--muted)}
+  .flist li{list-style:none;padding-left:18px;position:relative}
+  .flist li::before{content:"—";position:absolute;left:0;color:var(--accent)}
+
+  .related{grid-column:1/-1;padding:12px 34px 44px}
+  .related h4{font-family:var(--disp);font-size:22px;margin-bottom:16px;font-weight:500}
+  .rel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+  /* CART LINE */
+  .cline{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .cline img{width:74px;height:96px;object-fit:cover;background:#e9e5de}
+  .cline .cl-mid{flex:1;font-size:12.5px}
+  .cline .cl-mid h5{font-family:var(--disp);font-size:16px;font-weight:500}
+  .cline .cl-mid .vr{color:var(--faint);font-size:11px;letter-spacing:.06em;margin-top:3px}
+  .cline .cl-mid .rm{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-top:8px}
+  .cline .cl-mid .rm:hover{color:var(--sale)}
+  .cline .cl-r{text-align:right;font-size:13px}
+  .sumrow{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:var(--muted)}
+  .sumrow.tot{font-size:16px;color:var(--ink);border-top:1px solid var(--line);margin-top:8px;padding-top:12px}
+  .sumrow.tot b{font-weight:500}
+  .empty{text-align:center;color:var(--faint);padding:60px 20px;font-size:13px;letter-spacing:.1em}
+  .coupon{display:flex;gap:8px;margin:12px 0}
+  .coupon input{flex:1;border:1px solid var(--line2);padding:11px;font-family:inherit;font-size:12px;background:var(--card)}
+  .coupon button{padding:0 16px;background:var(--ink);color:#f6f5f2;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+
+  /* CHECKOUT */
+  .co-grid{display:grid;grid-template-columns:1fr;gap:12px}
+  .co-grid .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .field input,.field select,.field textarea{border:1px solid var(--line2);padding:12px;font-family:inherit;font-size:13px;background:var(--card);color:var(--ink)}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent)}
+
+  /* TOAST */
+  #toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:80;background:var(--ink);color:#f6f5f2;padding:13px 22px;font-size:12px;letter-spacing:.1em;opacity:0;visibility:hidden;transition:.3s;display:flex;align-items:center;gap:10px}
+  #toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+  #toast .ok{color:#7fdca0}
+
+  /* WA FLOAT */
+  #waFloat{position:fixed;right:20px;bottom:20px;z-index:50;width:54px;height:54px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(37,211,102,.4);transition:.25s}
+  #waFloat:hover{transform:scale(1.07)}
+  #waFloat svg{width:28px;height:28px;fill:#04140a}
+
+  footer{background:var(--ink);color:#cfcabd;margin-top:60px;padding:56px 0 30px}
+  footer .fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px}
+  footer h5{font-family:var(--disp);color:#f6f5f2;font-size:20px;margin-bottom:14px;font-weight:500}
+  footer a,footer p{font-size:12px;letter-spacing:.04em;line-height:2;color:#a8a294}
+  footer a:hover{color:#f6f5f2}
+  .fbot{border-top:1px solid rgba(255,255,255,.1);margin-top:36px;padding-top:20px;text-align:center;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#7d786c}
+
+  @media(max-width:900px){.pm-panel{grid-template-columns:1fr}.pm-gallery{max-height:none}.pm-thumbs{max-height:none}.rel-grid{grid-template-columns:repeat(2,1fr)}footer .fgrid{grid-template-columns:1fr 1fr}}
+  @media(max-width:640px){.hnav{display:none}.co-grid .two{grid-template-columns:1fr}}
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="logo" viewBox="0 0 100 100"><polygon points="50,4 88,26 88,74 50,96 12,74 12,26" fill="none" stroke="#b0673f" stroke-width="3"/><path d="M38 68 V34 h12 a10 10 0 0 1 0 20 h-12 M62 34 V68" fill="none" stroke="#16150f" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="50" cy="50" r="2.4" fill="#b0673f"/></symbol>
+  <symbol id="wa" viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.15-1.7-.85-2-.94-.26-.1-.45-.15-.64.15-.2.3-.74.94-.9 1.13-.17.2-.34.22-.63.08-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.14.3-.34.44-.51.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.64-1.55-.88-2.12-.23-.55-.47-.48-.64-.49h-.55c-.2 0-.5.07-.76.37-.26.3-1 .98-1 2.38 0 1.4 1.02 2.76 1.17 2.95.14.2 2.02 3.08 4.9 4.32.68.3 1.22.47 1.63.6.68.22 1.3.19 1.8.11.55-.08 1.7-.69 1.93-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.34M12 2a10 10 0 0 0-8.6 15.05L2 22l5.05-1.32A10 10 0 1 0 12 2"/></symbol>
+  <symbol id="bag" viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></symbol>
+  <symbol id="heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-9.5A3.5 3.5 0 0 1 12 7a3.5 3.5 0 0 1 7 3.5C19 15.5 12 20 12 20Z"/></symbol>
+  <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></symbol>
+</svg>
+
+<div id="announce">Complimentary Swat-wide delivery over PKR 15,000 · Order any piece on <b>WhatsApp +92 348 8068206</b></div>
+
+<header>
+  <div class="wrap hbar">
+    <a class="brand" href="#hero"><svg><use href="#logo"/></svg><span class="wm">PAMEER<span>·</span>MALL</span></a>
+    <nav class="hnav" id="hnav"></nav>
+    <div class="hicons">
+      <button id="btnWish" aria-label="Wishlist"><svg><use href="#heart"/></svg><span class="badge-count hide" id="wishCount">0</span></button>
+      <button id="btnCart" aria-label="Cart"><svg><use href="#bag"/></svg><span class="badge-count hide" id="cartCount">0</span></button>
+    </div>
+  </div>
+</header>
+
+<section id="hero">
+  <img id="heroImg" alt="Pameer Mall flagship" />
+  <div class="wrap hero-in">
+    <div class="eyebrow" style="color:#e6b48f">Autumn / Winter 2026 · Swat Valley</div>
+    <h1 class="serif">Dressed by<br><em>the mountains.</em></h1>
+    <p>Leather · Wool · Winter · Heritage</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn solid" href="#shop">Shop the collection</a>
+      <a class="btn ghost" href="#Women's Wear">Women's edit</a>
+    </div>
+  </div>
+</section>
+
+<div id="catrail"><div class="wrap"><div class="rail" id="rail"></div></div></div>
+
+<main id="shop" class="wrap"></main>
+
+<!-- Cart drawer -->
+<aside class="drawer" id="cart">
+  <div class="dhead"><h3 class="serif">Shopping Bag</h3><button class="close-x" data-close>×</button></div>
+  <div class="dbody" id="cartBody"></div>
+  <div class="dfoot" id="cartFoot"></div>
+</aside>
+
+<!-- Wishlist drawer -->
+<aside class="drawer" id="wish">
+  <div class="dhead"><h3 class="serif">Wishlist</h3><button class="close-x" data-close>×</button></div>
+  <div class="dbody" id="wishBody"></div>
+</aside>
+
+<!-- Checkout drawer -->
+<aside class="drawer" id="checkout" style="width:min(520px,96vw)">
+  <div class="dhead"><h3 class="serif">Checkout</h3><button class="close-x" data-close>×</button></div>
+  <div class="dbody" id="coBody"></div>
+  <div class="dfoot" id="coFoot"></div>
+</aside>
+
+<!-- Product modal -->
+<div id="pm"><div class="pm-panel" id="pmPanel"></div></div>
+
+<div class="scrim" id="scrim"></div>
+<div id="toast"></div>
+
+<a id="waFloat" href="https://wa.me/923488068206?text=Assalam%20o%20Alaikum%20Pameer%20Mall%2C%20I%20need%20some%20help." target="_blank" rel="noopener" aria-label="WhatsApp support"><svg><use href="#wa"/></svg></a>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <h5>PAMEER MALL</h5>
+        <p>Premium menswear, womenswear & kids fashion, tailored in the Swat Valley. Built in the mountains, worn everywhere.</p>
+        <p style="margin-top:10px">Mingora · Swat · Khyber Pakhtunkhwa · Pakistan</p>
+      </div>
+      <div><h5>Shop</h5><div id="footCats"></div></div>
+      <div><h5>Client Care</h5>
+        <a href="https://wa.me/923488068206" target="_blank" rel="noopener">WhatsApp Orders</a><br>
+        <a href="tel:0946726123">Call (0946) 726123</a><br>
+        <a href="mailto:pameermall@gmail.com">pameermall@gmail.com</a><br>
+        <a href="#">Shipping & Returns</a><br><a href="#">Size Guide</a>
+      </div>
+      <div><h5>The House</h5><a href="pameer-mall.html">Cinematic Flagship</a><br><a href="#">Our Heritage</a><br><a href="#">Craftsmanship</a><br><a href="#">Stores</a></div>
+    </div>
+    <div class="fbot">© 2026 Pameer Mall · Mingora, Swat · All product photography shown is placeholder imagery pending the house lookbook</div>
+  </div>
+</footer>
+
+<script>
+/* ============================ CATALOG ENGINE ============================ */
+var WA_NUM="923488068206";
+var UB="https://images.unsplash.com/photo-",UQ="?w=680&q=76&auto=format&fit=crop";
+var IMGID={
+ jacket:"1521223890158-f9f7c3d5d504",coat:"1544022613-e87ca75a784a",pcoat:"1539533018447-63fcce2678e3",
+ waistcoat:"1594938298603-c8148c4dae35",suit:"1507679799987-c73779587ccf",trouser:"1473966968600-fa801b869a1a",
+ denim:"1542272604-787c3835535d",tee:"1521572163474-6864f9cf17ab",shirt:"1596755094514-f87e34085b2c",
+ jersey:"1576871337622-98d48d1cf531",sweater:"1434389677669-e08b4cac3105",shawl:"1457545195570-67f207084966",
+ women:"1483985988355-763728e1935b",womenshawl:"1457545195570-67f207084966",kidjacket:"1519238263530-99bdd11df2ea",
+ kidwear:"1519238263530-99bdd11df2ea",craft:"1610701596007-11502861dcfa"
+};
+function imgFor(kind){return UB+(IMGID[kind]||IMGID.jacket)+UQ;}
+
+/* premium 2026 palette */
+var PAL=[
+ ["Midnight Black","#111114"],["Graphite Grey","#3b3d42"],["Charcoal","#2a2b2e"],["Espresso Brown","#4a3324"],
+ ["Dark Chocolate","#382418"],["Olive Green","#5a5a3a"],["Forest Green","#26402e"],["Deep Navy","#1c2438"],
+ ["Steel Blue","#3f5468"],["Camel","#b08d5b"],["Sand Beige","#cdb994"],["Ivory","#efe9dc"],
+ ["Pearl White","#f2f0ea"],["Wine Red","#5c2230"],["Burgundy","#3f1a22"],["Emerald","#1f5245"],
+ ["Slate Blue","#4a5a72"],["Stone Grey","#8c877c"],["Cognac","#8a4b2c"],["Onyx","#17181b"]
+];
+var SIZES_APPAREL=["XS","S","M","L","XL","XXL"];
+var SIZES_WAIST=["28","30","32","34","36","38","40"];
+var SIZES_KIDS=["2Y","4Y","6Y","8Y","10Y","12Y"];
+var SIZES_ONE=["One Size"];
+var FITS=["Slim Fit","Tailored Fit","Regular Fit","Relaxed Fit","Modern Fit","Oversized Fit"];
+var COLLARS=["notch lapel","stand collar","spread collar","shawl collar","mandarin collar","peak lapel","funnel neck","classic point collar"];
+var POCKETS=["twin flap pockets","concealed zip pockets","patch chest pocket","welted hand pockets","cargo bellows pockets","interior security pocket"];
+var CLOSURE=["YKK Excella two-way zip","horn buttons","antique-brass snaps","concealed placket","tonal toggle fastening","hook-and-bar with zip fly"];
+var STITCH=["hand-finished saddle stitching","double top-stitched seams","bar-tacked stress points","blind-hemmed edges","pick-stitched lapels","flat-felled seams"];
+var CARE=["Dry clean only","Hand wash cold, dry flat","Machine wash cold, gentle","Professional leather clean","Cold wash, do not tumble dry"];
+
+var CATS=[
+ {k:"Leather Jackets", kind:"jacket",   base:18500, fabric:["Full-grain goatskin","Waxed lambskin","Buffed cowhide","Nubuck leather","Suede-panelled hide"], grams:1450, sizes:SIZES_APPAREL},
+ {k:"Winter Coats",    kind:"coat",     base:22000, fabric:["Boiled highland wool","Wool-cashmere melton","Double-face wool","Loden wool","Herringbone wool"], grams:1700, sizes:SIZES_APPAREL},
+ {k:"Denim Jeans",     kind:"denim",    base:4500,  fabric:["14oz selvedge denim","Stretch raw denim","Japanese indigo denim","Washed comfort denim","Rigid heritage denim"], grams:620, sizes:SIZES_WAIST},
+ {k:"Cargo Pants",     kind:"trouser",  base:3900,  fabric:["Ripstop cotton","Brushed twill","Water-repellent nylon","Herringbone cotton","Stretch canvas"], grams:560, sizes:SIZES_WAIST},
+ {k:"Pashtun Coats",   kind:"pcoat",    base:9500,  fabric:["Handwoven Swati wool","Camel-hair blend","Barak highland wool","Embroidered wool","Quilted heritage wool"], grams:1250, sizes:SIZES_APPAREL},
+ {k:"Pashtun Waistcoats",kind:"waistcoat",base:4900,fabric:["Barak wool","Karakuli felt","Embroidered cotton","Handloom wool","Silk-blend brocade"], grams:420, sizes:SIZES_APPAREL},
+ {k:"Shirts",          kind:"shirt",    base:2900,  fabric:["Two-ply Egyptian cotton","Oxford cotton","Brushed flannel","Linen-cotton","Poplin cotton"], grams:280, sizes:SIZES_APPAREL},
+ {k:"Polo Shirts",     kind:"shirt",    base:2600,  fabric:["Mercerized piqué","Pima cotton piqué","Performance knit","Cotton-silk piqué","Textured jersey"], grams:250, sizes:SIZES_APPAREL},
+ {k:"T-Shirts",        kind:"tee",      base:1800,  fabric:["Supima cotton","Pima jersey","Heavyweight cotton","Organic cotton","Cotton-modal"], grams:210, sizes:SIZES_APPAREL},
+ {k:"Wool Sweaters",   kind:"sweater",  base:4200,  fabric:["Extra-fine merino","Lambswool","Cashmere blend","Chunky highland wool","Alpaca blend"], grams:480, sizes:SIZES_APPAREL},
+ {k:"Jerseys",         kind:"jersey",   base:3900,  fabric:["French terry","Brushed-back knit","Technical fleece","Cotton-wool knit","Double-knit jersey"], grams:520, sizes:SIZES_APPAREL},
+ {k:"Three Piece Suits",kind:"suit",    base:16900, fabric:["Super 120s wool","Wool-mohair","Birdseye wool","Flannel wool","Sharkskin wool"], grams:1600, sizes:SIZES_APPAREL},
+ {k:"Two Piece Suits", kind:"suit",     base:12900, fabric:["Super 110s wool","Travel wool","Hopsack wool","Wool-linen","Twill wool"], grams:1350, sizes:SIZES_APPAREL},
+ {k:"Women's Wear",    kind:"women",    base:7900,  fabric:["Silk crêpe","Embroidered chiffon","Viscose blend","Handloom cotton","Georgette"], grams:520, sizes:SIZES_APPAREL},
+ {k:"Women's Shawls",  kind:"womenshawl",base:5900, fabric:["Pashmina cashmere","Silk-wool blend","Embroidered pashmina","Fine merino","Woven jamawar"], grams:340, sizes:SIZES_ONE},
+ {k:"Kids Wear",       kind:"kidwear",  base:2400,  fabric:["Soft brushed cotton","Cotton jersey","Corduroy","Flannel","Cotton-linen"], grams:260, sizes:SIZES_KIDS},
+ {k:"Kids Jackets",    kind:"kidjacket",base:5500,  fabric:["Padded microfibre","Fleece-lined twill","Water-repellent shell","Quilted cotton","Sherpa-lined denim"], grams:640, sizes:SIZES_KIDS},
+ {k:"Islamic Wool Shawls",kind:"shawl", base:6900,  fabric:["Islampuri pure wool","Fine dohar wool","Handloom merino","Barak wool","Cashmere-touch wool"], grams:380, sizes:SIZES_ONE},
+ {k:"Local Handicrafts",kind:"craft",   base:3200,  fabric:["Hand-carved walnut","Glazed terracotta","Hammered copper","Handwoven cane","Cast brass"], grams:900, sizes:SIZES_ONE}
+];
+
+var NAMES={
+"Leather Jackets":["Apex Noir Leather Jacket","Vanguard Moto Jacket","Imperial Rider Jacket","Carbon Edge Jacket","Blackstone Heritage Jacket","Urban Monarch Jacket","Raven Elite Jacket","Eclipse Bomber Jacket","Titanium Luxe Jacket","Everest Signature Jacket"],
+"Winter Coats":["Alpine Heritage Coat","Glacier Elite Coat","Nordic Explorer Coat","Everest Wool Coat","Royal Winter Parka","Imperial Frost Coat","Arctic Prestige Coat","Highland Storm Coat","Nordic Executive Coat","Urban Glacier Coat"],
+"Denim Jeans":["Midnight Indigo Jean","Selvedge Heritage Jean","Onyx Slim Denim","Graphite Tapered Jean","Vintage Rinse Denim","Carbon Raw Jean","Stonewash Signature Jean","Espresso Straight Jean","Noir Skinny Denim","Cascade Relaxed Jean"],
+"Cargo Pants":["Tactical Summit Cargo","Urban Recon Cargo","Ridge Utility Cargo","Storm Field Cargo","Alpine Trail Cargo","Carbon Combat Cargo","Expedition Cargo","Nomad Utility Cargo","Sentinel Cargo","Terrain Flex Cargo"],
+"Pashtun Coats":["Khan Heritage Chugha","Swat Royal Coat","Pahari Signature Coat","Peshawari Noble Coat","Highland Khan Coat","Wazir Heritage Coat","Malik Ceremonial Coat","Frontier Elite Coat","Sardar Prestige Coat","Valley Khan Coat"],
+"Pashtun Waistcoats":["Khan Waskat Noir","Swat Heritage Waistcoat","Malik Formal Waskat","Pahari Signature Waistcoat","Peshawari Royal Waskat","Frontier Noble Waistcoat","Sardar Ceremonial Waskat","Highland Waskat","Wazir Elite Waistcoat","Valley Heritage Waskat"],
+"Shirts":["Oxford Noir Shirt","Metropolitan Dress Shirt","Heritage Twill Shirt","Executive Poplin Shirt","Monarch Linen Shirt","Carbon Formal Shirt","Aristocrat Oxford Shirt","Onyx Slim Shirt","Cambridge Signature Shirt","Ivory Classic Shirt"],
+"Polo Shirts":["Court Piqué Polo","Heritage Mercerized Polo","Monarch Sport Polo","Carbon Performance Polo","Estate Signature Polo","Onyx Classic Polo","Meridian Piqué Polo","Regatta Elite Polo","Noir Luxe Polo","Cambridge Polo"],
+"T-Shirts":["Essential Noir Tee","Pima Luxe Tee","Heritage Crew Tee","Carbon Active Tee","Monarch Supima Tee","Onyx Classic Tee","Meridian Pocket Tee","Signature Henley Tee","Ivory Premium Tee","Graphite Crew Tee"],
+"Wool Sweaters":["Highland Merino Sweater","Cashmere Noir Pullover","Nordic Cable Sweater","Heritage Lambswool Knit","Alpine Roll-Neck Sweater","Monarch Merino Crew","Espresso Shawl Knit","Onyx Ribbed Sweater","Summit Wool Pullover","Valley Cashmere Knit"],
+"Jerseys":["Heritage Knit Jersey","Carbon Sport Jersey","Monarch Full-Zip Jersey","Onyx Track Jersey","Alpine Half-Zip Jersey","Meridian Knit Jersey","Summit Fleece Jersey","Graphite Sport Jersey","Nordic Zip Jersey","Valley Knit Jersey"],
+"Three Piece Suits":["Imperial Noir Three-Piece","Monarch Heritage Suit","Executive Prestige Three-Piece","Onyx Tailored Suit","Cambridge Formal Three-Piece","Aristocrat Wool Suit","Meridian Signature Suit","Carbon Elite Three-Piece","Regent Ceremonial Suit","Windsor Luxe Three-Piece"],
+"Two Piece Suits":["Metropolitan Two-Piece","Onyx Tailored Two-Piece","Monarch Business Suit","Cambridge Slim Two-Piece","Executive Noir Suit","Meridian Two-Piece","Carbon Formal Suit","Regent Signature Two-Piece","Aristocrat Two-Piece","Windsor Business Suit"],
+"Women's Wear":["Aurora Silk Gown","Monarch Evening Dress","Noir Elegance Dress","Heritage Embroidered Kurti","Rosé Luxe Dress","Onyx Formal Gown","Meridian Chiffon Dress","Ivory Signature Frock","Emerald Evening Gown","Valley Luxe Ensemble"],
+"Women's Shawls":["Rosé Pashmina Shawl","Ivory Silk Wrap","Heritage Embroidered Shawl","Emerald Cashmere Wrap","Noir Luxe Shawl","Aurora Pashmina","Monarch Wool Wrap","Pearl Signature Shawl","Valley Silk Shawl","Wine Cashmere Wrap"],
+"Kids Wear":["Little Monarch Set","Junior Heritage Outfit","Cub Explorer Set","Mini Noir Ensemble","Junior Signature Set","Little Prince Kurta","Cub Casual Set","Junior Luxe Outfit","Mini Meridian Set","Little Valley Set"],
+"Kids Jackets":["Cub Alpine Jacket","Junior Moto Jacket","Little Explorer Parka","Mini Bomber Jacket","Junior Frost Coat","Cub Summit Jacket","Little Rider Jacket","Junior Storm Jacket","Mini Heritage Jacket","Cub Winter Jacket"],
+"Islamic Wool Shawls":["Islampuri Heritage Shawl","Makki Wool Shawl","Barakah Signature Shawl","Noor Cashmere Shawl","Sunnah Wool Wrap","Madani Heritage Shawl","Ihram Luxe Shawl","Islampuri Royal Shawl","Barakah Wool Wrap","Noor Signature Shawl"],
+"Local Handicrafts":["Swat Hand-Carved Vase","Kalash Ceramic Set","Valley Copper Bowl","Heritage Woven Basket","Frontier Brass Lamp","Swati Embroidered Throw","Highland Clay Pottery","Kalash Beaded Craft","Valley Walnut Chest","Swati Wall Tapestry"]
+};
+var COLLECTIONS=["Heritage Line","Signature Collection","Alpine Edit","Metropolitan Line","Ceremonial Edit"];
+var VIEWS=[["Front",""],["45° View","scale(1.06) rotate(.5deg)"],["Back","scaleX(-1)"],["Left Side","scaleX(-1) scale(1.12)"],["Right Side","scale(1.12)"],["Fabric Close-up","scale(2.4)"],["Collar Close-up","scale(2) translateY(22%)"],["Buttons Close-up","scale(2.6) translateY(-6%)"],["Zipper Close-up","scale(2.8) translateX(-8%)"],["Pocket Close-up","scale(2.3) translateY(-24%)"],["Sleeve Close-up","scale(2.1) translateX(24%)"],["Logo Close-up","scale(3.1)"],["Lining Detail","scale(1.8) rotate(-1deg)"]];
+
+/* deterministic pick */
+function pick(arr,i){return arr[i%arr.length];}
+function money(n){return "PKR "+n.toLocaleString('en-PK');}
+
+var PRODUCTS=[];
+(function build(){
+ var pid=1;
+ CATS.forEach(function(c,ci){
+   var names=NAMES[c.k]||[];
+   for(var i=0;i<10;i++){
+     var name=names[i]||(c.k+" "+(i+1));
+     var fab=pick(c.fabric,i);
+     var fit=pick(FITS,i+ci);
+     var price=Math.round((c.base*(1+ (i%5)*0.08 + (ci%3)*0.04))/100)*100;
+     var onSale=(i%3===0);
+     var sale=onSale?Math.round(price*0.82/100)*100:null;
+     var isNew=(i%4===1);
+     // 5-7 colors, rotated so each product differs
+     var ncol=5+(i%3);
+     var colors=[];
+     for(var q=0;q<ncol;q++){colors.push(PAL[(i*3+q+ci*2)%PAL.length]);}
+     var collar=pick(COLLARS,i+ci), pocket=pick(POCKETS,i+ci+1), closure=pick(CLOSURE,i+2), stitch=pick(STITCH,i+ci+3);
+     var stock=8+((i*7+ci*3)%42);
+     var rating=(4.2+((i*3+ci)%8)/10).toFixed(1);
+     var reviews=12+((i*17+ci*11)%180);
+     var desc="The "+name+" is cut in "+fab.toLowerCase()+" with a "+fit.toLowerCase()+" silhouette. Finished with a "+collar+", "+pocket+", "+closure.toLowerCase()+" and "+stitch+" — a considered piece from the Pameer Mall "+pick(COLLECTIONS,i)+", tailored in the Swat Valley.";
+     PRODUCTS.push({
+       id:pid++, name:name, cat:c.k, kind:c.kind, img:imgFor(c.kind),
+       price:price, sale:sale, onSale:onSale, isNew:isNew,
+       sku:"PM-"+(ci+1<10?"0":"")+(ci+1)+"-"+(i+1<10?"0":"")+(i+1),
+       brand:"Pameer Mall", collection:pick(COLLECTIONS,i+ci),
+       material:fab.split(' ')[0]+" composite", fabric:fab, fit:fit, weight:c.grams+" g",
+       origin:"Made in Swat, Pakistan", care:pick(CARE,i+ci),
+       colors:colors, sizes:c.sizes,
+       collar:collar,pocket:pocket,closure:closure,stitch:stitch,
+       stock:stock, rating:rating, reviews:reviews,
+       features:[collar.charAt(0).toUpperCase()+collar.slice(1), pocket.charAt(0).toUpperCase()+pocket.slice(1), closure, stitch, "Woven Pameer Mall heritage label", pick(["Fully lined","Half-canvassed construction","Breathable mesh lining","Water-repellent finish","Reinforced seams"],i+ci)],
+       desc:desc
+     });
+   }
+ });
+})();
+
+/* ============================ STATE ============================ */
+var LS=window.localStorage;
+function load(k,d){try{return JSON.parse(LS.getItem(k))||d;}catch(e){return d;}}
+function save(k,v){try{LS.setItem(k,JSON.stringify(v));}catch(e){}}
+var cart=load('pm_cart',[]), wish=load('pm_wish',[]), recent=load('pm_recent',[]);
+
+/* ============================ RENDER STORE ============================ */
+var hnav=document.getElementById('hnav'), rail=document.getElementById('rail'), shop=document.getElementById('shop'), footCats=document.getElementById('footCats');
+document.getElementById('heroImg').src=UB+"1520975954732-35dd22299614"+"?w=1600&q=80&auto=format&fit=crop";
+
+CATS.slice(0,6).forEach(function(c){var a=document.createElement('a');a.href="#"+c.k;a.textContent=c.k;hnav.appendChild(a);});
+CATS.forEach(function(c,i){
+  var b=document.createElement('button');b.className='chip'+(i===0?' active':'');b.textContent=c.k;
+  b.onclick=function(){document.querySelectorAll('.chip').forEach(function(x){x.classList.remove('active');});b.classList.add('active');document.getElementById(c.k).scrollIntoView({behavior:'smooth',block:'start'});};
+  rail.appendChild(b);
+  var fa=document.createElement('a');fa.href="#"+c.k;fa.textContent=c.k;fa.style.display='block';footCats.appendChild(fa);
+});
+
+function priceHTML(p){
+  if(p.onSale)return '<span class="now red">'+money(p.sale)+'</span><span class="was">'+money(p.price)+'</span>';
+  return '<span class="now">'+money(p.price)+'</span>';
+}
+function cardHTML(p){
+  var sw=p.colors.slice(0,5).map(function(c){return '<i style="background:'+c[1]+'" title="'+c[0]+'"></i>';}).join('');
+  var tags='';if(p.onSale)tags+='<span class="tag sale">Sale</span>';if(p.isNew)tags+='<span class="tag new">New</span>';
+  var on=wish.indexOf(p.id)>=0?' on':'';
+  return '<article class="card" data-id="'+p.id+'">'+
+    '<div class="ph"><div class="tags">'+tags+'</div>'+
+    '<button class="wish'+on+'" data-wish="'+p.id+'" aria-label="Wishlist"><svg><use href="#heart"/></svg></button>'+
+    '<img loading="lazy" src="'+p.img+'" alt="'+p.name+'" onload="this.classList.add(\'loaded\')">'+
+    '<div class="quick">Quick view</div></div>'+
+    '<div class="info"><div class="swz">'+sw+'</div><div class="cat-lbl">'+p.cat+'</div>'+
+    '<h3 class="serif">'+p.name+'</h3>'+
+    '<div class="stars">'+'★★★★★'.slice(0,Math.round(p.rating))+'<small>'+p.rating+' ('+p.reviews+')</small></div>'+
+    '<div class="price">'+priceHTML(p)+'</div></div></article>';
+}
+CATS.forEach(function(c){
+  var items=PRODUCTS.filter(function(p){return p.cat===c.k;});
+  var sec=document.createElement('section');sec.className='cat';sec.id=c.k;
+  sec.innerHTML='<div class="cat-head"><div><div class="eyebrow">'+items[0].collection+'</div><h2 class="serif">'+c.k+'</h2></div>'+
+    '<div class="meta">'+items.length+' pieces · from '+money(Math.min.apply(null,items.map(function(p){return p.onSale?p.sale:p.price;})))+'</div></div>'+
+    '<div class="grid">'+items.map(cardHTML).join('')+'</div>';
+  shop.appendChild(sec);
+});
+
+/* ============================ INTERACTIONS ============================ */
+var scrim=document.getElementById('scrim'), toast=document.getElementById('toast');
+function openScrim(){scrim.classList.add('show');}
+function closeAll(){scrim.classList.remove('show');document.querySelectorAll('.drawer').forEach(function(d){d.classList.remove('show');});document.getElementById('pm').classList.remove('show');document.body.style.overflow='';}
+scrim.onclick=closeAll;
+document.querySelectorAll('[data-close]').forEach(function(b){b.onclick=closeAll;});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll();});
+function openDrawer(id){openScrim();document.getElementById(id).classList.add('show');}
+function say(msg){toast.innerHTML='<span class="ok">✓</span> '+msg;toast.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){toast.classList.remove('show');},2200);}
+
+/* delegate clicks */
+shop.addEventListener('click',function(e){
+  var w=e.target.closest('[data-wish]');
+  if(w){e.stopPropagation();toggleWish(parseInt(w.getAttribute('data-wish')));w.classList.toggle('on',wish.indexOf(parseInt(w.getAttribute('data-wish')))>=0);return;}
+  var card=e.target.closest('.card');if(card)openProduct(parseInt(card.getAttribute('data-id')));
+});
+
+function byId(id){return PRODUCTS.filter(function(p){return p.id===id;})[0];}
+
+/* ---- Product modal ---- */
+var PM={p:null,color:0,size:-1,qty:1,view:0};
+function openProduct(id){
+  var p=byId(id);if(!p)return;PM={p:p,color:0,size:-1,qty:1,view:0};
+  addRecent(id);
+  renderPM();
+  document.getElementById('pm').classList.add('show');openScrim();
+  document.getElementById('pmPanel').scrollTop=0;
+}
+function galleryThumbs(p){
+  return VIEWS.map(function(v,i){return '<button class="pm-thumb'+(i===PM.view?' active':'')+'" data-view="'+i+'"><img src="'+p.img+'" style="transform:'+(v[1]||'none')+'" alt="'+v[0]+'"><span>'+v[0]+'</span></button>';}).join('');
+}
+function renderPM(){
+  var p=PM.p;var off=p.onSale?Math.round((1-p.sale/p.price)*100):0;
+  var swatches=p.colors.map(function(c,i){return '<button class="sw'+(i===PM.color?' active':'')+'" data-color="'+i+'" style="background:'+c[1]+'" title="'+c[0]+'"></button>';}).join('');
+  var sizes=p.sizes.map(function(s,i){var oos=(i===p.sizes.length-1 && p.stock<12);return '<button class="sz'+(i===PM.size?' active':'')+(oos?' oos':'')+'" data-size="'+i+'">'+s+'</button>';}).join('');
+  var wl=wish.indexOf(p.id)>=0;
+  var rel=PRODUCTS.filter(function(x){return x.cat===p.cat&&x.id!==p.id;}).slice(0,4);
+  var stockTxt=p.stock<12?'<span class="stock low">Low stock — only '+p.stock+' left</span>':'<span class="stock">In stock · ships in 2–4 days</span>';
+  document.getElementById('pmPanel').innerHTML=
+   '<button class="pm-close" data-close>×</button>'+
+   '<div class="pm-gallery"><div class="pm-thumbs">'+galleryThumbs(p)+'</div>'+
+     '<div class="pm-stage" id="pmStage"><div class="pm-demo">Placeholder · replace with studio photo</div>'+
+       '<img id="pmMain" src="'+p.img+'" style="transform:'+(VIEWS[PM.view][1]||'none')+'" alt="'+p.name+'">'+
+       '<div class="vlabel" id="pmVLabel">'+VIEWS[PM.view][0]+'</div></div></div>'+
+   '<div class="pm-info">'+
+     '<div class="cat-lbl">'+p.cat+' · '+p.collection+'</div>'+
+     '<h1 class="serif">'+p.name+'</h1>'+
+     '<div class="pm-brandline">'+p.brand+' · SKU '+p.sku+' · <span style="color:var(--accent)">★ '+p.rating+'</span> ('+p.reviews+' reviews)</div>'+
+     '<div class="pm-price">'+(p.onSale?'<span class="now red">'+money(p.sale)+'</span><span class="was">'+money(p.price)+'</span><span class="off">-'+off+'%</span>':'<span class="now">'+money(p.price)+'</span>')+'</div>'+
+     '<div class="pm-desc">'+p.desc+'</div>'+
+     '<div class="grp"><label>Colour — <b id="pmColorName">'+p.colors[PM.color][0]+'</b></label><div class="swatches">'+swatches+'</div></div>'+
+     '<div class="grp"><label>Size <a href="#" style="color:var(--accent);float:right;text-transform:none;letter-spacing:0" onclick="return false">Size guide</a></label><div class="sizes">'+sizes+'</div></div>'+
+     '<div class="grp"><label>Quantity</label><div class="qtyrow"><div class="qty"><button data-q="-1">−</button><input id="pmQty" value="1" readonly><button data-q="1">+</button></div>'+stockTxt+'</div></div>'+
+     '<div class="pm-actions">'+
+       '<button class="btn solid" id="pmAdd">Add to bag</button>'+
+       '<a class="btn wa" id="pmWa" target="_blank" rel="noopener">Order on WhatsApp</a></div>'+
+     '<div class="pm-actions"><button class="btn" id="pmBuy" style="flex:1;justify-content:center">Buy now</button></div>'+
+     '<div class="linkrow"><button id="pmWish" class="'+(wl?'on':'')+'">'+(wl?'♥ In wishlist':'♡ Add to wishlist')+'</button><button id="pmShare">↗ Share</button><button id="pmCompare">⇄ Compare</button></div>'+
+     '<div class="acc">'+
+       '<details open><summary>Description & Fit</summary><ul class="flist"><li>Fit: '+p.fit+'</li><li>Fabric: '+p.fabric+'</li><li>Weight: '+p.weight+'</li>'+p.features.map(function(f){return '<li>'+f+'</li>';}).join('')+'</ul></details>'+
+       '<details><summary>Specifications</summary><div class="spec">'+
+         specRow('SKU',p.sku)+specRow('Brand',p.brand)+specRow('Collection',p.collection)+specRow('Material',p.material)+specRow('Fabric',p.fabric)+specRow('Fit',p.fit)+specRow('Weight',p.weight)+specRow('Collar',p.collar)+specRow('Pockets',p.pocket)+specRow('Closure',p.closure)+specRow('Origin',p.origin)+specRow('Availability',p.stock+' in stock')+
+       '</div></details>'+
+       '<details><summary>Care Instructions</summary><ul class="flist"><li>'+p.care+'</li><li>Store on a padded hanger away from direct sun</li><li>Steam rather than iron where possible</li></ul></details>'+
+       '<details><summary>Delivery, Returns & Warranty</summary><ul class="flist"><li>Estimated delivery: 2–4 working days (Swat), 3–6 days nationwide</li><li>Free delivery over PKR 15,000</li><li>14-day easy exchange / return on unworn items</li><li>6-month stitching warranty</li></ul></details>'+
+     '</div>'+
+   '</div>'+
+   '<div class="related"><h4 class="serif">You may also like</h4><div class="rel-grid">'+rel.map(cardHTML).join('')+'</div></div>';
+
+  wirePM();
+}
+function specRow(k,v){return '<div><span>'+k+'</span><b>'+v+'</b></div>';}
+
+function wirePM(){
+  var p=PM.p, panel=document.getElementById('pmPanel');
+  function upd(){
+    document.querySelectorAll('.pm-thumb').forEach(function(t){t.classList.toggle('active',parseInt(t.getAttribute('data-view'))===PM.view);});
+    var m=document.getElementById('pmMain');m.style.transform=VIEWS[PM.view][1]||'none';
+    document.getElementById('pmVLabel').textContent=VIEWS[PM.view][0];
+    document.querySelectorAll('.sw').forEach(function(s){s.classList.toggle('active',parseInt(s.getAttribute('data-color'))===PM.color);});
+    document.getElementById('pmColorName').textContent=p.colors[PM.color][0];
+    document.querySelectorAll('.sz').forEach(function(s){s.classList.toggle('active',parseInt(s.getAttribute('data-size'))===PM.size);});
+    document.getElementById('pmQty').value=PM.qty;
+    updWa();
+  }
+  function updWa(){
+    var sizeTxt=PM.size>=0?p.sizes[PM.size]:'(select size)';
+    var pr=p.onSale?p.sale:p.price;
+    var msg="Assalam o Alaikum Pameer Mall,%0A%0AI would like to order:%0A"+
+      "*"+encodeURIComponent(p.name)+"*%0A"+
+      "SKU: "+p.sku+"%0A"+
+      "Colour: "+encodeURIComponent(p.colors[PM.color][0])+"%0A"+
+      "Size: "+encodeURIComponent(sizeTxt)+"%0A"+
+      "Quantity: "+PM.qty+"%0A"+
+      "Price: "+encodeURIComponent(money(pr))+" each%0A"+
+      "Total: "+encodeURIComponent(money(pr*PM.qty))+"%0A%0A"+
+      "Link: "+encodeURIComponent(location.href.split('#')[0]+'#'+p.cat)+"%0A%0A"+
+      "Please confirm availability. Thank you.";
+    document.getElementById('pmWa').href="https://wa.me/"+WA_NUM+"?text="+msg;
+  }
+  panel.querySelectorAll('.pm-thumb').forEach(function(t){t.onclick=function(){PM.view=parseInt(t.getAttribute('data-view'));upd();};});
+  panel.querySelectorAll('.sw').forEach(function(s){s.onclick=function(){PM.color=parseInt(s.getAttribute('data-color'));upd();};});
+  panel.querySelectorAll('.sz').forEach(function(s){s.onclick=function(){PM.size=parseInt(s.getAttribute('data-size'));upd();};});
+  panel.querySelectorAll('[data-q]').forEach(function(b){b.onclick=function(){PM.qty=Math.max(1,Math.min(p.stock,PM.qty+parseInt(b.getAttribute('data-q'))));upd();};});
+  // zoom on hover
+  var stage=document.getElementById('pmStage'),main=document.getElementById('pmMain');
+  stage.addEventListener('mousemove',function(e){if(VIEWS[PM.view][1])return;var r=stage.getBoundingClientRect();var x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;main.style.transformOrigin=x+'% '+y+'%';main.style.transform='scale(2.1)';});
+  stage.addEventListener('mouseleave',function(){main.style.transform=VIEWS[PM.view][1]||'none';main.style.transformOrigin='center';});
+  document.getElementById('pmAdd').onclick=function(){addToCart(false);};
+  document.getElementById('pmBuy').onclick=function(){addToCart(true);};
+  document.getElementById('pmWish').onclick=function(){toggleWish(p.id);var wl=wish.indexOf(p.id)>=0;this.className=wl?'on':'';this.textContent=wl?'♥ In wishlist':'♡ Add to wishlist';};
+  document.getElementById('pmShare').onclick=function(){var u=location.href.split('#')[0]+'#'+p.cat;if(navigator.share){navigator.share({title:p.name,url:u});}else{navigator.clipboard&&navigator.clipboard.writeText(u);say('Link copied');}};
+  document.getElementById('pmCompare').onclick=function(){say('Added to compare');};
+  panel.querySelector('[data-close]').onclick=closeAll;
+  panel.querySelectorAll('.rel-grid .card').forEach(function(c){c.onclick=function(){openProduct(parseInt(c.getAttribute('data-id')));};});
+  panel.querySelectorAll('.rel-grid [data-wish]').forEach(function(w){w.onclick=function(e){e.stopPropagation();toggleWish(parseInt(w.getAttribute('data-wish')));w.classList.toggle('on',wish.indexOf(parseInt(w.getAttribute('data-wish')))>=0);};});
+  updWa();
+}
+function addToCart(buyNow){
+  var p=PM.p;if(PM.size<0){say('Please select a size');return;}
+  var pr=p.onSale?p.sale:p.price;
+  var key=p.id+'|'+p.colors[PM.color][0]+'|'+p.sizes[PM.size];
+  var ex=cart.filter(function(l){return l.key===key;})[0];
+  if(ex)ex.qty+=PM.qty;else cart.push({key:key,id:p.id,name:p.name,color:p.colors[PM.color][0],size:p.sizes[PM.size],qty:PM.qty,price:pr,img:p.img});
+  save('pm_cart',cart);renderCart();updateCounts();
+  if(buyNow){closeAll();openDrawer('cart');}else{say('Added to bag');}
+}
+
+/* ---- Wishlist ---- */
+function toggleWish(id){var i=wish.indexOf(id);if(i>=0)wish.splice(i,1);else wish.push(id);save('pm_wish',wish);updateCounts();renderWish();
+  document.querySelectorAll('.card [data-wish="'+id+'"]').forEach(function(w){w.classList.toggle('on',wish.indexOf(id)>=0);});}
+function renderWish(){
+  var b=document.getElementById('wishBody');
+  if(!wish.length){b.innerHTML='<div class="empty">Your wishlist is empty.<br>Tap the ♡ on any piece to save it.</div>';return;}
+  b.innerHTML=wish.map(function(id){var p=byId(id);if(!p)return'';return '<div class="cline"><img src="'+p.img+'" alt=""><div class="cl-mid"><h5 class="serif">'+p.name+'</h5><div class="vr">'+p.cat+'</div><div class="rm" data-view="'+id+'" style="color:var(--accent)">View product</div><div class="rm" data-unwish="'+id+'">Remove</div></div><div class="cl-r">'+(p.onSale?money(p.sale):money(p.price))+'</div></div>';}).join('');
+  b.querySelectorAll('[data-unwish]').forEach(function(x){x.onclick=function(){toggleWish(parseInt(x.getAttribute('data-unwish')));};});
+  b.querySelectorAll('[data-view]').forEach(function(x){x.onclick=function(){closeAll();openProduct(parseInt(x.getAttribute('data-view')));};});
+}
+
+/* ---- Cart ---- */
+var coupon=load('pm_coupon',null);
+function cartSub(){return cart.reduce(function(s,l){return s+l.price*l.qty;},0);}
+function renderCart(){
+  var b=document.getElementById('cartBody'),f=document.getElementById('cartFoot');
+  if(!cart.length){b.innerHTML='<div class="empty">Your shopping bag is empty.</div>';f.innerHTML='';return;}
+  b.innerHTML=cart.map(function(l,idx){return '<div class="cline"><img src="'+l.img+'" alt=""><div class="cl-mid"><h5 class="serif">'+l.name+'</h5><div class="vr">'+l.color+' · Size '+l.size+'</div><div class="qty" style="margin-top:8px;display:inline-flex"><button data-cq="'+idx+'|-1">−</button><input value="'+l.qty+'" readonly style="width:38px;height:34px"><button data-cq="'+idx+'|1">+</button></div><div class="rm" data-rm="'+idx+'">Remove</div></div><div class="cl-r">'+money(l.price*l.qty)+'</div></div>';}).join('');
+  var sub=cartSub();var disc=coupon?Math.round(sub*coupon.rate):0;var ship=sub-disc>=15000||sub===0?0:350;var tot=sub-disc+ship;
+  f.innerHTML='<div class="coupon"><input id="cpInput" placeholder="Promo code (try PAMEER10)" value="'+(coupon?coupon.code:'')+'"><button id="cpApply">Apply</button></div>'+
+    '<div class="sumrow"><span>Subtotal</span><span>'+money(sub)+'</span></div>'+
+    (disc?'<div class="sumrow"><span>Discount ('+coupon.code+')</span><span>−'+money(disc)+'</span></div>':'')+
+    '<div class="sumrow"><span>Delivery</span><span>'+(ship?money(ship):'Free')+'</span></div>'+
+    '<div class="sumrow tot"><span>Total</span><b>'+money(tot)+'</b></div>'+
+    '<button class="btn solid" style="width:100%;justify-content:center;margin-top:14px" id="goCheckout">Proceed to checkout</button>'+
+    '<a class="btn wa" style="width:100%;justify-content:center;margin-top:8px" id="cartWa" target="_blank" rel="noopener">Checkout on WhatsApp</a>';
+  b.querySelectorAll('[data-rm]').forEach(function(x){x.onclick=function(){cart.splice(parseInt(x.getAttribute('data-rm')),1);save('pm_cart',cart);renderCart();updateCounts();};});
+  b.querySelectorAll('[data-cq]').forEach(function(x){x.onclick=function(){var a=x.getAttribute('data-cq').split('|');var l=cart[parseInt(a[0])];l.qty=Math.max(1,l.qty+parseInt(a[1]));save('pm_cart',cart);renderCart();updateCounts();};});
+  document.getElementById('cpApply').onclick=function(){var v=document.getElementById('cpInput').value.trim().toUpperCase();if(v==='PAMEER10'){coupon={code:'PAMEER10',rate:0.10};save('pm_coupon',coupon);say('Promo applied — 10% off');}else{coupon=null;save('pm_coupon',null);say('Invalid promo code');}renderCart();};
+  document.getElementById('goCheckout').onclick=function(){closeAll();openCheckout();};
+  document.getElementById('cartWa').href=cartWaLink();
+}
+function cartWaLink(){
+  var lines=cart.map(function(l){return "• "+l.name+" ("+l.color+", "+l.size+") x"+l.qty+" — "+money(l.price*l.qty);}).join("%0A");
+  var msg="Assalam o Alaikum Pameer Mall,%0A%0AI would like to order:%0A"+encodeURIComponent(lines).replace(/%2525/g,'%25')+"%0A%0ATotal: "+encodeURIComponent(money(cartSub()))+"%0A%0APlease confirm. Thank you.";
+  // encode line breaks preserved
+  var raw="Assalam o Alaikum Pameer Mall,\n\nI would like to order:\n"+cart.map(function(l){return "• "+l.name+" ("+l.color+", "+l.size+") x"+l.qty+" — "+money(l.price*l.qty);}).join("\n")+"\n\nTotal: "+money(cartSub())+"\n\nPlease confirm. Thank you.";
+  return "https://wa.me/"+WA_NUM+"?text="+encodeURIComponent(raw);
+}
+
+/* ---- Checkout ---- */
+function openCheckout(){
+  if(!cart.length){say('Your bag is empty');return;}
+  var b=document.getElementById('coBody'),f=document.getElementById('coFoot');
+  var sub=cartSub();var disc=coupon?Math.round(sub*coupon.rate):0;var ship=sub-disc>=15000?0:350;var tot=sub-disc+ship;
+  b.innerHTML='<div class="co-grid">'+
+    '<div class="two"><div class="field"><label>First name</label><input id="f_first" required></div><div class="field"><label>Last name</label><input id="f_last"></div></div>'+
+    '<div class="two"><div class="field"><label>Email</label><input id="f_email" type="email"></div><div class="field"><label>Phone</label><input id="f_phone" type="tel" placeholder="03xx xxxxxxx"></div></div>'+
+    '<div class="two"><div class="field"><label>Country</label><input id="f_country" value="Pakistan"></div><div class="field"><label>Province</label><input id="f_prov" value="Khyber Pakhtunkhwa"></div></div>'+
+    '<div class="two"><div class="field"><label>City</label><input id="f_city" value="Mingora"></div><div class="field"><label>Postal code</label><input id="f_post"></div></div>'+
+    '<div class="field"><label>Street address</label><input id="f_street"></div>'+
+    '<div class="two"><div class="field"><label>Apartment / unit</label><input id="f_apt"></div><div class="field"><label>Delivery instructions</label><input id="f_note"></div></div>'+
+    '<div class="two"><div class="field"><label>Shipping method</label><select id="f_ship"><option>Standard (2–4 days) '+(ship?'· PKR 350':'· Free')+'</option><option>Express (1–2 days) · PKR 700</option><option>Store pickup · Free</option></select></div>'+
+    '<div class="field"><label>Payment method</label><select id="f_pay"><option>Cash on Delivery</option><option>Bank transfer</option><option>WhatsApp / JazzCash</option></select></div></div>'+
+    '<div class="field"><label>Order notes</label><textarea id="f_ordernote" rows="2"></textarea></div>'+
+    '</div>'+
+    '<div style="margin-top:18px"><label style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)">Order summary</label>'+
+    cart.map(function(l){return '<div class="sumrow"><span>'+l.name+' × '+l.qty+' <span style="color:var(--faint)">('+l.color+', '+l.size+')</span></span><span>'+money(l.price*l.qty)+'</span></div>';}).join('')+
+    (disc?'<div class="sumrow"><span>Discount</span><span>−'+money(disc)+'</span></div>':'')+
+    '<div class="sumrow"><span>Delivery</span><span>'+(ship?money(ship):'Free')+'</span></div>'+
+    '<div class="sumrow tot"><span>Total</span><b>'+money(tot)+'</b></div></div>';
+  f.innerHTML='<button class="btn wa" style="width:100%;justify-content:center" id="placeOrder">Place order via WhatsApp</button><p style="font-size:10.5px;color:var(--faint);text-align:center;margin-top:8px;letter-spacing:.08em">You will be taken to WhatsApp with your full order to confirm.</p>';
+  openDrawer('checkout');
+  document.getElementById('placeOrder').onclick=function(){
+    var g=function(id){return (document.getElementById(id)||{}).value||'';};
+    if(!g('f_first')||!g('f_phone')){say('Please add your name and phone');return;}
+    var raw="*NEW ORDER — PAMEER MALL*\n\n"+
+      "Customer: "+g('f_first')+" "+g('f_last')+"\nPhone: "+g('f_phone')+"\nEmail: "+g('f_email')+"\n"+
+      "Address: "+g('f_street')+" "+g('f_apt')+", "+g('f_city')+", "+g('f_prov')+" "+g('f_post')+", "+g('f_country')+"\n"+
+      "Delivery note: "+g('f_note')+"\nShipping: "+g('f_ship')+"\nPayment: "+g('f_pay')+"\n\n"+
+      "*Items:*\n"+cart.map(function(l){return "• "+l.name+" ("+l.color+", "+l.size+") x"+l.qty+" — "+money(l.price*l.qty);}).join("\n")+
+      "\n\nTotal: "+money(tot)+"\nOrder notes: "+g('f_ordernote');
+    window.open("https://wa.me/"+WA_NUM+"?text="+encodeURIComponent(raw),'_blank');
+    say('Opening WhatsApp to confirm your order');
+  };
+}
+
+/* ---- Recently viewed ---- */
+function addRecent(id){recent=recent.filter(function(x){return x!==id;});recent.unshift(id);recent=recent.slice(0,8);save('pm_recent',recent);renderRecent();}
+function renderRecent(){
+  var host=document.getElementById('recentSec');
+  var items=recent.map(byId).filter(Boolean);
+  if(items.length<2){if(host)host.remove();return;}
+  if(!host){host=document.createElement('section');host.className='cat';host.id='recentSec';shop.appendChild(host);}
+  host.innerHTML='<div class="cat-head"><div><div class="eyebrow">Just for you</div><h2 class="serif">Recently viewed</h2></div></div><div class="grid">'+items.map(cardHTML).join('')+'</div>';
+  host.querySelectorAll('.card').forEach(function(c){c.onclick=function(e){if(e.target.closest('[data-wish]'))return;openProduct(parseInt(c.getAttribute('data-id')));};});
+  host.querySelectorAll('[data-wish]').forEach(function(w){w.onclick=function(e){e.stopPropagation();toggleWish(parseInt(w.getAttribute('data-wish')));w.classList.toggle('on',wish.indexOf(parseInt(w.getAttribute('data-wish')))>=0);};});
+}
+
+/* ---- counts / header ---- */
+function updateCounts(){
+  var cc=cart.reduce(function(s,l){return s+l.qty;},0);var cel=document.getElementById('cartCount');cel.textContent=cc;cel.classList.toggle('hide',cc===0);
+  var wel=document.getElementById('wishCount');wel.textContent=wish.length;wel.classList.toggle('hide',wish.length===0);
+}
+document.getElementById('btnCart').onclick=function(){renderCart();openDrawer('cart');};
+document.getElementById('btnWish').onclick=function(){renderWish();openDrawer('wish');};
+
+updateCounts();renderCart();renderWish();renderRecent();
+
+/* SEO: JSON-LD */
+(function(){var ld={"@context":"https://schema.org","@type":"Store","name":"Pameer Mall","image":document.getElementById('heroImg').src,"address":{"@type":"PostalAddress","addressLocality":"Mingora","addressRegion":"Swat, KPK","addressCountry":"PK"},"telephone":"+92-348-8068206"};var s=document.createElement('script');s.type='application/ld+json';s.textContent=JSON.stringify(ld);document.head.appendChild(s);})();
+</script>
+</body>
+</html>
