@@ -1,4 +1,4 @@
-import { Hero } from "@/components/sections/Hero";
+import { HeroProduct } from "@/components/sections/HeroProduct";
 import { Featured } from "@/components/sections/Featured";
 import { MenuSection } from "@/components/sections/MenuSection";
 import { Customizer } from "@/components/sections/Customizer";
@@ -15,7 +15,7 @@ import { FAQ } from "@/components/sections/FAQ";
 export default function Home() {
   return (
     <>
-      <Hero />
+      <HeroProduct />
       <Featured />
       <MenuSection />
       <Customizer />

@@ -1,0 +1,237 @@
+/* Isolated product-hero styles — scoped via CSS Module, no global collisions. */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2rem, 5vh, 3.5rem);
+  padding: 6rem 6vw 4rem;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(120, 24, 28, 0.5), transparent 55%),
+    radial-gradient(circle at 50% 92%, rgba(232, 181, 63, 0.1), transparent 60%),
+    linear-gradient(165deg, #2b0a0c 0%, #5a1216 45%, #3d0b0e 100%);
+}
+
+/* rotating warm rays behind the product */
+.rays {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 150vmax;
+  height: 150vmax;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0.5;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(232, 181, 63, 0.06) 12deg,
+    transparent 24deg,
+    transparent 36deg,
+    rgba(232, 181, 63, 0.06) 48deg,
+    transparent 60deg
+  );
+  animation: rays 60s linear infinite;
+}
+@keyframes rays {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* 3D stage — perspective lives on the parent wrapper */
+.stage {
+  position: relative;
+  perspective: 1200px;
+  perspective-origin: 50% 45%;
+  z-index: 1;
+}
+
+/* ENTRY layer: flies in once, settles into the turntable pose (fill: both) */
+.entry {
+  transform-style: preserve-3d;
+  animation: entry 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* SPIN layer: perpetual Y-axis turntable, starts after the product lands */
+.spin {
+  transform-style: preserve-3d;
+  animation: turntable 9s linear 1.6s infinite;
+}
+
+.img {
+  display: block;
+  width: clamp(240px, 42vw, 560px);
+  height: auto;
+  border-radius: 18px;
+  /* floating-product depth even if the photo has a solid background */
+  filter: drop-shadow(0 26px 44px rgba(0, 0, 0, 0.55));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* soft blurred contact shadow, fades in during entry */
+.shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -7%;
+  width: 58%;
+  height: 11%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.62), transparent 70%);
+  filter: blur(14px);
+  opacity: 0;
+  z-index: -1;
+  animation: shadowIn 1.5s ease 0.3s forwards;
+}
+
+@keyframes entry {
+  0% {
+    transform: translate3d(55vw, -55vh, 0) scale(0.25) rotateX(50deg) rotateZ(-30deg);
+    opacity: 0;
+  }
+  55% {
+    opacity: 1;
+  }
+  85% {
+    transform: translate3d(0, 0, 0) scale(1.08) rotateX(52deg) rotateZ(360deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotateX(54deg) rotateZ(360deg);
+    opacity: 1;
+  }
+}
+@keyframes turntable {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+@keyframes shadowIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---- copy (staggered, after the product lands) ---- */
+.copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-oswald), sans-serif;
+  font-size: 12.5px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #f6d67a;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.5s forwards;
+}
+.title {
+  margin: 0;
+  font-family: var(--font-playfair), serif;
+  font-weight: 900;
+  line-height: 0.88;
+  font-size: clamp(42px, 9vw, 104px);
+  color: #fdf6e9;
+  text-shadow: 0 8px 34px rgba(0, 0, 0, 0.6);
+  text-wrap: balance;
+  opacity: 0;
+  animation: fadeUp 0.9s 1.65s forwards;
+}
+.title span {
+  color: #e11b22;
+}
+.gold {
+  display: block;
+  margin-top: 14px;
+  font-family: var(--font-oswald), sans-serif;
+  font-weight: 600;
+  font-size: 0.3em;
+  letter-spacing: 8px;
+  color: #e8b53f;
+}
+.sub {
+  margin: 0;
+  max-width: 540px;
+  font-size: clamp(15px, 2.2vw, 18px);
+  line-height: 1.6;
+  color: #f3e4c8;
+  opacity: 0;
+  animation: fadeUp 0.9s 1.8s forwards;
+}
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 0.5rem;
+  opacity: 0;
+  animation: fadeUp 0.9s 1.95s forwards;
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- responsive: gentler on small screens ---- */
+@media (max-width: 700px) {
+  .entry {
+    animation-duration: 1.15s;
+  }
+  .img {
+    width: clamp(200px, 74vw, 360px);
+  }
+}
+
+/* ---- accessibility: honour reduced-motion (static fade, no spin/entry) ---- */
+@media (prefers-reduced-motion: reduce) {
+  .rays {
+    animation: none;
+  }
+  .entry,
+  .spin {
+    animation: none;
+    transform: none;
+  }
+  .img {
+    opacity: 0;
+    animation: rmFade 0.6s ease 0.1s forwards;
+  }
+  .shadow {
+    animation: none;
+    opacity: 0.5;
+  }
+  .eyebrow,
+  .title,
+  .sub,
+  .cta {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rmFade {
+  to {
+    opacity: 1;
+  }
+}
