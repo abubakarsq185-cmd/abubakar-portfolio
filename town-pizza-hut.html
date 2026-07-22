@@ -263,7 +263,8 @@ section{padding:96px 6vw;position:relative}
 .ph{position:relative;border-radius:18px;overflow:hidden;border:1px solid rgba(232,181,63,.15);
   background:linear-gradient(135deg,#2b1416,#3d0b0e);display:flex;align-items:center;justify-content:center;transition:transform .5s,box-shadow .5s}
 .ph:hover{transform:translateY(-6px) scale(1.01);box-shadow:var(--shadow-soft)}
-.ph img{width:100%;height:100%;object-fit:cover}
+.ph img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.ph:hover img{transform:scale(1.07)}
 .ph .placeholder{display:flex;flex-direction:column;align-items:center;gap:10px;color:rgba(246,214,122,.7);text-align:center;padding:16px}
 .ph .placeholder .em{font-size:52px}
 .ph .placeholder small{font-family:'Oswald';letter-spacing:2px;font-size:10px;text-transform:uppercase;opacity:.8}
@@ -511,7 +512,7 @@ footer{background:#0f0405;padding:60px 6vw 30px;text-align:center}
     <div class="sec-line"></div>
   </div>
   <div class="collage-grid reveal" data-d="1" id="collage"></div>
-  <p class="panel-note" style="margin-top:22px">Tip: drop your own 4K food photos into an <b>images/</b> folder to replace these panels — see the notes at the top of the hero.</p>
+  <p class="panel-note" style="margin-top:22px">Pizza shots are from your own photo. Burger &amp; fried-chicken are professional stand-ins — send your real photos and we'll swap them in.</p>
 </section>
 
 <!-- QUALITY -->
@@ -704,11 +705,11 @@ const branches=[
  {n:"Branch 5",addr:"Bagh Dherai Road, Khwaza Khela Chowk, Khirabad, Near Wakeel Shopping Center",phones:["03409619090","03419619090"],wa:"923409619090",isNew:true},
 ];
 const collageItems=[
- {em:"🍕",cap:"Signature loaded pizza",cls:"tall"},
- {em:"🔥",cap:"Fresh from the oven"},
- {em:"🍔",cap:"Juicy tower burgers"},
- {em:"🍗",cap:"Crispy fried chicken",cls:"wide"},
- {em:"🧀",cap:"Real melted cheese"},
+ {img:"assets/gallery-pizza.webp",cap:"Signature loaded pizza",cls:"tall"},
+ {img:"assets/gallery-oven.webp",cap:"Fresh from the oven"},
+ {img:"assets/gallery-burger.webp",cap:"Juicy tower burgers"},
+ {img:"assets/gallery-chicken.webp",cap:"Crispy fried chicken",cls:"wide"},
+ {img:"assets/gallery-cheese.webp",cap:"Real melted cheese"},
 ];
 
 /* ---------- RENDER ---------- */
@@ -759,7 +760,7 @@ document.getElementById('branchGrid').innerHTML=branches.map((b,i)=>`
 
 document.getElementById('collage').innerHTML=collageItems.map(c=>`
  <div class="ph ${c.cls||''}">
-   <div class="placeholder"><span class="em">${c.em}</span><small>${c.cap}</small></div>
+   ${c.img?`<img class="ph-img" src="${c.img}" alt="${c.cap}" loading="lazy">`:`<div class="placeholder"><span class="em">${c.em||'🍕'}</span><small>${c.cap}</small></div>`}
    <div class="ph-cap">${c.cap}</div>
  </div>`).join('');
 
