@@ -106,7 +106,7 @@ function Pizza({ scrollRef }: { scrollRef: React.RefObject<number> }) {
       group.current.rotation.y += dt * 0.12 + s * dt * 0.6;
       group.current.rotation.x = THREE.MathUtils.lerp(
         group.current.rotation.x,
-        -0.85 + pointer.y * 0.16 + s * 0.25,
+        -0.62 + pointer.y * 0.16 + s * 0.3,
         0.05
       );
       group.current.rotation.z = THREE.MathUtils.lerp(group.current.rotation.z, pointer.x * 0.12, 0.05);
@@ -115,7 +115,7 @@ function Pizza({ scrollRef }: { scrollRef: React.RefObject<number> }) {
   });
 
   return (
-    <group ref={group} rotation={[-0.85, 0, 0]}>
+    <group ref={group} rotation={[-0.62, 0, 0]} scale={0.82}>
       {/* crust */}
       <mesh castShadow receiveShadow>
         <cylinderGeometry args={[2.25, 2.15, 0.34, 64]} />
@@ -169,7 +169,7 @@ export function PizzaScene({ scrollRef }: { scrollRef: React.RefObject<number> }
       <ContactShadows position={[0, -1.4, 0]} opacity={0.55} scale={12} blur={2.6} far={4} color="#000000" />
 
       <EffectComposer>
-        <DepthOfField target={[0, 0, 0]} focalLength={0.015} bokehScale={2.5} height={480} />
+        <DepthOfField target={[0, 0, 0]} focalLength={0.01} bokehScale={1.5} height={480} />
         <Bloom intensity={0.55} luminanceThreshold={0.6} luminanceSmoothing={0.9} mipmapBlur />
         <Vignette eskil={false} offset={0.35} darkness={0.55} />
       </EffectComposer>

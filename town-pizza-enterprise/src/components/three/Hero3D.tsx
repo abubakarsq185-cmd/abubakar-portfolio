@@ -33,7 +33,7 @@ export function Hero3D() {
           shadows
           dpr={[1, 2]}
           gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-          camera={{ position: [0, 1.7, 6.6], fov: 42 }}
+          camera={{ position: [0, 2.6, 8.2], fov: 42 }}
         >
           <PizzaScene scrollRef={scrollRef} />
         </Canvas>
