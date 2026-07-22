@@ -210,6 +210,19 @@ nav a:not(.nav-order):hover::after{width:100%}
 .scroll-hint .mouse::after{content:'';position:absolute;top:6px;left:50%;width:3px;height:7px;background:var(--gold-light);border-radius:3px;transform:translateX(-50%);animation:scrollDot 1.6s infinite}
 @keyframes scrollDot{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}100%{opacity:0;transform:translate(-50%,12px)}}
 
+/* ---------- IMAGE HERO ---------- */
+.hero-showcase{position:relative;z-index:5;width:min(1360px,94vw);margin:0 auto;perspective:1600px;
+  opacity:0;transform:translateY(30px);animation:heroIn 1.2s .35s cubic-bezier(.16,.84,.3,1) forwards}
+@keyframes heroIn{to{opacity:1;transform:translateY(0)}}
+.hero-frame{position:relative;aspect-ratio:1536/1024;border-radius:22px;overflow:hidden;
+  box-shadow:0 50px 130px rgba(0,0,0,.65),0 0 0 1px rgba(232,181,63,.20);
+  transition:transform .3s ease-out;will-change:transform;transform-style:preserve-3d}
+.hero-img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-frame::after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 120px rgba(0,0,0,.35)}
+.hero-order-hit{position:absolute;left:2.5%;top:59.5%;width:20%;height:10%;border-radius:40px;z-index:3;cursor:pointer}
+.hero-order-hit:focus-visible{outline:3px solid var(--gold-light);outline-offset:2px}
+.hero-cta--under{margin-top:30px}
+
 /* ---------- SECTIONS ---------- */
 section{padding:96px 6vw;position:relative}
 .sec-head{text-align:center;margin-bottom:56px}
@@ -444,112 +457,15 @@ footer{background:#0f0405;padding:60px 6vw 30px;text-align:center}
 <section class="hero" id="home">
   <div class="hero-rays"></div>
   <div class="hero-glow"></div>
-  <div class="hero-marquee"><b>TOWN&nbsp;PIZZA&nbsp;HUT&nbsp;·&nbsp;TOWN&nbsp;PIZZA&nbsp;HUT&nbsp;·&nbsp;</b><b>TOWN&nbsp;PIZZA&nbsp;HUT&nbsp;·&nbsp;TOWN&nbsp;PIZZA&nbsp;HUT&nbsp;·&nbsp;</b></div>
-
-  <div class="hero-inner">
-    <div class="eyebrow">Family Restaurant · Swat, Pakistan</div>
-
-    <!-- ===================================================================
-         3D PIZZA HERO — hand-crafted, mouse-reactive, steaming & floating.
-         TO USE A REAL 4K PHOTO INSTEAD: put a transparent-background PNG at
-         images/hero-pizza.png and uncomment the <img> line below (it will
-         automatically replace the crafted SVG pizza).
-    ==================================================================== -->
-    <div class="pizza-stage" id="pizzaStage">
-      <div class="floaties" aria-hidden="true">
-        <span class="f1">🍅</span><span class="f2">🧀</span><span class="f3">🌿</span>
-        <span class="f4">🫑</span><span class="f5">🍄</span><span class="f6">🌶️</span>
-      </div>
-      <div class="pizza-tilt" id="pizzaTilt">
-        <div class="steam" aria-hidden="true"><span></span><span></span><span></span></div>
-        <div class="pizza-spin">
-          <!-- <img class="pizza-svg" src="images/hero-pizza.png" alt="Town Pizza Hut signature pizza"> -->
-          <svg class="pizza-svg" viewBox="0 0 400 400" role="img" aria-label="Freshly baked signature pizza">
-            <defs>
-              <radialGradient id="crust" cx="50%" cy="42%" r="60%">
-                <stop offset="60%" stop-color="#e6a94e"/><stop offset="80%" stop-color="#c9832f"/><stop offset="100%" stop-color="#8a4f18"/>
-              </radialGradient>
-              <radialGradient id="crustEdge" cx="50%" cy="50%" r="50%">
-                <stop offset="82%" stop-color="#d99640"/><stop offset="92%" stop-color="#b06d24"/><stop offset="100%" stop-color="#6e3d12"/>
-              </radialGradient>
-              <radialGradient id="cheese" cx="46%" cy="40%" r="58%">
-                <stop offset="0%" stop-color="#ffe08a"/><stop offset="55%" stop-color="#f6c85a"/><stop offset="100%" stop-color="#e0a637"/>
-              </radialGradient>
-              <radialGradient id="sauce" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#c3341f"/><stop offset="100%" stop-color="#8f1d12"/>
-              </radialGradient>
-              <radialGradient id="pep" cx="40%" cy="35%" r="70%">
-                <stop offset="0%" stop-color="#d94f3a"/><stop offset="60%" stop-color="#b02a1c"/><stop offset="100%" stop-color="#7c160d"/>
-              </radialGradient>
-              <filter id="soft"><feGaussianBlur stdDeviation="1.1"/></filter>
-              <filter id="glossy"><feGaussianBlur stdDeviation="2" result="b"/><feComposite in="SourceGraphic" in2="b"/></filter>
-            </defs>
-
-            <!-- crust base -->
-            <circle cx="200" cy="200" r="188" fill="url(#crustEdge)"/>
-            <circle cx="200" cy="200" r="176" fill="url(#crust)"/>
-            <!-- baked char spots on crust -->
-            <g opacity=".5" fill="#7c4715">
-              <ellipse cx="200" cy="26" rx="15" ry="8"/><ellipse cx="330" cy="90" rx="12" ry="9" transform="rotate(40 330 90)"/>
-              <ellipse cx="372" cy="220" rx="8" ry="13"/><ellipse cx="300" cy="345" rx="13" ry="8" transform="rotate(-30 300 345)"/>
-              <ellipse cx="90" cy="330" rx="12" ry="8" transform="rotate(30 90 330)"/><ellipse cx="26" cy="180" rx="8" ry="13"/>
-              <ellipse cx="80" cy="70" rx="12" ry="8" transform="rotate(-40 80 70)"/>
-            </g>
-            <!-- cheese layer -->
-            <circle cx="200" cy="200" r="150" fill="url(#sauce)"/>
-            <circle cx="200" cy="200" r="150" fill="url(#cheese)" opacity=".92"/>
-            <!-- cheese melt highlights -->
-            <g fill="#fff2c2" opacity=".45" filter="url(#soft)">
-              <ellipse cx="150" cy="140" rx="26" ry="16" transform="rotate(-20 150 140)"/>
-              <ellipse cx="255" cy="175" rx="30" ry="18" transform="rotate(15 255 175)"/>
-              <ellipse cx="175" cy="255" rx="28" ry="16" transform="rotate(25 175 255)"/>
-              <ellipse cx="255" cy="260" rx="20" ry="13"/>
-            </g>
-            <!-- sauce peeks -->
-            <g fill="url(#sauce)" opacity=".85">
-              <circle cx="130" cy="210" r="9"/><circle cx="230" cy="130" r="7"/><circle cx="270" cy="230" r="8"/><circle cx="185" cy="185" r="6"/>
-            </g>
-            <!-- pepperoni -->
-            <g>
-              <g><circle cx="140" cy="130" r="24" fill="url(#pep)"/><circle cx="132" cy="122" r="6" fill="#8f1d12" opacity=".6"/><circle cx="150" cy="140" r="4" fill="#8f1d12" opacity=".5"/></g>
-              <g><circle cx="258" cy="128" r="23" fill="url(#pep)"/><circle cx="266" cy="136" r="5" fill="#8f1d12" opacity=".6"/><circle cx="250" cy="120" r="4" fill="#8f1d12" opacity=".5"/></g>
-              <g><circle cx="285" cy="215" r="24" fill="url(#pep)"/><circle cx="278" cy="208" r="6" fill="#8f1d12" opacity=".6"/></g>
-              <g><circle cx="150" cy="270" r="23" fill="url(#pep)"/><circle cx="158" cy="278" r="5" fill="#8f1d12" opacity=".6"/></g>
-              <g><circle cx="230" cy="285" r="22" fill="url(#pep)"/><circle cx="222" cy="278" r="5" fill="#8f1d12" opacity=".5"/></g>
-              <g><circle cx="112" cy="200" r="20" fill="url(#pep)"/><circle cx="118" cy="206" r="4" fill="#8f1d12" opacity=".5"/></g>
-              <g><circle cx="205" cy="205" r="21" fill="url(#pep)"/><circle cx="200" cy="200" r="5" fill="#8f1d12" opacity=".5"/></g>
-            </g>
-            <!-- black olives -->
-            <g fill="#2a1522"><circle cx="185" cy="150" r="9"/><circle cx="245" cy="185" r="8"/><circle cx="170" cy="215" r="8"/><circle cx="255" cy="250" r="9"/><circle cx="130" cy="250" r="7"/></g>
-            <g fill="#5a3348"><circle cx="185" cy="150" r="4"/><circle cx="245" cy="185" r="3.5"/><circle cx="170" cy="215" r="3.5"/><circle cx="255" cy="250" r="4"/><circle cx="130" cy="250" r="3"/></g>
-            <!-- green peppers / basil -->
-            <g fill="#3f8f37" opacity=".95">
-              <path d="M110 160 q18 -8 30 4 q-14 10 -30 -4z"/><path d="M300 160 q-18 -8 -30 4 q14 10 30 -4z"/>
-              <path d="M200 300 q10 -16 24 -10 q-6 18 -24 10z"/><path d="M120 300 q-10 -14 4 -22 q14 12 -4 22z"/>
-              <path d="M290 300 q10 -14 -4 -22 q-14 12 4 22z"/>
-            </g>
-            <g fill="#5cb050" opacity=".9"><ellipse cx="215" cy="235" rx="12" ry="6" transform="rotate(30 215 235)"/><ellipse cx="160" cy="185" rx="11" ry="5" transform="rotate(-25 160 185)"/></g>
-            <!-- glossy top-light -->
-            <ellipse cx="160" cy="130" rx="90" ry="60" fill="#fff" opacity=".07" filter="url(#soft)"/>
-          </svg>
-        </div>
-        <div class="pizza-shadow"></div>
-      </div>
+  <div class="hero-showcase" id="heroShowcase">
+    <div class="hero-frame" id="heroFrame">
+      <img class="hero-img" src="assets/hero-pizza.webp" alt="Town Pizza Hut — Pizza Perfection: hot, fresh oven-baked pizza loaded with chicken, black olives, green peppers and melting cheese with rising steam.">
+      <a class="hero-order-hit" href="https://wa.me/923189659090" target="_blank" rel="noopener" aria-label="Order now on WhatsApp"></a>
     </div>
-
-    <h1>TOWN <span class="accent">PIZZA</span> HUT
-      <span class="gold">The Name of Quality</span>
-    </h1>
-    <p class="hero-tag">Fresh, hot and hand-made every single day. Loaded pizzas, juicy burgers, crispy fried chicken and more — served across 5 branches in Swat.</p>
-    <div class="hero-cta">
-      <a href="#menu" class="btn-primary">View Menu</a>
-      <a href="https://wa.me/923189659090" target="_blank" rel="noopener" class="btn-ghost">Order on WhatsApp</a>
-    </div>
-    <div class="hero-badges">
-      <div class="hbadge"><b>5</b><small>Branches</small></div>
-      <div class="hbadge"><b>10–11:45</b><small>Open Daily</small></div>
-      <div class="hbadge"><b>Free</b><small>Delivery 5km*</small></div>
-    </div>
+  </div>
+  <div class="hero-cta hero-cta--under">
+    <a href="#menu" class="btn-primary">View Menu</a>
+    <a href="https://wa.me/923189659090" target="_blank" rel="noopener" class="btn-ghost">Order on WhatsApp</a>
   </div>
   <div class="scroll-hint"><span class="mouse"></span>SCROLL</div>
 </section>
@@ -865,25 +781,17 @@ window.addEventListener('scroll',()=>{
   document.getElementById('progress').style.width=(h>0?(y/h)*100:0)+'%';
 });
 
-/* ---------- 3D PIZZA MOUSE PARALLAX ---------- */
-const stage=document.getElementById('pizzaStage');
-const tilt=document.getElementById('pizzaTilt');
-if(stage&&tilt&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+/* ---------- HERO IMAGE PARALLAX ---------- */
+const heroFrame=document.getElementById('heroFrame');
+if(heroFrame&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
   const hero=document.getElementById('home');
   hero.addEventListener('mousemove',e=>{
     const r=hero.getBoundingClientRect();
     const px=(e.clientX-r.left)/r.width-.5;
     const py=(e.clientY-r.top)/r.height-.5;
-    tilt.style.transform=`rotateY(${px*26}deg) rotateX(${-py*22}deg)`;
+    heroFrame.style.transform=`rotateY(${px*7}deg) rotateX(${-py*5}deg)`;
   });
-  hero.addEventListener('mouseleave',()=>{tilt.style.transform='rotateY(0) rotateX(0)'});
-  /* device tilt on mobile */
-  window.addEventListener('deviceorientation',e=>{
-    if(e.gamma==null)return;
-    const px=Math.max(-1,Math.min(1,e.gamma/45));
-    const py=Math.max(-1,Math.min(1,(e.beta-45)/45));
-    tilt.style.transform=`rotateY(${px*20}deg) rotateX(${-py*16}deg)`;
-  });
+  hero.addEventListener('mouseleave',()=>{heroFrame.style.transform='rotateY(0) rotateX(0)'});
 }
 
 /* ---------- LOADER ---------- */
