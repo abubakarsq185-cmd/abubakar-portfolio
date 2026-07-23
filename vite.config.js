@@ -1,26 +1,33 @@
 import { defineConfig } from 'vite'
+import { viteSingleFile } from 'vite-plugin-singlefile'
 
-// Cinematic single-page restaurant build.
-// - manualChunks isolates the heavy 3D libraries so first paint stays light.
-// - assetsInlineLimit keeps small SVG placeholders inline to cut requests.
+// Two build modes:
+//  - default          → optimised multi-chunk static site for hosting (/dist)
+//  - SINGLEFILE=1      → one fully inlined index.html (used for the shareable
+//                        self-contained preview); three/gsap are folded in.
+const singleFile = process.env.SINGLEFILE === '1'
+
 export default defineConfig({
   server: {
     open: true,
     port: 5173,
     host: true,
   },
+  plugins: singleFile ? [viteSingleFile()] : [],
   build: {
     target: 'es2020',
-    cssCodeSplit: true,
+    cssCodeSplit: !singleFile,
     assetsInlineLimit: 4096,
     reportCompressedSize: false,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          three: ['three'],
-          gsap: ['gsap'],
+    rollupOptions: singleFile
+      ? {}
+      : {
+          output: {
+            manualChunks: {
+              three: ['three'],
+              gsap: ['gsap'],
+            },
+          },
         },
-      },
-    },
   },
 })
