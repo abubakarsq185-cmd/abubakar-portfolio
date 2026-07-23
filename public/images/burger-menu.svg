@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 720" width="640" height="720" role="img" aria-label="Burger, fried chicken and shawarma placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a120b"/>
+      <stop offset="100%" stop-color="#0a0705"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="60%">
+      <stop offset="0%" stop-color="rgba(224,167,86,0.35)"/>
+      <stop offset="100%" stop-color="rgba(224,167,86,0)"/>
+    </radialGradient>
+    <linearGradient id="bun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8b96a"/>
+      <stop offset="100%" stop-color="#c88a3c"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="720" fill="url(#bg)"/>
+  <rect width="640" height="720" fill="url(#glow)"/>
+  <g transform="translate(320,300)">
+    <ellipse cx="0" cy="150" rx="180" ry="34" fill="rgba(0,0,0,0.45)"/>
+    <path d="M-150 -30 Q0 -140 150 -30 Z" fill="url(#bun)"/>
+    <circle cx="-70" cy="-70" r="4" fill="#fff6e0"/>
+    <circle cx="-10" cy="-92" r="4" fill="#fff6e0"/>
+    <circle cx="60" cy="-72" r="4" fill="#fff6e0"/>
+    <rect x="-150" y="-24" width="300" height="26" rx="10" fill="#8fd46f"/>
+    <rect x="-152" y="0" width="304" height="34" rx="12" fill="#7a3b16"/>
+    <rect x="-150" y="30" width="300" height="20" rx="8" fill="#e04b3a"/>
+    <path d="M-150 50 Q0 120 150 50 Z" fill="#d99a4a"/>
+  </g>
+  <text x="320" y="600" text-anchor="middle" font-family="Bebas Neue, sans-serif" font-size="46" letter-spacing="4" fill="#e0a756">TOWN PIZZA HUT</text>
+  <text x="320" y="642" text-anchor="middle" font-family="Outfit, sans-serif" font-size="20" fill="#b9b4aa">Burgers · Fried Chicken · Shawarma</text>
+  <text x="320" y="682" text-anchor="middle" font-family="Outfit, sans-serif" font-size="14" fill="#6f6a60">Replace /public/images/burger-menu.svg with your photo</text>
+</svg>

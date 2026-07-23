@@ -1,314 +1,253 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Abubakar Siddique - 3D Portfolio</title>
-    <meta name="description" content="Personal 3D animated portfolio for Abubakar Siddique.">
-    <link rel="preconnect" href="https://unpkg.com">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <canvas id="scene" aria-hidden="true"></canvas>
-    <div class="texture-layer" aria-hidden="true"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0705" />
 
-    <header class="site-header">
-        <a class="brand" href="#home" aria-label="Abubakar Siddique home">
-            <span class="brand-mark">AS</span>
-            <span>Abubakar Siddique</span>
-        </a>
-        <nav class="nav-links" aria-label="Main navigation">
-            <a href="#about">About</a>
-            <a href="#skills">Skills</a>
-            <a href="#certifications">Certificates</a>
-            <a href="#prompts">Prompts</a>
-            <a href="#contact">Contact</a>
-        </nav>
+    <title>Town Pizza Hut — The Name of Quality | Family Restaurant</title>
+    <meta
+      name="description"
+      content="Town Pizza Hut — The Name of Quality. Wood-fired Chicken Tikka BBQ pizzas, burgers, shawarma and family deals. Free home delivery within 5 km on orders above Rs 1000. Open 10:00 AM – 11:45 PM."
+    />
+    <meta name="keywords" content="Town Pizza Hut, pizza delivery, family restaurant, chicken tikka pizza, burgers, birthday deals, Pakistan pizza" />
+    <link rel="canonical" href="https://townpizzahut.example/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="restaurant" />
+    <meta property="og:title" content="Town Pizza Hut — The Name of Quality" />
+    <meta property="og:description" content="Wood-fired Chicken Tikka BBQ pizzas, burgers & family deals. Free delivery within 5 km on orders above Rs 1000." />
+    <meta property="og:image" content="/images/og-cover.svg" />
+    <meta property="og:site_name" content="Town Pizza Hut" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Town Pizza Hut — The Name of Quality" />
+    <meta name="twitter:description" content="Wood-fired Chicken Tikka BBQ pizzas, burgers & family deals. Free delivery within 5 km." />
+    <meta name="twitter:image" content="/images/og-cover.svg" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Town Pizza Hut",
+        "slogan": "The Name of Quality",
+        "servesCuisine": ["Pizza", "Fast Food", "BBQ", "Burgers"],
+        "priceRange": "Rs 700 – Rs 15000",
+        "openingHours": "Mo-Su 10:00-23:45",
+        "telephone": "+92-318-9659090",
+        "acceptsReservations": "True",
+        "hasMenu": "https://townpizzahut.example/#menu",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "PK"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="loader" id="loader" role="status" aria-live="polite">
+      <div class="loader__ring"></div>
+      <p class="loader__text">Baking the perfect slice…</p>
+    </div>
+
+    <div class="noise" aria-hidden="true"></div>
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+    <a class="skip-link" href="#top">Skip to content</a>
+
+    <header class="nav" id="nav">
+      <a class="nav__brand" href="#top" aria-label="Town Pizza Hut home">
+        <span class="nav__mark">Town</span>
+        <span class="nav__name">Pizza Hut</span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="#deals">Deals</a>
+        <a href="#menu">Menu</a>
+        <a href="#burgers">Burgers</a>
+        <a href="#branches">Branches</a>
+        <a href="#order" class="nav__cta">Order Now</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span>
+      </button>
     </header>
 
-    <main>
-        <section class="hero" id="home">
-            <div class="hero-copy">
-                <p class="eyebrow">Computer Science Portfolio</p>
-                <h1>Abubakar Siddique</h1>
-                <p class="hero-role">Computer Science Student | Prompt Engineer | Python Developer</p>
-                <p class="hero-intro">I build practical digital solutions with Python, web development, AI prompt engineering, design thinking, and career guidance. My goal is to help people learn modern skills with clarity and confidence.</p>
-                <div class="hero-actions">
-                    <a class="button primary" href="#skills">Explore skills</a>
-                    <a class="button secondary" href="#prompts">Prompt library</a>
-                </div>
+    <main id="top">
+      <section class="hero">
+        <div class="hero__glow" aria-hidden="true"></div>
+        <div class="hero__heat" aria-hidden="true"></div>
+
+        <div class="hero__copy">
+          <p class="hero__eyebrow reveal-up">Family Restaurant · Since forever hungry</p>
+          <h1 class="hero__brand reveal-up">
+            <span class="hero__town">Town</span>
+            <span class="hero__title">Pizza Hut</span>
+          </h1>
+          <p class="hero__tag reveal-up">The Name of Quality</p>
+          <p class="hero__lead reveal-up">
+            Ultra-fresh Chicken Tikka BBQ, spun hot to your door. Free delivery within 5 km on orders above Rs&nbsp;1000.
+          </p>
+          <div class="hero__actions reveal-up">
+            <a class="btn btn--gold" href="#deals">View Hot Deals</a>
+            <a class="btn btn--ghost" href="#order">Call to Order</a>
+          </div>
+          <div class="hero__meta reveal-up">
+            <span>10:00 AM – 11:45 PM</span>
+            <span>5 Branches</span>
+            <span>@Town Pizza Hut</span>
+          </div>
+        </div>
+
+        <div class="hero__stage" id="pizzaStage">
+          <canvas id="pizzaCanvas" aria-label="3D rotating Chicken Tikka BBQ pizza"></canvas>
+          <div class="hero__hint">Drag to spin · Auto 360°</div>
+          <div class="hero__shadow" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="section deals" id="deals">
+        <div class="section__head">
+          <p class="eyebrow pull">Hot Offers</p>
+          <h2 class="section__title pull">Pizza Deals</h2>
+          <p class="section__sub pull">Three pizzas. One cold drink. Zero excuses.</p>
+        </div>
+        <div class="deals__grid" id="pizzaDeals"></div>
+
+        <div class="section__head section__head--tight">
+          <p class="eyebrow pull">Feed the crew</p>
+          <h2 class="section__title pull">Family Deals</h2>
+        </div>
+        <div class="family__grid" id="familyDeals"></div>
+      </section>
+
+      <section class="section special" id="special">
+        <div class="section__head">
+          <p class="eyebrow pull">Combos</p>
+          <h2 class="section__title pull">Town Special Deals</h2>
+        </div>
+        <div class="special__grid" id="specialDeals"></div>
+      </section>
+
+      <section class="section menu" id="menu">
+        <div class="section__head">
+          <p class="eyebrow pull">From the oven</p>
+          <h2 class="section__title pull">Pizzas</h2>
+          <p class="section__sub pull">
+            R 7" Rs&nbsp;700 · M 11" Rs&nbsp;1400 · L 13" Rs&nbsp;1900 · EL 16" Rs&nbsp;2400
+          </p>
+        </div>
+        <div class="menu__toolbar pull" role="group" aria-label="Filter pizzas">
+          <button class="chip is-active" data-filter="all">All</button>
+          <button class="chip" data-filter="chicken">Chicken</button>
+          <button class="chip" data-filter="special">Specials</button>
+          <button class="chip" data-filter="veg">Veg</button>
+        </div>
+        <div class="menu__list" id="pizzaList"></div>
+
+        <div class="premium pull-stagger" id="premiumPizzas"></div>
+      </section>
+
+      <section class="section burgers" id="burgers">
+        <div class="burgers__layout">
+          <div>
+            <div class="section__head section__head--left">
+              <p class="eyebrow pull">Crispy &amp; stacked</p>
+              <h2 class="section__title pull">Burgers &amp; More</h2>
             </div>
+            <div class="split-menus" id="sideMenus"></div>
+          </div>
+          <div class="burgers__visual pull-right">
+            <img src="/images/burger-menu.svg" alt="Town Pizza Hut burgers, fried chicken and shawarmas" loading="lazy" width="640" height="720" />
+          </div>
+        </div>
+        <div class="section__head section__head--tight">
+          <p class="eyebrow pull">Value packs</p>
+          <h2 class="section__title pull">Burger Deals</h2>
+        </div>
+        <div class="burger-deals" id="burgerDeals"></div>
+      </section>
 
-            <div class="hero-stats" aria-label="Portfolio highlights">
-                <div>
-                    <strong>7</strong>
-                    <span>Skill areas</span>
-                </div>
-                <div>
-                    <strong>3</strong>
-                    <span>Certificates</span>
-                </div>
-                <div>
-                    <strong>4</strong>
-                    <span>Prompt tools</span>
-                </div>
-            </div>
-        </section>
+      <section class="section sides" id="sides">
+        <div class="section__head">
+          <p class="eyebrow pull">Extras</p>
+          <h2 class="section__title pull">Rice, Soups &amp; Drinks</h2>
+        </div>
+        <div class="sides__grid" id="sidesGrid"></div>
+      </section>
 
-        <section class="section about-section" id="about">
-            <div class="section-shell two-column">
-                <div>
-                    <p class="section-kicker">Introduction</p>
-                    <h2>A practical learner building useful digital work.</h2>
-                </div>
-                <div class="about-text">
-                    <p>
-                        I am Abubakar Siddique, a Computer Science student focused on
-                        Python, web development, prompt engineering, design, Amazon skills,
-                        and student guidance. This website presents my skills in separate
-                        learning areas so visitors can understand my work and learn from it.
-                    </p>
-                    <p>
-                        I like building clear systems: websites that communicate, prompts
-                        that produce better answers, and roadmaps that help students choose
-                        the next practical step.
-                    </p>
-                </div>
-            </div>
-        </section>
+      <section class="section birthday" id="birthday">
+        <div class="birthday__panel pull">
+          <div>
+            <p class="eyebrow">Celebrate big</p>
+            <h2 class="section__title">Birthday Offer</h2>
+            <p class="birthday__price">Rs. 15,000/-</p>
+            <ul class="birthday__list">
+              <li>5 Large Pizzas</li>
+              <li>4 × 1.5 Ltr Cold Drinks</li>
+              <li>20 Hot Wings + 20 Nuggets</li>
+              <li>1 Large Fries + 2 Pound Cake</li>
+              <li>Hall Charges Free</li>
+            </ul>
+            <a class="btn btn--gold" href="#order">Book Your Party</a>
+          </div>
+          <div class="birthday__badge" aria-hidden="true">
+            <span>HALL</span>
+            <strong>FREE</strong>
+          </div>
+        </div>
+      </section>
 
-        <section class="section skill-section" id="skills">
-            <div class="section-shell">
-                <div class="section-heading">
-                    <p class="section-kicker">Skill Zones</p>
-                    <h2>Separate learning sections for every skill.</h2>
-                    <p>Each area is written so people can understand what you do, what tools you use, and what they can learn from you.</p>
-                </div>
-                <div class="skill-grid">
+      <section class="section branches" id="branches">
+        <div class="section__head">
+          <p class="eyebrow pull">Find us</p>
+          <h2 class="section__title pull">Our Branches</h2>
+          <p class="section__sub pull">Tap a number to call · WhatsApp ready</p>
+        </div>
+        <div class="branches__grid" id="branchesGrid"></div>
+      </section>
 
-            <article class="skill-card accent-teal" data-tilt>
-                <div class="skill-number">01</div>
-                <h3>AI Prompt Engineering</h3>
-                <p>Designing clear, powerful prompts for research, writing, coding, business, and automation.</p>
-                <div class="tool-line">ChatGPT, Claude, Gemini, prompt frameworks, AI workflows</div>
-                <h4>Visitors can learn</h4>
-                <ul>
-                    <li>How to write role-based prompts</li>
-<li>How to create reusable prompt templates</li>
-<li>How to improve AI answers through context and constraints</li>
-                </ul>
-            </article>
-
-
-            <article class="skill-card accent-amber" data-tilt>
-                <div class="skill-number">02</div>
-                <h3>Graphic Design</h3>
-                <p>Creating clean social media posts, brand visuals, thumbnails, and presentation graphics.</p>
-                <div class="tool-line">Canva, Photoshop basics, layout, color, typography</div>
-                <h4>Visitors can learn</h4>
-                <ul>
-                    <li>How to build attractive visual layouts</li>
-<li>How to choose colors and fonts professionally</li>
-<li>How to design content for social platforms</li>
-                </ul>
-            </article>
-
-
-            <article class="skill-card accent-green" data-tilt>
-                <div class="skill-number">03</div>
-                <h3>Amazon Skills</h3>
-                <p>Understanding online selling basics, product research, listings, and marketplace growth.</p>
-                <div class="tool-line">Product research, listing optimization, keyword research</div>
-                <h4>Visitors can learn</h4>
-                <ul>
-                    <li>How Amazon product listings work</li>
-<li>How to research product opportunities</li>
-<li>How to improve title, bullet points, and descriptions</li>
-                </ul>
-            </article>
-
-
-            <article class="skill-card accent-violet" data-tilt>
-                <div class="skill-number">04</div>
-                <h3>Python Language</h3>
-                <p>Writing useful Python programs for automation, data handling, web tools, and problem solving.</p>
-                <div class="tool-line">Python, files, APIs, automation, basic data analysis</div>
-                <h4>Visitors can learn</h4>
-                <ul>
-                    <li>How to write clean Python code</li>
-<li>How to automate daily tasks</li>
-<li>How to build beginner-friendly projects</li>
-                </ul>
-            </article>
-
-
-            <article class="skill-card accent-teal" data-tilt>
-                <div class="skill-number">05</div>
-                <h3>Web Development</h3>
-                <p>Building responsive websites with modern layout, animation, and interactive user experiences.</p>
-                <div class="tool-line">HTML, CSS, JavaScript, responsive design, UI sections</div>
-                <h4>Visitors can learn</h4>
-                <ul>
-                    <li>How to structure a professional website</li>
-<li>How to create responsive layouts</li>
-<li>How to add useful animations and interactions</li>
-                </ul>
-            </article>
-
-
-            <article class="skill-card accent-amber" data-tilt>
-                <div class="skill-number">06</div>
-                <h3>Counseling</h3>
-                <p>Helping students understand problems, organize thoughts, and take practical next steps.</p>
-                <div class="tool-line">Listening, problem analysis, study planning, confidence building</div>
-                <h4>Visitors can learn</h4>
-                <ul>
-                    <li>How to solve learning problems step by step</li>
-<li>How to manage stress during study</li>
-<li>How to build better learning habits</li>
-                </ul>
-            </article>
-
-
-            <article class="skill-card accent-green" data-tilt>
-                <div class="skill-number">07</div>
-                <h3>Career Counseling</h3>
-                <p>Guiding learners toward practical skills, career paths, portfolios, and earning opportunities.</p>
-                <div class="tool-line">Skill roadmaps, resume guidance, portfolio planning</div>
-                <h4>Visitors can learn</h4>
-                <ul>
-                    <li>How to choose a skill path</li>
-<li>How to build a beginner portfolio</li>
-<li>How to prepare for freelancing or job opportunities</li>
-                </ul>
-            </article>
-
-                </div>
-            </div>
-        </section>
-
-        <section class="section certificates-section" id="certifications">
-            <div class="section-shell">
-                <div class="section-heading">
-                    <p class="section-kicker">Proof Of Learning</p>
-                    <h2>Certifications and achievements.</h2>
-                    <p>Add your real certificate names, issuers, dates, and links inside the Python file.</p>
-                </div>
-                <div class="certificate-grid">
-
-            <article class="certificate-card" data-tilt>
-                <span>2026</span>
-                <h3>Python Programming</h3>
-                <p class="issuer">Add your institute or platform</p>
-                <p>Core programming concepts, logic building, and project development.</p>
-            </article>
-
-
-            <article class="certificate-card" data-tilt>
-                <span>2026</span>
-                <h3>AI Prompt Engineering</h3>
-                <p class="issuer">Add your institute or platform</p>
-                <p>Prompt design, AI productivity, research prompts, and workflow creation.</p>
-            </article>
-
-
-            <article class="certificate-card" data-tilt>
-                <span>2026</span>
-                <h3>Graphic Design</h3>
-                <p class="issuer">Add your institute or platform</p>
-                <p>Design principles, brand visuals, social content, and presentation graphics.</p>
-            </article>
-
-                </div>
-            </div>
-        </section>
-
-        <section class="section prompts-section" id="prompts">
-            <div class="section-shell">
-                <div class="section-heading">
-                    <p class="section-kicker">Prompt Engineering</p>
-                    <h2>Prompt library for students and creators.</h2>
-                    <p>Visitors can search, filter, and copy your prompt examples directly from the website.</p>
-                </div>
-
-                <div class="prompt-tools">
-                    <input id="promptSearch" type="search" placeholder="Search prompt library" aria-label="Search prompt library">
-                    <div class="filter-buttons" aria-label="Prompt filters">
-                        <button class="filter-btn active" data-filter="all" type="button">All</button>
-                        <button class="filter-btn" data-filter="ai" type="button">AI</button>
-                        <button class="filter-btn" data-filter="python" type="button">Python</button>
-                        <button class="filter-btn" data-filter="design" type="button">Design</button>
-                        <button class="filter-btn" data-filter="career" type="button">Career</button>
-                    </div>
-                </div>
-
-                <div class="prompt-grid" id="promptGrid">
-
-            <article class="prompt-card" data-topic="ai">
-                <div>
-                    <span class="prompt-topic">ai</span>
-                    <h3>Learning Coach Prompt</h3>
-                    <p>Use this when you want AI to teach a topic step by step.</p>
-                </div>
-                <pre><code>Act as a friendly expert teacher. Teach me [TOPIC] from beginner level. First explain the idea simply, then give one example, then ask me 3 practice questions, and finally correct my answers.</code></pre>
-                <button class="copy-btn" type="button">Copy prompt</button>
-            </article>
-
-
-            <article class="prompt-card" data-topic="career">
-                <div>
-                    <span class="prompt-topic">career</span>
-                    <h3>Career Roadmap Prompt</h3>
-                    <p>Use this to build a study and career plan.</p>
-                </div>
-                <pre><code>Act as a career counselor. I am a [STUDENT LEVEL] student interested in [FIELD]. Create a 90-day roadmap with weekly goals, skills to learn, project ideas, free resources, and portfolio tasks.</code></pre>
-                <button class="copy-btn" type="button">Copy prompt</button>
-            </article>
-
-
-            <article class="prompt-card" data-topic="python">
-                <div>
-                    <span class="prompt-topic">python</span>
-                    <h3>Python Debugging Prompt</h3>
-                    <p>Use this when your Python code is not working.</p>
-                </div>
-                <pre><code>Act as a senior Python developer. I will paste my code and error. Explain the problem in simple words, show the corrected code, and give me 3 rules to avoid this mistake again.</code></pre>
-                <button class="copy-btn" type="button">Copy prompt</button>
-            </article>
-
-
-            <article class="prompt-card" data-topic="design">
-                <div>
-                    <span class="prompt-topic">design</span>
-                    <h3>Design Improvement Prompt</h3>
-                    <p>Use this to improve a poster, thumbnail, or website section.</p>
-                </div>
-                <pre><code>Act as a professional graphic designer. Review my design idea for [PROJECT]. Suggest better layout, colors, font style, spacing, and a stronger call to action.</code></pre>
-                <button class="copy-btn" type="button">Copy prompt</button>
-            </article>
-
-                </div>
-            </div>
-        </section>
-
-        <section class="section contact-section" id="contact">
-            <div class="section-shell contact-panel">
-                <div>
-                    <p class="section-kicker">Contact</p>
-                    <h2>Let us build, learn, and grow together.</h2>
-                    <p>Available for student guidance, skill training, portfolio building, prompt engineering, and beginner-friendly digital projects.</p>
-                </div>
-                <div class="contact-links">
-                    <a class="button primary" href="mailto:your.email@example.com">Email me</a>
-                    <a class="button secondary" href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
-                    <a class="button secondary" href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
-                    <span>+92 000 0000000</span>
-                    <span>Pakistan</span>
-                </div>
-            </div>
-        </section>
+      <section class="section order" id="order">
+        <div class="order__panel pull">
+          <h2 class="section__title">Ready to order?</h2>
+          <p>Free home delivery within 5 km on orders above Rs 1000. Open 10:00 AM to 11:45 PM.</p>
+          <div class="order__actions">
+            <a class="btn btn--gold" href="tel:03189659090">Call Branch 1</a>
+            <a class="btn btn--ghost" href="https://wa.me/923189659090" target="_blank" rel="noreferrer">WhatsApp</a>
+          </div>
+          <p class="order__mgmt">
+            Complaints &amp; suggestions:
+            <a href="tel:03485922580">Syed Abdul Hadi</a>
+            ·
+            <a href="tel:03419097057">Syed Ihsan Ul Hadi</a>
+          </p>
+        </div>
+      </section>
     </main>
 
-    <script type="module" src="main.js"></script>
-</body>
+    <footer class="footer">
+      <div class="footer__brand">
+        <span class="nav__mark">Town</span>
+        <span class="nav__name">Pizza Hut</span>
+        <p>The Name of Quality · Family Restaurant</p>
+      </div>
+      <div class="footer__social">
+        <a href="#" aria-label="TikTok">TikTok</a>
+        <a href="#" aria-label="Facebook">Facebook</a>
+        <a href="#" aria-label="Instagram">Instagram</a>
+      </div>
+      <p class="footer__copy">© <span id="year"></span> Town Pizza Hut. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
