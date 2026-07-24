@@ -66,8 +66,11 @@ in `index.html`.
   MP4, muted, ideally 8–15s and web-optimised). No code change needed.
 - **Hero poster:** `public/images/hero-poster.svg` shows before the video
   plays / when reduced-motion is on — swap for a real still frame if you like.
-- **Burger showcase image:** replace `public/images/burger-menu.svg` (or drop
-  in a `.jpg`/`.png` and update the `<img src>` in `index.html`).
+- **Food photography:** the real product shots live in `public/images/food/`
+  (`burger.png` — background removed, `pizza.jpg`, `fried-chicken.jpg`,
+  `fried-chicken-cinematic.jpg`). Replace any of them with your own photos of
+  the same name to update the burgers showcase, the pizza feature banner, the
+  cinematic fried-chicken band, and the burger-deal thumbnails.
 - **Social share image:** replace `public/images/og-cover.svg`.
 - **Bring back the 3D pizza:** import `initPizzaScene` from
   `src/pizza-scene.js` and mount it onto a `<canvas>` in any section.

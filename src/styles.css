@@ -763,6 +763,103 @@ main {
   border-color: transparent;
 }
 
+/* Burger product shot as a thumbnail chip on each burger-deal card. */
+.card__thumb {
+  align-self: flex-start;
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: radial-gradient(circle at 50% 42%, rgba(224, 167, 86, 0.32), rgba(18, 12, 7, 0.92));
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.4);
+}
+
+.card__thumb img {
+  width: 92px;
+  transform: translateY(-6px);
+  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.55));
+}
+
+/* -------------------------------------------------------------------------
+   Menu pizza feature banner
+   ------------------------------------------------------------------------- */
+.menu__feature {
+  position: relative;
+  margin: 0 auto clamp(26px, 4vw, 42px);
+  border-radius: calc(var(--radius) + 6px);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  aspect-ratio: 16 / 6;
+}
+
+.menu__feature img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.06) saturate(1.1);
+}
+
+.menu__feature-cap {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: clamp(16px, 3vw, 30px);
+  background: linear-gradient(0deg, rgba(6, 4, 2, 0.88), transparent);
+}
+
+.menu__feature-cap .eyebrow {
+  margin: 0;
+}
+
+.menu__feature-cap strong {
+  font-family: 'Bebas Neue', sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+  letter-spacing: 0.03em;
+}
+
+/* -------------------------------------------------------------------------
+   Full-bleed cinematic food band (fried chicken)
+   ------------------------------------------------------------------------- */
+.foodband {
+  position: relative;
+  z-index: 2;
+  height: clamp(300px, 46vh, 520px);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.foodband__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(1.12) saturate(1.18);
+}
+
+.foodband__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 120% at 50% 50%, rgba(6, 4, 2, 0.18), rgba(6, 4, 2, 0.74)),
+    linear-gradient(0deg, rgba(6, 4, 2, 0.6), transparent 60%);
+}
+
+.foodband__copy {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 20px;
+}
+
 /* -------------------------------------------------------------------------
    Premium feature pizzas
    ------------------------------------------------------------------------- */
@@ -1013,13 +1110,50 @@ main {
 
 .burgers__visual {
   position: relative;
-  border-radius: calc(var(--radius) + 8px);
-  overflow: hidden;
+  padding: 0 0 46px 22px;
+}
+
+.food-shot {
+  margin: 0;
+}
+
+/* Burger presented as a premium product shot on a warm spotlight. */
+.food-shot--burger {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 13;
+  padding: clamp(16px, 4vw, 34px);
+  border-radius: calc(var(--radius) + 10px);
   border: 1px solid var(--line);
+  background:
+    radial-gradient(64% 60% at 50% 46%, rgba(224, 167, 86, 0.3), transparent 72%),
+    radial-gradient(140% 140% at 50% 40%, rgba(30, 20, 12, 0.92), rgba(9, 6, 4, 0.97));
+  box-shadow: var(--shadow), var(--shadow-gold);
+  overflow: hidden;
+}
+
+.food-shot--burger img {
+  width: min(100%, 470px);
+  filter: drop-shadow(0 28px 30px rgba(0, 0, 0, 0.55));
+  animation: floaty 6.5s ease-in-out infinite;
+}
+
+/* Fried-chicken accent overlapping the burger card. */
+.food-shot--chicken {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 3;
+  width: clamp(116px, 30%, 172px);
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 3px solid rgba(9, 6, 4, 0.92);
   box-shadow: var(--shadow);
 }
 
-.burgers__visual img {
+.food-shot--chicken img {
   width: 100%;
   height: 100%;
   object-fit: cover;

@@ -32,9 +32,17 @@ const listItems = (items) =>
 /* ---------- card builders ---------- */
 
 function dealCard(deal, variant = 'deal') {
+  // Burger deals carry the real burger product shot as a thumbnail.
+  const thumb =
+    variant === 'burger'
+      ? `<div class="card__thumb" aria-hidden="true">
+           <img src="/images/food/burger.png" alt="" loading="lazy" />
+         </div>`
+      : ''
   return `
     <article class="card card--${variant} reveal-card" tabindex="0">
       <div class="card__glow" aria-hidden="true"></div>
+      ${thumb}
       <header class="card__head">
         <h3 class="card__name">${esc(deal.name)}</h3>
         ${deal.tag ? `<span class="card__tag">${esc(deal.tag)}</span>` : ''}
