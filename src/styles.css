@@ -75,17 +75,21 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: center;
+  /* Cinematic punch: crisp, high-contrast, richly saturated footage. */
+  filter: contrast(1.16) saturate(1.22) brightness(1.03);
+  transform: translateZ(0); /* promote to its own layer for smooth playback */
 }
 
-/* Base dim + warm vignette so the footage reads as a subtle ambient layer. */
+/* Cinematic vignette + faint warm tint. Kept light so the hero footage reads
+   vivid and high-contrast; the darker wash over the content below (main) is
+   what dims the video into a subtle ambient layer there. */
 .bg-video__veil {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(1200px 800px at 78% -10%, rgba(224, 167, 86, 0.1), transparent 60%),
-    radial-gradient(900px 700px at 8% 12%, rgba(192, 54, 31, 0.08), transparent 55%),
-    radial-gradient(120% 120% at 50% 30%, rgba(8, 5, 3, 0.35) 40%, rgba(8, 5, 3, 0.72) 100%),
-    linear-gradient(160deg, rgba(9, 6, 4, 0.55), rgba(10, 7, 5, 0.62));
+    radial-gradient(1200px 820px at 80% -8%, rgba(224, 167, 86, 0.12), transparent 60%),
+    radial-gradient(130% 130% at 50% 40%, transparent 42%, rgba(5, 3, 2, 0.72) 100%),
+    linear-gradient(0deg, rgba(5, 3, 2, 0.34) 0%, rgba(5, 3, 2, 0.08) 48%, rgba(5, 3, 2, 0.2) 100%);
 }
 
 ::selection {
@@ -426,15 +430,16 @@ ul {
   overflow: hidden;
 }
 
-/* In the hero the background video reads more vividly; this scrim only darkens
-   the left third so the headline and buttons stay legible over the footage. */
+/* In the hero the background video reads vivid and high-contrast; this scrim
+   only darkens the left column (behind the copy) and the very bottom edge so
+   the headline and buttons stay razor-legible while the footage stays punchy. */
 .hero__scrim {
   position: absolute;
   inset: 0;
   z-index: 0;
   background:
-    linear-gradient(90deg, rgba(8, 5, 3, 0.88) 0%, rgba(8, 5, 3, 0.55) 34%, rgba(8, 5, 3, 0) 66%),
-    linear-gradient(0deg, rgba(8, 5, 3, 0.6) 0%, transparent 30%);
+    linear-gradient(90deg, rgba(5, 3, 2, 0.92) 0%, rgba(5, 3, 2, 0.5) 30%, rgba(5, 3, 2, 0.05) 60%, transparent 100%),
+    linear-gradient(0deg, rgba(5, 3, 2, 0.82) 0%, transparent 34%);
 }
 
 /* Content below the hero sits on a dark wash so the fixed video only whispers
