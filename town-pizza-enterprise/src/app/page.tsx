@@ -1,4 +1,4 @@
-import { HeroProduct } from "@/components/sections/HeroProduct";
+import { VideoHero } from "@/components/sections/VideoHero";
 import { Featured } from "@/components/sections/Featured";
 import { MenuSection } from "@/components/sections/MenuSection";
 import { Customizer } from "@/components/sections/Customizer";
@@ -15,7 +15,7 @@ import { FAQ } from "@/components/sections/FAQ";
 export default function Home() {
   return (
     <>
-      <HeroProduct />
+      <VideoHero />
       <Featured />
       <MenuSection />
       <Customizer />
