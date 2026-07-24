@@ -1,19 +1,19 @@
-/* Isolated video-hero styles — scoped CSS Module, no global collisions. */
+/* Isolated video-hero styles — scoped CSS Module. Video-forward: the media is
+   the star, overlay is minimal so it never collides with content in the video. */
 
 .hero {
   position: relative;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: center;
   text-align: center;
-  padding: 7rem 6vw 5rem;
+  padding: 6rem 6vw 3.5rem;
   overflow: hidden;
   isolation: isolate;
 }
 
-/* full-bleed background media */
 .media {
   position: absolute;
   inset: 0;
@@ -26,81 +26,72 @@
   height: 100%;
   object-fit: cover;
 }
-/* dark scrim so the copy stays legible over any frame */
+/* light top wash for nav legibility + stronger bottom gradient for the CTA bar */
 .scrim {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background:
-    linear-gradient(to bottom, rgba(20, 8, 9, 0.6), rgba(20, 8, 9, 0.3) 42%, rgba(20, 8, 9, 0.9)),
-    radial-gradient(circle at 50% 40%, transparent 55%, rgba(20, 8, 9, 0.5));
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 8, 9, 0.45) 0%,
+    rgba(20, 8, 9, 0) 22%,
+    rgba(20, 8, 9, 0) 48%,
+    rgba(20, 8, 9, 0.72) 82%,
+    rgba(20, 8, 9, 0.95) 100%
+  );
 }
 
+/* minimal bottom-anchored copy — no giant headline competing with the video */
 .copy {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.9rem;
+  max-width: 640px;
 }
-.eyebrow {
-  margin: 0;
-  font-family: var(--font-oswald), sans-serif;
-  font-size: 12.5px;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  color: #f6d67a;
-  opacity: 0;
-  animation: fadeUp 0.8s 0.3s forwards;
-}
-.title {
+.tagline {
   margin: 0;
   font-family: var(--font-playfair), serif;
   font-weight: 900;
-  line-height: 0.88;
-  font-size: clamp(44px, 9.5vw, 108px);
+  font-style: italic;
+  font-size: clamp(20px, 3.2vw, 34px);
+  line-height: 1.2;
   color: #fdf6e9;
-  text-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 3px 24px rgba(0, 0, 0, 0.85);
   text-wrap: balance;
   opacity: 0;
-  animation: fadeUp 0.9s 0.45s forwards;
+  animation: fadeUp 0.9s 0.4s forwards;
 }
-.title span {
-  color: #e11b22;
-}
-.gold {
-  display: block;
-  margin-top: 14px;
-  font-family: var(--font-oswald), sans-serif;
-  font-weight: 600;
-  font-size: 0.28em;
-  letter-spacing: 8px;
+.tagline em {
   color: #e8b53f;
+  font-style: italic;
 }
 .sub {
   margin: 0;
-  max-width: 560px;
-  font-size: clamp(15px, 2.2vw, 18px);
-  line-height: 1.6;
+  font-family: var(--font-oswald), sans-serif;
+  letter-spacing: 1px;
+  font-size: clamp(12px, 1.6vw, 14px);
+  text-transform: uppercase;
   color: #f3e4c8;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
   opacity: 0;
-  animation: fadeUp 0.9s 0.6s forwards;
+  animation: fadeUp 0.9s 0.55s forwards;
 }
 .cta {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 14px;
   justify-content: center;
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
   opacity: 0;
-  animation: fadeUp 0.9s 0.75s forwards;
+  animation: fadeUp 0.9s 0.7s forwards;
 }
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(22px);
   }
   to {
     opacity: 1;
@@ -109,21 +100,16 @@
 }
 
 .scroll {
-  position: absolute;
-  bottom: 22px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
+  margin-top: 1.6rem;
   font-family: var(--font-oswald), sans-serif;
   font-size: 10px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: rgba(246, 214, 122, 0.65);
+  color: rgba(246, 214, 122, 0.6);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .eyebrow,
-  .title,
+  .tagline,
   .sub,
   .cta {
     animation: none;
