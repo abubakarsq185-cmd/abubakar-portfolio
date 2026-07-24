@@ -60,6 +60,23 @@
       <p class="loader__text">Baking the perfect slice…</p>
     </div>
 
+    <!-- Site-wide cinematic background video (dim, plays behind all content) -->
+    <div class="bg-video" aria-hidden="true">
+      <video
+        class="bg-video__el"
+        id="bgVideo"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        poster="/images/hero-poster.svg"
+      >
+        <source src="/videos/hero.mp4" type="video/mp4" />
+      </video>
+      <div class="bg-video__veil"></div>
+    </div>
+
     <div class="noise" aria-hidden="true"></div>
     <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
@@ -84,21 +101,7 @@
 
     <main id="top">
       <section class="hero">
-        <div class="hero__video-wrap" aria-hidden="true">
-          <video
-            class="hero__video"
-            id="heroVideo"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="auto"
-            poster="/images/hero-poster.svg"
-          >
-            <source src="/videos/hero.mp4" type="video/mp4" />
-          </video>
-          <div class="hero__scrim"></div>
-        </div>
+        <div class="hero__scrim" aria-hidden="true"></div>
 
         <div class="hero__copy">
           <p class="hero__eyebrow reveal-up">Family Restaurant · Since forever hungry</p>

@@ -18,11 +18,11 @@ import { initMotion } from './motion.js'
 
 mountAll()
 initMotion()
-setupHeroVideo()
+setupBackgroundVideo()
 
-// Cinematic hero video: honour autoplay policies and reduced-motion.
-function setupHeroVideo() {
-  const video = document.getElementById('heroVideo')
+// Site-wide cinematic background video: honour autoplay policies and reduced-motion.
+function setupBackgroundVideo() {
+  const video = document.getElementById('bgVideo')
   if (!video) return
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches

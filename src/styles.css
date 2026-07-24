@@ -44,19 +44,48 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  background: #0a0705; /* fallback base behind the video */
 }
 
 body {
   margin: 0;
   font-family: 'Outfit', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   color: var(--ink);
-  background:
-    radial-gradient(1200px 800px at 78% -10%, rgba(224, 167, 86, 0.12), transparent 60%),
-    radial-gradient(900px 700px at 8% 12%, rgba(192, 54, 31, 0.1), transparent 55%),
-    linear-gradient(160deg, #0b0705, #120b06 45%, #0a0604);
+  background: transparent; /* let the fixed background video show through */
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+/* -------------------------------------------------------------------------
+   Site-wide cinematic background video
+   ------------------------------------------------------------------------- */
+.bg-video {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-video__el {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Base dim + warm vignette so the footage reads as a subtle ambient layer. */
+.bg-video__veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1200px 800px at 78% -10%, rgba(224, 167, 86, 0.1), transparent 60%),
+    radial-gradient(900px 700px at 8% 12%, rgba(192, 54, 31, 0.08), transparent 55%),
+    radial-gradient(120% 120% at 50% 30%, rgba(8, 5, 3, 0.35) 40%, rgba(8, 5, 3, 0.72) 100%),
+    linear-gradient(160deg, rgba(9, 6, 4, 0.55), rgba(10, 7, 5, 0.62));
 }
 
 ::selection {
@@ -397,29 +426,29 @@ ul {
   overflow: hidden;
 }
 
-/* Full-bleed cinematic video background */
-.hero__video-wrap {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-.hero__video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-}
-
-/* Legibility scrim: dark on the left where copy sits, warm vignette all round */
+/* In the hero the background video reads more vividly; this scrim only darkens
+   the left third so the headline and buttons stay legible over the footage. */
 .hero__scrim {
   position: absolute;
   inset: 0;
+  z-index: 0;
   background:
-    linear-gradient(90deg, rgba(8, 5, 3, 0.94) 0%, rgba(8, 5, 3, 0.7) 34%, rgba(8, 5, 3, 0.15) 62%, rgba(8, 5, 3, 0.35) 100%),
-    linear-gradient(0deg, rgba(8, 5, 3, 0.85) 0%, transparent 34%),
-    radial-gradient(120% 90% at 50% 30%, transparent 55%, rgba(8, 5, 3, 0.6) 100%);
+    linear-gradient(90deg, rgba(8, 5, 3, 0.88) 0%, rgba(8, 5, 3, 0.55) 34%, rgba(8, 5, 3, 0) 66%),
+    linear-gradient(0deg, rgba(8, 5, 3, 0.6) 0%, transparent 30%);
+}
+
+/* Content below the hero sits on a dark wash so the fixed video only whispers
+   through behind the cards — dim, low-contrast, exactly as requested. */
+main {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 82vh,
+    rgba(8, 5, 3, 0.9) 108vh,
+    rgba(8, 5, 3, 0.92) 100%
+  );
 }
 
 .hero__copy {
@@ -1247,7 +1276,7 @@ ul {
   gap: 24px;
   padding: clamp(40px, 6vw, 70px) clamp(18px, 6vw, 84px);
   border-top: 1px solid var(--line);
-  background: rgba(8, 5, 3, 0.6);
+  background: rgba(8, 5, 3, 0.92);
 }
 
 .footer__brand {
