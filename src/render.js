@@ -97,9 +97,18 @@ function splitMenu(group) {
       </li>`,
     )
     .join('')
+  const banner =
+    group.image && group.imageStyle === 'banner'
+      ? `<div class="split-menu__banner"><img src="${group.image}" alt="${esc(group.title)}" loading="lazy" /></div>`
+      : ''
+  const thumb =
+    group.image && group.imageStyle === 'thumb'
+      ? `<span class="split-menu__thumb" aria-hidden="true"><img src="${group.image}" alt="" loading="lazy" /></span>`
+      : ''
   return `
-    <div class="split-menu reveal-card">
-      <h3 class="split-menu__title">${esc(group.title)}</h3>
+    <div class="split-menu reveal-card${group.imageStyle === 'banner' ? ' split-menu--banner' : ''}">
+      ${banner}
+      <h3 class="split-menu__title">${thumb}<span>${esc(group.title)}</span></h3>
       <ul class="split-menu__list">${rows}</ul>
     </div>`
 }
@@ -144,14 +153,33 @@ export function mountAll() {
   fill(
     'sideMenus',
     [
-      splitMenu({ title: 'Burgers', items: burgers }),
-      splitMenu({ title: 'Fried Chicken', items: friedChicken }),
-      splitMenu({ title: 'Shawarmas & Rolls', items: shawarmas }),
-    ].join(''),
+      { title: 'Burgers', items: burgers, image: '/images/menu/burgers.jpg', imageStyle: 'banner' },
+      { title: 'Fried Chicken', items: friedChicken, image: '/images/menu/fried-chicken.jpg', imageStyle: 'banner' },
+      { title: 'Shawarmas & Rolls', items: shawarmas, image: '/images/menu/shawarma.jpg', imageStyle: 'banner' },
+    ]
+      .map(splitMenu)
+      .join(''),
   )
   fill('burgerDeals', burgerDeals.map((d) => dealCard(d, 'burger')).join(''))
 
-  fill('specialItemsGrid', specialItems.map(splitMenu).join(''))
+  // Small photo thumbnails cropped from the printed menu, one per column.
+  // Full literal paths (not built at runtime) so the single-file bundler can
+  // inline them as data URIs.
+  const itemThumb = {
+    'Rice & Noodles': '/images/menu/rice.jpg',
+    Soups: '/images/menu/soup.jpg',
+    'Fries & Salad': '/images/menu/fries.jpg',
+    'Cold Drinks': '/images/menu/drinks.jpg',
+    'Ice Cream (1 Scoop)': '/images/menu/icecream.jpg',
+  }
+  fill(
+    'specialItemsGrid',
+    specialItems
+      .map((g) =>
+        splitMenu(itemThumb[g.title] ? { ...g, image: itemThumb[g.title], imageStyle: 'thumb' } : g),
+      )
+      .join(''),
+  )
   fill('branchesGrid', branches.map(branchCard).join(''))
 
   const year = document.getElementById('year')

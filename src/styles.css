@@ -1062,19 +1062,66 @@ main {
 }
 
 .split-menu {
-  padding: clamp(20px, 2.6vw, 30px);
+  --pad: clamp(20px, 2.6vw, 30px);
+  padding: var(--pad);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--panel);
   backdrop-filter: blur(var(--glass-blur));
+  overflow: hidden;
+}
+
+.split-menu--banner {
+  padding-top: 0;
+}
+
+/* Full-width photo header cropped from the printed menu. */
+.split-menu__banner {
+  position: relative;
+  margin: 0 calc(-1 * var(--pad)) 18px;
+  height: clamp(124px, 16vw, 168px);
+}
+
+.split-menu__banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.split-menu__banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, var(--panel) 2%, rgba(24, 17, 11, 0) 48%);
 }
 
 .split-menu__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 1.5rem;
   letter-spacing: 0.04em;
   color: var(--gold-soft);
   margin-bottom: 16px;
+}
+
+/* Small round photo thumbnail beside a column title. */
+.split-menu__thumb {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.35);
+}
+
+.split-menu__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .split-menu__list {
