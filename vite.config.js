@@ -23,8 +23,9 @@ export default defineConfig({
       ? {}
       : {
           output: {
+            // three is only pulled in if the optional 3D scene is re-enabled;
+            // Rollup will create the chunk automatically when it is imported.
             manualChunks: {
-              three: ['three'],
               gsap: ['gsap'],
             },
           },

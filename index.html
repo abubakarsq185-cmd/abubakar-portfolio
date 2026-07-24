@@ -84,8 +84,21 @@
 
     <main id="top">
       <section class="hero">
-        <div class="hero__glow" aria-hidden="true"></div>
-        <div class="hero__heat" aria-hidden="true"></div>
+        <div class="hero__video-wrap" aria-hidden="true">
+          <video
+            class="hero__video"
+            id="heroVideo"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+            poster="/images/hero-poster.svg"
+          >
+            <source src="/videos/hero.mp4" type="video/mp4" />
+          </video>
+          <div class="hero__scrim"></div>
+        </div>
 
         <div class="hero__copy">
           <p class="hero__eyebrow reveal-up">Family Restaurant · Since forever hungry</p>
@@ -108,11 +121,9 @@
           </div>
         </div>
 
-        <div class="hero__stage" id="pizzaStage">
-          <canvas id="pizzaCanvas" aria-label="3D rotating Chicken Tikka BBQ pizza"></canvas>
-          <div class="hero__hint">Drag to spin · Auto 360°</div>
-          <div class="hero__shadow" aria-hidden="true"></div>
-        </div>
+        <a class="hero__scroll" href="#deals" aria-label="Scroll to deals">
+          <span></span>
+        </a>
       </section>
 
       <section class="section deals" id="deals">

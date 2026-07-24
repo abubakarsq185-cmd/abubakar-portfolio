@@ -391,43 +391,82 @@ ul {
 .hero {
   position: relative;
   min-height: 100svh;
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
+  display: flex;
   align-items: center;
-  gap: clamp(24px, 5vw, 72px);
-  padding: clamp(120px, 16vh, 180px) clamp(18px, 6vw, 84px) clamp(60px, 10vh, 100px);
+  padding: clamp(120px, 16vh, 180px) clamp(18px, 6vw, 84px) clamp(80px, 12vh, 120px);
+  overflow: hidden;
 }
 
-.hero__glow,
-.hero__heat {
+/* Full-bleed cinematic video background */
+.hero__video-wrap {
   position: absolute;
-  pointer-events: none;
+  inset: 0;
   z-index: 0;
 }
 
-.hero__glow {
-  top: -10%;
-  right: -5%;
-  width: 60vw;
-  height: 60vw;
-  max-width: 780px;
-  max-height: 780px;
-  background: radial-gradient(circle, rgba(224, 167, 86, 0.28), transparent 62%);
-  filter: blur(20px);
+.hero__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
-.hero__heat {
-  bottom: -10%;
-  left: 20%;
-  width: 40vw;
-  height: 40vw;
-  background: radial-gradient(circle, rgba(192, 54, 31, 0.16), transparent 65%);
+/* Legibility scrim: dark on the left where copy sits, warm vignette all round */
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(8, 5, 3, 0.94) 0%, rgba(8, 5, 3, 0.7) 34%, rgba(8, 5, 3, 0.15) 62%, rgba(8, 5, 3, 0.35) 100%),
+    linear-gradient(0deg, rgba(8, 5, 3, 0.85) 0%, transparent 34%),
+    radial-gradient(120% 90% at 50% 30%, transparent 55%, rgba(8, 5, 3, 0.6) 100%);
 }
 
 .hero__copy {
   position: relative;
   z-index: 2;
   max-width: 640px;
+}
+
+/* Animated scroll cue */
+.hero__scroll {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  width: 26px;
+  height: 42px;
+  border: 2px solid rgba(247, 240, 228, 0.4);
+  border-radius: 999px;
+  display: grid;
+  place-items: start center;
+  padding-top: 7px;
+}
+
+.hero__scroll span {
+  width: 4px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--gold-soft);
+  animation: scrollcue 1.8s ease-in-out infinite;
+}
+
+@keyframes scrollcue {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .hero__eyebrow {
@@ -507,68 +546,6 @@ ul {
   height: 7px;
   border-radius: 50%;
   background: var(--gold);
-}
-
-.hero__stage {
-  position: relative;
-  z-index: 1;
-  aspect-ratio: 1 / 1;
-  width: 100%;
-  max-height: 76vh;
-}
-
-#pizzaCanvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-  touch-action: pan-y;
-}
-
-/* Graceful fallback if WebGL is unavailable. */
-.hero__stage--fallback {
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 40%, var(--gold-soft), var(--gold-deep) 70%, #5a3311);
-  box-shadow: var(--shadow-gold);
-}
-
-.hero__stage--fallback #pizzaCanvas {
-  display: none;
-}
-
-.hero__stage--fallback::after {
-  content: '🍕';
-  font-size: clamp(6rem, 20vw, 12rem);
-}
-
-.hero__hint {
-  position: absolute;
-  bottom: 6%;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 8px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: rgba(10, 7, 5, 0.55);
-  backdrop-filter: blur(10px);
-  color: var(--muted);
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
-.hero__shadow {
-  position: absolute;
-  bottom: 4%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 62%;
-  height: 44px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.6), transparent 70%);
-  filter: blur(12px);
-  z-index: -1;
 }
 
 /* -------------------------------------------------------------------------
@@ -1348,31 +1325,18 @@ ul {
    ------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .hero {
-    grid-template-columns: 1fr;
-    text-align: center;
-    min-height: auto;
+    align-items: flex-end;
+    padding-bottom: clamp(90px, 16vh, 140px);
   }
 
   .hero__copy {
     max-width: 640px;
-    margin-inline: auto;
-    order: 2;
   }
 
-  .hero__actions,
-  .hero__meta,
-  .hero__brand {
-    align-items: center;
-    justify-content: center;
-  }
-
-  .hero__lead {
-    margin-inline: auto;
-  }
-
-  .hero__stage {
-    order: 1;
-    max-height: 52vh;
+  .hero__scrim {
+    background:
+      linear-gradient(0deg, rgba(8, 5, 3, 0.95) 8%, rgba(8, 5, 3, 0.55) 42%, rgba(8, 5, 3, 0.25) 72%, rgba(8, 5, 3, 0.4) 100%),
+      radial-gradient(120% 90% at 50% 30%, transparent 45%, rgba(8, 5, 3, 0.6) 100%);
   }
 
   .burgers__layout {

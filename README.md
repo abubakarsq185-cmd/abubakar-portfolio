@@ -1,8 +1,12 @@
 # Town Pizza Hut — Cinematic Restaurant Website
 
-A premium, single-page restaurant experience built around a fully procedural
-**3D pizza hero**. Dark, warm, editorial visual language with scroll-driven
+A premium, single-page restaurant experience with a **full-screen cinematic
+video hero**. Dark, warm, editorial visual language with scroll-driven
 storytelling, smooth scrolling, and a fast, code-split build.
+
+> An interactive **3D pizza** (Three.js) also ships in `src/pizza-scene.js`.
+> It is currently unused — the hero plays the promo video instead — but stays
+> in the codebase so it can be re-mounted into any section at any time.
 
 **The Name of Quality** · Family Restaurant · Free delivery within 5 km on
 orders above Rs 1000.
@@ -12,7 +16,8 @@ orders above Rs 1000.
 | Concern              | Tool                                              |
 | -------------------- | ------------------------------------------------- |
 | Build / dev server   | [Vite](https://vitejs.dev)                        |
-| 3D hero              | [Three.js](https://threejs.org) (procedural pizza, PBR env, steam, bloom) |
+| Hero                 | Full-screen autoplay promo video (`public/videos/hero.mp4`) |
+| Optional 3D          | [Three.js](https://threejs.org) procedural pizza in `src/pizza-scene.js` |
 | Animation            | [GSAP](https://gsap.com) + ScrollTrigger          |
 | Smooth scroll        | [Lenis](https://lenis.darkroom.engineering)       |
 | Fonts                | Bebas Neue · Cormorant Garamond · Outfit (Google) |
@@ -57,12 +62,15 @@ in `index.html`.
 
 ## Replacing placeholder assets
 
+- **Hero video:** replace `public/videos/hero.mp4` with your own clip (H.264
+  MP4, muted, ideally 8–15s and web-optimised). No code change needed.
+- **Hero poster:** `public/images/hero-poster.svg` shows before the video
+  plays / when reduced-motion is on — swap for a real still frame if you like.
 - **Burger showcase image:** replace `public/images/burger-menu.svg` (or drop
   in a `.jpg`/`.png` and update the `<img src>` in `index.html`).
 - **Social share image:** replace `public/images/og-cover.svg`.
-- **Real pizza model:** `src/pizza-scene.js` is self-contained and procedural.
-  To use a Blender export instead, load a `.glb` with `GLTFLoader` and swap it
-  for the `pizza` group — the lighting, steam, and interaction stay as-is.
+- **Bring back the 3D pizza:** import `initPizzaScene` from
+  `src/pizza-scene.js` and mount it onto a `<canvas>` in any section.
 
 ## Performance & quality notes
 
