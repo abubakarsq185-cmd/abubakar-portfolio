@@ -643,35 +643,34 @@ blockquote {
 
 /* ---- Hero background video / photo ---- */
 .hero { background: var(--maroon-900); }
+/* Full-frame cinematic video — the ENTIRE wide shot is always visible
+   (letterboxed into the royal maroon ground), never cropped. */
 .hero-bg {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: center 42%;
+    object-fit: contain;
+    object-position: center;
     z-index: 0;
+    background: transparent;
     filter: saturate(1.06) contrast(1.02);
-    transform: scale(1.03);
-    animation: heroDrift 22s ease-in-out infinite alternate;
 }
-@keyframes heroDrift {
-    from { transform: scale(1.03) translateY(0); }
-    to   { transform: scale(1.09) translateY(-1.5%); }
-}
+/* Keep the title legible without hiding the footage: darken only the
+   top and bottom edges, leave the middle of the video clear. */
 .hero-overlay {
     z-index: 1;
     background:
-        linear-gradient(180deg, rgba(24,5,10,0.58) 0%, rgba(24,5,10,0.30) 38%, rgba(46,10,19,0.86) 100%),
-        radial-gradient(120% 85% at 50% 12%, rgba(0,0,0,0.10), rgba(0,0,0,0.50) 92%);
+        linear-gradient(180deg, rgba(18,4,8,0.62) 0%, rgba(18,4,8,0.12) 34%, rgba(18,4,8,0.10) 60%, rgba(46,10,19,0.82) 100%);
     opacity: 1;
 }
 .hero::before { z-index: 1; }
 .hero-content { z-index: 2; }
 .scroll-hint { z-index: 2; }
-@media (prefers-reduced-motion: reduce) {
-    .hero-bg { animation: none; transform: scale(1.03); }
-}
+/* stronger shadows so text reads over any part of the footage */
+.hero-title { text-shadow: 0 2px 24px rgba(0,0,0,0.75), 0 0 8px rgba(0,0,0,0.5); }
+.hero-tag { text-shadow: 0 2px 14px rgba(0,0,0,0.75); }
+.eyebrow { text-shadow: 0 1px 10px rgba(0,0,0,0.6); }
 
 /* ---- Photos used inside media frames ---- */
 img.frame {
