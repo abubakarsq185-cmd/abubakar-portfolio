@@ -672,39 +672,31 @@ blockquote {
 .hero-tag { text-shadow: 0 2px 14px rgba(0,0,0,0.75); }
 .eyebrow { text-shadow: 0 1px 10px rgba(0,0,0,0.6); }
 
-/* ---- Premium promise band above the hero ---- */
-.hero-band {
-    background:
-        linear-gradient(90deg, var(--maroon-900) 0%, var(--maroon-700) 50%, var(--maroon-900) 100%);
-    border-top: 1px solid rgba(200,162,75,0.30);
-    border-bottom: 1px solid rgba(200,162,75,0.30);
-    box-shadow: inset 0 0 40px rgba(0,0,0,0.35);
-}
-.hero-band-inner {
-    width: min(var(--shell), 92%);
-    margin-inline: auto;
+/* ---- Premium promise line under the wordmark ---- */
+.hero-promise {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 0.4rem 1.5rem;
-    padding: 0.95rem 0;
+    gap: 0.3rem 1.2rem;
+    margin: 1rem auto 0;
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: clamp(1rem, 2vw, 1.5rem);
-    letter-spacing: 0.12em;
+    font-size: clamp(0.95rem, 1.9vw, 1.55rem);
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--gold-300);
-    text-align: center;
-    text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+    text-wrap: balance;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.75);
 }
-.hero-band .band-dot {
+.hero-promise .sep {
     color: var(--gold-500);
-    font-size: 0.62em;
+    font-size: 0.6em;
     letter-spacing: 0;
+    transform: translateY(-1px);
 }
 @media (max-width: 560px) {
-    .hero-band-inner { gap: 0.2rem 0.8rem; letter-spacing: 0.06em; padding: 0.7rem 0; }
+    .hero-promise { gap: 0.2rem 0.7rem; letter-spacing: 0.1em; }
 }
 
 /* ---- Hero content anchored high (title sits toward the top) ---- */
