@@ -59,6 +59,7 @@
     <main>
         <!-- ============ HERO ============ -->
         <section class="hero" id="home">
+            <img class="hero-bg" src="images/grand-aisle.jpg" alt="The grand Dewan-e-Khas marquee — a mirrored floral aisle beneath twin crystal chandeliers" fetchpriority="high">
             <div class="hero-overlay" aria-hidden="true"></div>
             <div class="hero-content">
                 <p class="eyebrow">Est. in the heart of Swat · Kanju Township</p>
@@ -81,9 +82,9 @@
         <!-- ============ ABOUT ============ -->
         <section class="section about" id="about">
             <div class="shell two-col">
-                <div class="about-media" aria-hidden="true">
-                    <div class="frame frame-tall"><span>Venue photo</span></div>
-                    <div class="frame frame-wide"><span>Signature dish</span></div>
+                <div class="about-media">
+                    <img class="frame frame-tall" src="images/marquee-canopy.jpg" alt="White draped wedding canopy framed by floral pillars over an illuminated glass floor" loading="lazy">
+                    <img class="frame frame-wide" src="images/stage-floral-arch.jpg" alt="Ornate silver settee beneath a lush arch of roses in blush, ivory and violet" loading="lazy">
                 </div>
                 <div class="about-copy">
                     <p class="kicker">Our Story</p>
@@ -209,9 +210,9 @@
                     </ul>
                     <a class="button primary" href="#contact">Enquire about a date</a>
                 </div>
-                <div class="marquee-media" aria-hidden="true">
-                    <div class="frame frame-tall"><span>Marquee interior</span></div>
-                    <div class="frame frame-wide"><span>Wedding stage setup</span></div>
+                <div class="marquee-media">
+                    <img class="frame frame-tall" src="images/stage-swing.jpg" alt="Bridal stage with cascading florals and a decorative jhoola swing" loading="lazy">
+                    <img class="frame frame-wide" src="images/hall-lounge.jpg" alt="Emerald velvet lounge seating and marble tables facing the floral stage" loading="lazy">
                 </div>
             </div>
         </section>
@@ -239,16 +240,25 @@
             <div class="shell">
                 <div class="section-head center">
                     <p class="kicker">Gallery</p>
-                    <h2>A taste of the experience.</h2>
-                    <p class="lead">Replace these placeholders with high-resolution photos of the venue, dishes and events.</p>
+                    <h2>Step inside the grandeur.</h2>
+                    <p class="lead">Real moments from the Dewan-e-Khas marquee. Tap any image to view it full-screen.</p>
                 </div>
-                <div class="gallery-grid" aria-hidden="true">
-                    <div class="frame g1"><span>Dining hall</span></div>
-                    <div class="frame g2"><span>Buffet spread</span></div>
-                    <div class="frame g3"><span>BBQ platter</span></div>
-                    <div class="frame g4"><span>Wedding stage</span></div>
-                    <div class="frame g5"><span>Cakes</span></div>
-                    <div class="frame g6"><span>Valley view</span></div>
+                <div class="gallery-grid" id="galleryGrid">
+                    <button class="gtile g-wide" type="button">
+                        <img src="images/grand-aisle.jpg" alt="Full view of the marquee with a mirrored floral aisle beneath twin illuminated ceiling installations" loading="lazy">
+                    </button>
+                    <button class="gtile" type="button">
+                        <img src="images/marquee-canopy.jpg" alt="White draped canopy with floral pillars over an illuminated glass floor" loading="lazy">
+                    </button>
+                    <button class="gtile" type="button">
+                        <img src="images/stage-swing.jpg" alt="Bridal stage with cascading florals and a decorative swing" loading="lazy">
+                    </button>
+                    <button class="gtile" type="button">
+                        <img src="images/stage-floral-arch.jpg" alt="Silver settee beneath a dense arch of blush, ivory and violet roses" loading="lazy">
+                    </button>
+                    <button class="gtile" type="button">
+                        <img src="images/hall-lounge.jpg" alt="Emerald velvet lounges and marble tables beneath a golden floral chandelier" loading="lazy">
+                    </button>
                 </div>
             </div>
         </section>
@@ -357,6 +367,17 @@
             </div>
         </section>
     </main>
+
+    <!-- ============ LIGHTBOX ============ -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+        <button class="lb-close" id="lbClose" type="button" aria-label="Close">×</button>
+        <button class="lb-nav lb-prev" id="lbPrev" type="button" aria-label="Previous image">‹</button>
+        <figure class="lb-figure">
+            <img id="lbImg" src="" alt="">
+            <figcaption id="lbCaption"></figcaption>
+        </figure>
+        <button class="lb-nav lb-next" id="lbNext" type="button" aria-label="Next image">›</button>
+    </div>
 
     <!-- ============ FOOTER ============ -->
     <footer class="site-footer">
