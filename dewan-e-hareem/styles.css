@@ -599,7 +599,49 @@ blockquote {
    Real venue imagery — hero, framed photos, gallery, lightbox
    ============================================================ */
 
-/* ---- Hero background photo ---- */
+/* ---- Brand logo (header + footer) ---- */
+.brand-logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px rgba(200,162,75,0.55), 0 4px 14px rgba(0,0,0,0.35);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.brand:hover .brand-logo {
+    transform: rotate(-4deg) scale(1.05);
+    box-shadow: 0 0 0 1px rgba(217,185,104,0.9), 0 6px 20px rgba(200,162,75,0.4);
+}
+.footer-logo {
+    width: 64px;
+    height: 64px;
+    box-shadow: 0 0 0 1px rgba(200,162,75,0.5), 0 6px 18px rgba(0,0,0,0.5);
+}
+
+/* ---- Hero crest emblem ---- */
+.hero-emblem {
+    width: 132px;
+    height: 132px;
+    border-radius: 50%;
+    margin: 0 auto 1.4rem;
+    display: block;
+    box-shadow: 0 0 0 1px rgba(217,185,104,0.6),
+                0 0 44px rgba(200,162,75,0.45),
+                0 14px 40px rgba(0,0,0,0.5);
+    animation: emblemFloat 6s ease-in-out infinite;
+}
+@keyframes emblemFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .hero-emblem { animation: none; }
+}
+@media (max-width: 520px) {
+    .hero-emblem { width: 100px; height: 100px; margin-bottom: 1rem; }
+}
+
+/* ---- Hero background video / photo ---- */
 .hero { background: var(--maroon-900); }
 .hero-bg {
     position: absolute;

@@ -13,6 +13,8 @@
     <meta property="og:description" content="Where royal hospitality meets the beauty of the Swat Valley. Fine dining, wedding marquee & artisan bakery.">
     <meta property="og:locale" content="en_PK">
 
+    <link rel="icon" type="image/png" href="images/favicon-32.png">
+    <link rel="apple-touch-icon" href="images/logo-180.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -33,7 +35,7 @@
     <!-- ============ HEADER / NAV ============ -->
     <header class="site-header" id="siteHeader">
         <a class="brand" href="#home" aria-label="Dewan-e-Hareem home">
-            <span class="brand-mark" aria-hidden="true">دح</span>
+            <img class="brand-logo" src="images/logo-180.png" alt="Dewan-e-Hareem emblem" width="46" height="46">
             <span class="brand-text">
                 <strong>Dewan-e-Hareem</strong>
                 <em>Fine Dining · Events · Bakery</em>
@@ -59,9 +61,14 @@
     <main>
         <!-- ============ HERO ============ -->
         <section class="hero" id="home">
-            <img class="hero-bg" src="images/grand-aisle.jpg" alt="The grand Dewan-e-Khas marquee — a mirrored floral aisle beneath twin crystal chandeliers" fetchpriority="high">
+            <video class="hero-bg" autoplay muted loop playsinline preload="metadata"
+                   poster="media/hero-poster.jpg" aria-hidden="true">
+                <source src="media/hero.webm" type="video/webm">
+                <source src="media/hero.mp4" type="video/mp4">
+            </video>
             <div class="hero-overlay" aria-hidden="true"></div>
             <div class="hero-content">
+                <img class="hero-emblem" src="images/logo-medallion.png" alt="Dewan-e-Hareem crest" width="132" height="132">
                 <p class="eyebrow">Est. in the heart of Swat · Kanju Township</p>
                 <h1 class="hero-title">Dewan-e-Hareem</h1>
                 <p class="hero-tag">Royal hospitality, jaw-dropping food, and unforgettable celebrations —
@@ -383,7 +390,7 @@
     <footer class="site-footer">
         <div class="shell footer-inner">
             <div class="footer-brand">
-                <span class="brand-mark" aria-hidden="true">دح</span>
+                <img class="brand-logo footer-logo" src="images/logo-180.png" alt="Dewan-e-Hareem emblem" width="64" height="64">
                 <div>
                     <strong>Dewan-e-Hareem</strong>
                     <p>Fine dining · Dewan-e-Khas marquee · Hareem Bakers<br>Kanju, Mingora — Swat Valley, KPK, Pakistan</p>

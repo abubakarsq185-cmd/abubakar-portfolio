@@ -10,7 +10,19 @@ Built from the public-sources business profile. No build step, no dependencies �
 ## Files
 - `index.html` — page structure & content
 - `styles.css` — royal Mughal-inspired theme (maroon / gold / cream), fully responsive
-- `main.js` — mobile nav, sticky header, scroll-reveal animations, footer year
+- `main.js` — mobile nav, sticky header, scroll-reveal animations, gallery lightbox, footer year
+- `media/` — cinematic hero video (`hero.mp4` + `hero.webm`) and `hero-poster.jpg`
+- `images/` — venue photography + the gold medallion logo (`logo-medallion.png`, `logo-180.png`, `favicon-32.png`)
+
+## Hero video
+The hero is a colour-graded, upscaled (1080p) loop of the venue's illuminated exterior —
+warm cinematic grade, subtle vignette, muted autoplay loop with `playsinline` and a poster
+fallback. Served as WebM (VP9) with an MP4 fallback. Source clip was enhanced with ffmpeg.
+
+## Logo
+The client's gold medallion is cropped to a transparent circular emblem and used as the
+header/footer brand mark (with a hover shimmer) and as a glowing, gently-floating crest in
+the hero. It also drives the favicon and Apple touch icon.
 
 ## Sections
 Hero · About · Services · Menu & Pricing · Dewan-e-Khas marquee · Hareem Bakers ·
