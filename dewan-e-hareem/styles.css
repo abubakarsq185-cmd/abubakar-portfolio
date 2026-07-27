@@ -672,6 +672,45 @@ blockquote {
 .hero-tag { text-shadow: 0 2px 14px rgba(0,0,0,0.75); }
 .eyebrow { text-shadow: 0 1px 10px rgba(0,0,0,0.6); }
 
+/* ---- Premium hero statement ---- */
+.hero-lead {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.15rem, 2.6vw, 1.85rem);
+    line-height: 1.2;
+    color: var(--gold-300);
+    letter-spacing: 0.02em;
+    text-wrap: balance;
+    margin: 1.5rem auto 0;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.15rem 0.9rem;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.6);
+}
+.hero-lead .dot {
+    color: var(--gold-500);
+    font-size: 0.7em;
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+.hero-tag {
+    max-width: 620px;
+    margin-top: 1.1rem;
+}
+.hero-tag em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--gold-300);
+}
+/* refined divider under the title, tighter to the new lead line */
+.hero-title::after { margin-bottom: 0.2rem; }
+@media (max-width: 520px) {
+    .hero-lead { gap: 0.1rem 0.6rem; }
+    .hero-tag br { display: none; }
+}
+
 /* ---- Photos used inside media frames ---- */
 img.frame {
     display: block;
