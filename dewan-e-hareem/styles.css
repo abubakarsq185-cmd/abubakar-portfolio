@@ -339,7 +339,31 @@ blockquote {
     transition: transform 0.25s, border-color 0.25s, background 0.25s;
 }
 .service-card:hover { transform: translateY(-6px); border-color: var(--gold-400); background: rgba(255,255,255,0.07); }
-.service-icon { font-size: 2.4rem; margin-bottom: 1rem; }
+.service-icon {
+    width: 82px;
+    height: 82px;
+    margin: 0 auto 1.2rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 34%, rgba(200,162,75,0.22), rgba(20,6,11,0.65) 72%);
+    border: 1px solid rgba(200,162,75,0.55);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 0 22px rgba(0,0,0,0.45),
+        0 10px 26px rgba(0,0,0,0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.service-icon svg { width: 46px; height: 46px; display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.45)); }
+.service-card:hover .service-icon {
+    transform: translateY(-2px) scale(1.04);
+    border-color: var(--gold-400);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.15),
+        inset 0 0 24px rgba(0,0,0,0.45),
+        0 0 26px rgba(200,162,75,0.35),
+        0 12px 30px rgba(0,0,0,0.45);
+}
 .service-card h3 { font-size: 1.4rem; color: var(--gold-300); margin-bottom: 0.6rem; }
 .service-card p { color: var(--cream-200); font-size: 0.92rem; }
 
