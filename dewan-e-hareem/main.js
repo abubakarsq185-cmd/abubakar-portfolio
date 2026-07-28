@@ -128,3 +128,19 @@
   var yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 })();
+
+
+/* MENU-FILTER - category chips */
+(function(){
+  var mf=document.getElementById('menuFilter');
+  var cat=document.getElementById('menuCatalog');
+  if(!mf||!cat) return;
+  var chips=mf.querySelectorAll('.mf-chip');
+  var blocks=cat.querySelectorAll('.menu-cat-block');
+  mf.addEventListener('click',function(e){
+    var btn=e.target.closest('.mf-chip'); if(!btn) return;
+    chips.forEach(function(c){ c.classList.toggle('active', c===btn); });
+    var f=btn.getAttribute('data-filter');
+    blocks.forEach(function(b){ b.style.display=(f==='all'||b.getAttribute('data-cat')===f)?'':'none'; });
+  });
+})();
