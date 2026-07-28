@@ -65,3 +65,23 @@ The remaining grey striped `.frame` blocks (bakery section) are placeholders. Re
 <img src="images/signature-cake.jpg" alt="Signature cake from Hareem Bakers" class="frame frame-square">
 ```
 Keep the `frame` class — `img.frame` is already styled with `object-fit: cover`.
+
+## Owner mode (editable menu)
+The menu is fully editable by the owner — no coding.
+
+1. Scroll to the footer and click **"Owner login"**. Enter the passcode
+   (default **`hareem2026`** — change it in `main.js`, `var PASS`).
+2. An **Owner mode** bar appears. Every dish shows an **Edit** badge — tap a dish to:
+   - **Upload / change / replace its photo**
+   - **Edit its name**
+   - **Edit its price**
+   Then **Save**. Use **Reset item** to restore the original.
+3. Edits are stored in that browser. To publish them to everyone:
+   - Click **⬇ Export menu file** → downloads `menu-data.json`.
+   - Put that file at `data/menu-data.json` on the live site.
+   - All visitors now see the updated photos/names/prices.
+   - **⬆ Import** loads a `menu-data.json` back into the editor.
+
+> Note: this is a client-side editor (the site is static). The passcode is
+> basic gating, not strong security. For multi-user live editing without the
+> export/import step, a small backend/CMS would be needed — happy to add one.
