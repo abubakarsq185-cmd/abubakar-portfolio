@@ -330,3 +330,43 @@
     rd.readAsText(f);
   });
 })();
+
+/* SHOWCASE-SLIDER — auto-rotating food carousel (1.5s, infinite, crossfade) */
+(function () {
+  "use strict";
+  var slider = document.getElementById("slider");
+  if (!slider) return;
+  var slides = Array.prototype.slice.call(slider.querySelectorAll(".slide"));
+  if (slides.length < 2) return;
+  var dotsWrap = document.getElementById("sliderDots");
+  var DELAY = 1500, i = 0, timer = null;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var dots = [];
+  if (dotsWrap) {
+    slides.forEach(function (s, idx) {
+      var b = document.createElement("button");
+      b.type = "button"; b.setAttribute("aria-label", "Go to slide " + (idx + 1));
+      if (idx === 0) b.className = "active";
+      b.addEventListener("click", function () { show(idx); restart(); });
+      dotsWrap.appendChild(b); dots.push(b);
+    });
+  }
+  function show(n) {
+    slides[i].classList.remove("is-active"); if (dots[i]) dots[i].classList.remove("active");
+    i = (n + slides.length) % slides.length;
+    slides[i].classList.add("is-active"); if (dots[i]) dots[i].classList.add("active");
+  }
+  function next() { show(i + 1); }
+  function start() { if (!reduce && !timer) timer = window.setInterval(next, DELAY); }
+  function stop() { window.clearInterval(timer); timer = null; }
+  function restart() { stop(); start(); }
+
+  var nx = document.getElementById("sliderNext"), pv = document.getElementById("sliderPrev");
+  if (nx) nx.addEventListener("click", function () { next(); restart(); });
+  if (pv) pv.addEventListener("click", function () { show(i - 1); restart(); });
+  slider.addEventListener("mouseenter", stop);
+  slider.addEventListener("mouseleave", start);
+  document.addEventListener("visibilitychange", function () { document.hidden ? stop() : start(); });
+  start();
+})();

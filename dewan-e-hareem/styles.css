@@ -1167,3 +1167,40 @@ body.admin-on .dish:hover { outline: 2px solid var(--gold-400); outline-offset: 
     opacity: 0; transition: opacity .25s;
 }
 .admin-toast.show { opacity: 1; }
+
+/* SHOWCASE-SLIDER */
+.showcase { background: linear-gradient(180deg, var(--cream-50), var(--cream-100)); }
+.slider {
+    position: relative; width: min(1180px, 94%); margin: 0 auto;
+    aspect-ratio: 16 / 9; border-radius: 20px; overflow: hidden;
+    background: #140409; border: 1px solid rgba(200,162,75,.4); box-shadow: var(--shadow-md);
+}
+.slide { position: absolute; inset: 0; opacity: 0; transition: opacity .9s ease; }
+.slide.is-active { opacity: 1; }
+.slide::before {
+    content: ""; position: absolute; inset: 0; z-index: 0;
+    background: var(--bg) center / cover no-repeat;
+    filter: blur(26px) brightness(.45); transform: scale(1.18);
+}
+.slide img {
+    position: absolute; inset: 0; margin: auto; z-index: 1;
+    max-width: 100%; max-height: 100%; object-fit: contain;
+    box-shadow: 0 12px 44px rgba(0,0,0,.55);
+}
+.slider-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+    width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+    background: rgba(20,4,9,.5); border: 1px solid rgba(200,162,75,.5); color: var(--cream-50);
+    font-size: 1.7rem; line-height: 1; cursor: pointer; transition: background .2s, transform .2s;
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+}
+.slider-arrow:hover { background: rgba(200,162,75,.4); }
+.slider-arrow.prev { left: 1rem; }
+.slider-arrow.next { right: 1rem; }
+.slider-dots { position: absolute; left: 0; right: 0; bottom: 1rem; z-index: 3; display: flex; gap: .5rem; justify-content: center; }
+.slider-dots button { width: 9px; height: 9px; padding: 0; border: none; border-radius: 50%; background: rgba(255,255,255,.45); cursor: pointer; transition: background .25s, width .25s; }
+.slider-dots button.active { background: var(--gold-400); width: 24px; border-radius: 6px; }
+@media (max-width: 640px) {
+    .slider { aspect-ratio: 4 / 5; }
+    .slider-arrow { width: 38px; height: 38px; font-size: 1.4rem; }
+}
