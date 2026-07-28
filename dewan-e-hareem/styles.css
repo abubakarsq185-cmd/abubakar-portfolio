@@ -699,32 +699,34 @@ blockquote {
     .hero-promise { gap: 0.2rem 0.7rem; letter-spacing: 0.1em; }
 }
 
-/* ---- Hero content anchored to the top; wordmark on a dark nameplate ---- */
+/* ---- Hero content anchored to the top; premium metallic-gold wordmark ---- */
 .hero { place-items: start center; }
 .hero-top { padding-top: clamp(1.5rem, 7vh, 3.5rem); }
-.hero-top .hero-title { margin: 0; }
-.hero-top .hero-title::after { display: none; }       /* divider replaced by the plate */
-.hero-top .hero-promise { margin: 1.25rem auto 0; }   /* now sits below the plate */
+.hero-top .hero-title {
+    margin: 0;
+    white-space: nowrap;                       /* always one line */
+    font-size: clamp(1.9rem, 8.5vw, 5.9rem);
+    line-height: 1.05;
+    letter-spacing: 0.015em;
+    text-shadow: none;
+    /* brushed-gold text fill */
+    background: linear-gradient(180deg, #f9edbe 0%, #ecd79c 20%, #d9b968 42%, #c8a24b 58%, #9c7a2e 80%, #e7cf93 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 3px 22px rgba(0,0,0,0.78));
+}
+.hero-top .hero-title::after {
+    display: block;
+    width: clamp(70px, 12vw, 130px);
+    height: 2px;
+    margin: 1.05rem auto 0;
+    background: linear-gradient(90deg, transparent, var(--gold-400), transparent);
+    opacity: 0.9;
+}
+.hero-top .hero-promise { margin: 1.15rem auto 0; }
 .hero-top .hero-actions { margin-top: 2rem; }
-
-/* Premium dark nameplate around the wordmark */
-.hero-title .plate {
-    display: inline-block;
-    padding: 0.28em 0.9em 0.36em;
-    background: linear-gradient(180deg, rgba(8,2,4,0.72) 0%, rgba(8,2,4,0.58) 100%);
-    border: 1px solid rgba(200,162,75,0.5);
-    border-radius: 16px;
-    box-shadow:
-        0 18px 50px rgba(0,0,0,0.55),
-        inset 0 0 0 1px rgba(0,0,0,0.35),
-        inset 0 0 34px rgba(0,0,0,0.4);
-    -webkit-backdrop-filter: blur(3px);
-    backdrop-filter: blur(3px);
-    text-shadow: 0 2px 20px rgba(0,0,0,0.8);
-}
-@media (max-width: 520px) {
-    .hero-title .plate { padding: 0.24em 0.7em 0.32em; border-radius: 12px; }
-}
 
 /* ---- Premium hero statement (legacy — kept for the sub-line styles) ---- */
 .hero-lead {
