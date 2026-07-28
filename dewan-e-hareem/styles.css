@@ -699,11 +699,9 @@ blockquote {
     .hero-promise { gap: 0.2rem 0.7rem; letter-spacing: 0.1em; }
 }
 
-/* ---- Hero content anchored high (title sits toward the top) ---- */
-.hero { place-items: start center; }
-.hero-top {
-    padding-top: clamp(2.5rem, 12vh, 7rem);
-}
+/* ---- Hero content centered (classic composition) ---- */
+.hero { place-items: center; }
+.hero-top { padding-top: 0; }
 .hero-top .hero-actions { margin-top: 2rem; }
 
 /* ---- Premium hero statement (legacy — kept for the sub-line styles) ---- */
