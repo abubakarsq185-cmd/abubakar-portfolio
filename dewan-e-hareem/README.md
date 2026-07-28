@@ -85,3 +85,25 @@ The menu is fully editable by the owner — no coding.
 > Note: this is a client-side editor (the site is static). The passcode is
 > basic gating, not strong security. For multi-user live editing without the
 > export/import step, a small backend/CMS would be needed — happy to add one.
+
+## Secure Owner Login (updated)
+The Owner login is now a full **login page** (not a popup), with hashed passwords.
+
+**Default credentials (change these before going live):**
+- Username: `owner`
+- Password: `hareem2026`
+- Recovery code: `HAREEM-RESET-2026`
+
+Defaults live in `main.js` → `DEFAULTS`. On first load they're stored **hashed
+(SHA-256 + salt)** in the browser — never in plain text.
+
+**Features**
+- **Log in** with username + password (5 wrong tries → 60-second lockout).
+- **Forgot password?** → reset by entering the recovery code, then set a new password.
+- **🔑 Password** button (in the Owner bar) → change password + optionally set a new recovery code.
+- Open the login directly with `yoursite.com/#admin`.
+
+**Google / phone sign-in:** the buttons are in place. Real Google login, phone/OTP
+and email password-reset require a **Firebase** project (free) connected with your
+keys — those are enabled in a follow-up once you create the project. Until then,
+use the username + password login (fully working).

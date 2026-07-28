@@ -753,7 +753,51 @@
         <div class="admin-bar-actions">
             <button type="button" class="abtn" id="adminExport">⬇ Export menu file</button>
             <label class="abtn" for="adminImport">⬆ Import<input type="file" id="adminImport" accept="application/json" hidden></label>
+            <button type="button" class="abtn" id="adminChangePass">🔑 Password</button>
             <button type="button" class="abtn ghost" id="adminExit">Exit</button>
+        </div>
+    </div>
+
+    <!-- ============ OWNER LOGIN (secure) ============ -->
+    <div class="auth-modal" id="authModal" hidden role="dialog" aria-modal="true" aria-label="Owner login">
+        <div class="auth-card">
+            <button type="button" class="admin-close" id="authClose" aria-label="Close">×</button>
+            <img class="auth-logo" src="images/logo-180.png" alt="Dewan-e-Hareem" width="64" height="64">
+
+            <div class="auth-view" data-view="login">
+                <h3>Owner Login</h3>
+                <p class="auth-sub">Sign in to manage your menu</p>
+                <label class="admin-field">Username<input id="authUser" type="text" autocomplete="username" placeholder="owner"></label>
+                <label class="admin-field">Password<input id="authPass" type="password" autocomplete="current-password"></label>
+                <p class="auth-msg" id="authMsgLogin" role="alert" hidden></p>
+                <button type="button" class="abtn primary auth-full" id="authLoginBtn">Log in</button>
+                <button type="button" class="auth-link" id="authForgotLink">Forgot password?</button>
+                <div class="auth-sep"><span>or</span></div>
+                <button type="button" class="abtn auth-full auth-social" id="authGoogle"><span class="g-badge">G</span> Continue with Google</button>
+                <button type="button" class="abtn auth-full auth-social" id="authPhone">📱 Continue with phone number</button>
+                <p class="auth-note" id="authSocialNote" hidden></p>
+            </div>
+
+            <div class="auth-view" data-view="forgot" hidden>
+                <h3>Reset password</h3>
+                <p class="auth-sub">Enter your recovery code to set a new password.</p>
+                <label class="admin-field">Recovery code<input id="authRecovery" type="text" placeholder="HAREEM-RESET-2026"></label>
+                <label class="admin-field">New password<input id="authNewPass" type="password"></label>
+                <p class="auth-msg" id="authMsgForgot" role="alert" hidden></p>
+                <button type="button" class="abtn primary auth-full" id="authResetBtn">Reset password</button>
+                <button type="button" class="auth-link" id="authBackLink">← Back to login</button>
+            </div>
+
+            <div class="auth-view" data-view="change" hidden>
+                <h3>Change password</h3>
+                <p class="auth-sub">Update your password and (optionally) recovery code.</p>
+                <label class="admin-field">Current password<input id="authCurPass" type="password"></label>
+                <label class="admin-field">New password<input id="authChgNew" type="password"></label>
+                <label class="admin-field">New recovery code <span class="opt">(optional)</span><input id="authChgRec" type="text"></label>
+                <p class="auth-msg" id="authMsgChange" role="alert" hidden></p>
+                <button type="button" class="abtn primary auth-full" id="authChangeBtn">Update password</button>
+                <button type="button" class="auth-link" id="authBackLink2">Cancel</button>
+            </div>
         </div>
     </div>
 
