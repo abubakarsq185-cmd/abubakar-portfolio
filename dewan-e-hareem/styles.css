@@ -660,8 +660,9 @@ blockquote {
    top and bottom edges, leave the middle of the video clear. */
 .hero-overlay {
     z-index: 1;
+    /* deeper top scrim so the relocated text band reads dark with strong contrast */
     background:
-        linear-gradient(180deg, rgba(18,4,8,0.62) 0%, rgba(18,4,8,0.12) 34%, rgba(18,4,8,0.10) 60%, rgba(46,10,19,0.82) 100%);
+        linear-gradient(180deg, rgba(12,3,6,0.86) 0%, rgba(12,3,6,0.62) 20%, rgba(16,4,8,0.14) 40%, rgba(18,4,8,0.10) 62%, rgba(46,10,19,0.82) 100%);
     opacity: 1;
 }
 .hero::before { z-index: 1; }
@@ -705,8 +706,8 @@ blockquote {
 .hero-top .hero-title {
     margin: 0;
     white-space: nowrap;                       /* always one line */
-    font-size: clamp(1.9rem, 8.5vw, 5.9rem);
-    line-height: 1.05;
+    font-size: clamp(1.75rem, 6.6vw, 4rem);    /* slightly smaller so it fits high in the dark band */
+    line-height: 1.04;
     letter-spacing: 0.015em;
     text-shadow: none;
     /* brushed-gold text fill */
@@ -719,14 +720,19 @@ blockquote {
 }
 .hero-top .hero-title::after {
     display: block;
-    width: clamp(70px, 12vw, 130px);
+    width: clamp(60px, 10vw, 110px);
     height: 2px;
-    margin: 1.05rem auto 0;
+    margin: 0.7rem auto 0;
     background: linear-gradient(90deg, transparent, var(--gold-400), transparent);
     opacity: 0.9;
 }
-.hero-top .hero-promise { margin: 1.15rem auto 0; }
-.hero-top .hero-actions { margin-top: 2rem; }
+.hero-top .hero-promise {
+    margin: 0.8rem auto 0;
+    font-size: clamp(0.8rem, 1.5vw, 1.15rem);   /* clearly smaller than the heading */
+    letter-spacing: 0.14em;
+    gap: 0.2rem 1rem;
+}
+.hero-top .hero-actions { margin-top: 1.9rem; }
 
 /* ---- Premium hero statement (legacy — kept for the sub-line styles) ---- */
 .hero-lead {
