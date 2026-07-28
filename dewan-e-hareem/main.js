@@ -231,6 +231,15 @@
   var exitBtn = document.getElementById("adminExit");
   if (exitBtn) exitBtn.addEventListener("click", exitAdmin);
 
+  // Direct admin link: opening the site with #admin (or #owner) prompts for the passcode.
+  function maybeHashLogin() {
+    if (/^#(admin|owner)$/i.test(location.hash) && !document.body.classList.contains("admin-on")) {
+      loginBtn.click();
+    }
+  }
+  window.addEventListener("hashchange", maybeHashLogin);
+  maybeHashLogin();
+
   // ---- edit modal ----
   var modal = document.getElementById("adminModal");
   var mTitle = document.getElementById("adminModalTitle");
