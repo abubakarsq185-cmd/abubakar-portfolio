@@ -850,7 +850,31 @@ blockquote {
     letter-spacing: 0.14em;
     gap: 0.2rem 1rem;
 }
-.hero-top .hero-actions { margin-top: 1.9rem; }
+.hero-top .hero-actions { margin-top: 1.7rem; }
+/* slightly smaller, cleaner hero buttons */
+.hero-top .hero-actions .button { padding: 0.72rem 1.55rem; font-size: 0.9rem; }
+
+/* subtle premium sub-brand line (replaces the badge boxes) */
+.hero-brands {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.35rem 1.1rem;
+    margin: 1.9rem auto 0;
+    max-width: 720px;
+    font-size: clamp(0.72rem, 1.4vw, 0.86rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cream-200);
+    text-shadow: 0 1px 8px rgba(0,0,0,0.7);
+}
+.hero-brands b { color: var(--gold-300); font-weight: 600; }
+.hero-brands .hb-dot { color: var(--gold-500); }
+@media (max-width: 560px) {
+    .hero-brands { gap: 0.2rem 0.7rem; letter-spacing: 0.1em; }
+    .hero-brands .hb-dot { display: none; }
+}
 
 /* ---- Premium hero statement (legacy — kept for the sub-line styles) ---- */
 .hero-lead {
