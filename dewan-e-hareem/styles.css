@@ -1320,3 +1320,7 @@ body.admin-on .dish:hover { outline: 2px solid var(--gold-400); outline-offset: 
 }
 @media (max-width: 900px) { .info-grid { columns: 2 220px; } }
 @media (max-width: 520px) { .info-grid { columns: 1; } }
+
+/* About: single Our Story image */
+.about-media.single { grid-template-columns: 1fr; }
+img.frame.frame-solo { width: 100%; height: clamp(360px, 52vh, 560px); object-fit: cover; }
