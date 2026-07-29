@@ -219,8 +219,13 @@
 
   // ---- admin mode ----
   var bar = document.getElementById("adminBar");
-  function enterAdmin() { document.body.classList.add("admin-on"); if (bar) bar.hidden = false; say("Owner mode on — tap a dish to edit"); }
-  function exitAdmin() { document.body.classList.remove("admin-on"); if (bar) bar.hidden = true; }
+  function enterAdmin() {
+    document.body.classList.add("admin-on"); if (bar) bar.hidden = false;
+    var t = bar && bar.querySelector(".admin-bar-title");
+    if (t) t.textContent = guestMode ? "🔎 Guest test mode — changes save on this device only" : "👑 Owner mode";
+    say(guestMode ? "Guest test mode — try editing any dish" : "Owner mode on — tap a dish to edit");
+  }
+  function exitAdmin() { document.body.classList.remove("admin-on", "guest-mode"); guestMode = false; if (bar) bar.hidden = true; }
 
   var exitBtn = document.getElementById("adminExit");
   if (exitBtn) exitBtn.addEventListener("click", function () { exitAdmin(); if (CLOUD()) window.DEHCloud.logout(); });
@@ -256,6 +261,8 @@
   var AUTH_KEY = "deh_auth_v1";
   var DEFAULTS = { user: "owner", pass: "hareem2026", recovery: "HAREEM-RESET-2026" };
   var MAX_TRIES = 5, LOCK_MS = 60000;
+  var GUEST_EMAILS = ["abubakar.sq185@gmail.com"];   // emails allowed into guest test mode
+  var guestMode = false;
 
   // compact SHA-256 (works on http, https and file://) ---------------------
   function sha256(ascii) {
@@ -325,7 +332,7 @@
   function q(id) { return document.getElementById(id); }
   function showView(v) {
     authModal.querySelectorAll(".auth-view").forEach(function (el) { el.hidden = el.getAttribute("data-view") !== v; });
-    ["authMsgLogin", "authMsgForgot", "authMsgChange"].forEach(function (id) { var e = q(id); if (e) e.hidden = true; });
+    ["authMsgLogin", "authMsgForgot", "authMsgChange", "authMsgGuest"].forEach(function (id) { var e = q(id); if (e) e.hidden = true; });
   }
   function tweakForCloud() {
     if (!CLOUD() || tweakForCloud._done) return;
@@ -432,6 +439,17 @@
   });
   q("authPhone").addEventListener("click", socialNote);
 
+  // ---- Guest test mode (email-gated, local sandbox) ----
+  q("authGuestLink").addEventListener("click", function () { showView("guest"); setTimeout(function () { q("authGuestEmail").focus(); }, 40); });
+  q("authGuestBack").addEventListener("click", function () { showView("login"); });
+  q("authGuestBtn").addEventListener("click", function () {
+    var em = q("authGuestEmail").value.trim().toLowerCase();
+    if (!em) { msg("authMsgGuest", "Please enter your email."); return; }
+    if (GUEST_EMAILS.indexOf(em) === -1) { msg("authMsgGuest", "This email isn't approved for guest access."); return; }
+    guestMode = true; closeAuth(); document.body.classList.add("guest-mode"); enterAdmin();
+  });
+  q("authGuestEmail").addEventListener("keydown", function (e) { if (e.key === "Enter") q("authGuestBtn").click(); });
+
   // Direct admin link: #admin or #owner opens the login page.
   function maybeHashLogin() {
     if (/^#(admin|owner)$/i.test(location.hash) && !document.body.classList.contains("admin-on")) openAuth("login");
@@ -506,17 +524,17 @@
     if (price) o.price = price;
     if (pendingImg) o.img = pendingImg;
     store[editingId] = o; applyOne(editingId);
-    if (CLOUD()) {
+    if (CLOUD() && !guestMode) {
       window.DEHCloud.save(editingId, o).then(function () { say("Saved to cloud ✓"); })
         .catch(function () { say("Cloud save failed — check connection"); });
-    } else { writeStore(); say("Saved ✓"); }
+    } else { writeStore(); say(guestMode ? "Saved (guest — this device) ✓" : "Saved ✓"); }
     closeEdit();
   });
 
   document.getElementById("adminResetItem").addEventListener("click", function () {
     if (editingId == null) return;
-    if (CLOUD()) { window.DEHCloud.remove(editingId); }
-    delete store[editingId]; if (!CLOUD()) writeStore();
+    if (CLOUD() && !guestMode) { window.DEHCloud.remove(editingId); }
+    delete store[editingId]; if (!CLOUD() || guestMode) writeStore();
     var el = dishEl(editingId); var p = parts(el); var o = orig[editingId];
     if (p.name) p.name.textContent = o.name;
     if (p.price) p.price.textContent = o.price;

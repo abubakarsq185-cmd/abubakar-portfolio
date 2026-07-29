@@ -970,6 +970,16 @@
                 <button type="button" class="abtn auth-full auth-social" id="authGoogle"><span class="g-badge">G</span> Continue with Google</button>
                 <button type="button" class="abtn auth-full auth-social" id="authPhone">📱 Continue with phone number</button>
                 <p class="auth-note" id="authSocialNote" hidden></p>
+                <button type="button" class="auth-link" id="authGuestLink">🔎 Try the menu editor as a guest →</button>
+            </div>
+
+            <div class="auth-view" data-view="guest" hidden>
+                <h3>Guest access</h3>
+                <p class="auth-sub">Enter your approved email to try the menu editor. Changes stay on this device — a safe sandbox to test manageability.</p>
+                <label class="admin-field">Email<input id="authGuestEmail" type="email" autocomplete="email" placeholder="you@email.com"></label>
+                <p class="auth-msg" id="authMsgGuest" role="alert" hidden></p>
+                <button type="button" class="abtn primary auth-full" id="authGuestBtn">Enter as guest</button>
+                <button type="button" class="auth-link" id="authGuestBack">← Back to login</button>
             </div>
 
             <div class="auth-view" data-view="forgot" hidden>
