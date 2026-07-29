@@ -223,7 +223,34 @@
   function exitAdmin() { document.body.classList.remove("admin-on"); if (bar) bar.hidden = true; }
 
   var exitBtn = document.getElementById("adminExit");
-  if (exitBtn) exitBtn.addEventListener("click", exitAdmin);
+  if (exitBtn) exitBtn.addEventListener("click", function () { exitAdmin(); if (CLOUD()) window.DEHCloud.logout(); });
+
+  // Is a Firebase cloud backend connected?
+  function CLOUD() { return !!(window.DEHCloud && window.DEHCloud.enabled); }
+
+  // Apply a full overrides map from the cloud (Firestore); restore originals for removed ids.
+  var cloudPrev = {};
+  function applyCloudMap(map) {
+    map = map || {};
+    Object.keys(cloudPrev).forEach(function (id) {
+      if (!(id in map)) {
+        var el = dishEl(id); if (!el) return; var p = parts(el); var o = orig[id] || {};
+        if (p.name) p.name.textContent = o.name;
+        if (p.price) p.price.textContent = o.price;
+        if (p.img && o.img) { p.img.style.display = ""; p.img.src = o.img; }
+        delete store[id];
+      }
+    });
+    Object.keys(map).forEach(function (id) { store[id] = map[id]; applyOne(id); });
+    cloudPrev = map;
+  }
+
+  // Hooks used by the Firebase module (cloud.js)
+  window.DEH = {
+    enterAdmin: enterAdmin, exitAdmin: exitAdmin, say: say,
+    closeAuth: function () { var m = document.getElementById("authModal"); if (m) m.hidden = true; },
+    applyCloudMap: applyCloudMap
+  };
 
   /* ================= SECURE OWNER LOGIN ================= */
   var AUTH_KEY = "deh_auth_v1";
@@ -300,7 +327,26 @@
     authModal.querySelectorAll(".auth-view").forEach(function (el) { el.hidden = el.getAttribute("data-view") !== v; });
     ["authMsgLogin", "authMsgForgot", "authMsgChange"].forEach(function (id) { var e = q(id); if (e) e.hidden = true; });
   }
-  function openAuth(v) { authModal.hidden = false; showView(v || "login"); var u = q("authUser"); if (v !== "change" && u) { u.value = auth.user; setTimeout(function () { q("authPass").focus(); }, 50); } }
+  function tweakForCloud() {
+    if (!CLOUD() || tweakForCloud._done) return;
+    tweakForCloud._done = true;
+    try {
+      var u = q("authUser"); u.type = "email"; u.placeholder = "you@email.com";
+      if (u.parentNode && u.parentNode.childNodes[0]) u.parentNode.childNodes[0].nodeValue = "Email ";
+      var sub = authModal.querySelector('.auth-view[data-view="login"] .auth-sub'); if (sub) sub.textContent = "Sign in with your email";
+      var rec = q("authRecovery"); rec.placeholder = "you@email.com"; if (rec.parentNode && rec.parentNode.childNodes[0]) rec.parentNode.childNodes[0].nodeValue = "Account email ";
+      var npL = q("authNewPass") && q("authNewPass").parentNode; if (npL) npL.style.display = "none";
+      var fsub = authModal.querySelector('.auth-view[data-view="forgot"] .auth-sub'); if (fsub) fsub.textContent = "Enter your email to get a password-reset link.";
+      var curL = q("authCurPass") && q("authCurPass").parentNode; if (curL) curL.style.display = "none";
+      var recL = q("authChgRec") && q("authChgRec").parentNode; if (recL) recL.style.display = "none";
+      var csub = authModal.querySelector('.auth-view[data-view="change"] .auth-sub'); if (csub) csub.textContent = "Set a new password for your account.";
+    } catch (e) {}
+  }
+  function openAuth(v) {
+    authModal.hidden = false; showView(v || "login"); tweakForCloud();
+    var u = q("authUser");
+    if (v !== "change" && u) { if (!CLOUD()) u.value = auth.user; setTimeout(function () { (CLOUD() ? u : q("authPass")).focus(); }, 50); }
+  }
   function closeAuth() { authModal.hidden = true; }
   function msg(id, text, ok) { var e = q(id); if (!e) return; e.textContent = text; e.className = "auth-msg " + (ok ? "ok" : "err"); e.hidden = false; }
 
@@ -314,6 +360,13 @@
   document.addEventListener("keydown", function (e) { if (!authModal.hidden && e.key === "Escape") closeAuth(); });
 
   q("authLoginBtn").addEventListener("click", function () {
+    if (CLOUD()) {
+      var em = q("authUser").value.trim(), pw = q("authPass").value;
+      msg("authMsgLogin", "Signing in…", true);
+      window.DEHCloud.login(em, pw).then(function () { closeAuth(); q("authPass").value = ""; })
+        .catch(function (e) { msg("authMsgLogin", window.DEHCloud.friendly(e)); });
+      return;
+    }
     var now = Date.now();
     if (auth.lockUntil && now < auth.lockUntil) {
       msg("authMsgLogin", "Too many attempts. Try again in " + Math.ceil((auth.lockUntil - now) / 1000) + "s."); return;
@@ -334,6 +387,12 @@
   q("authForgotLink").addEventListener("click", function () { showView("forgot"); });
   q("authBackLink").addEventListener("click", function () { showView("login"); });
   q("authResetBtn").addEventListener("click", function () {
+    if (CLOUD()) {
+      var em = q("authRecovery").value.trim();
+      window.DEHCloud.reset(em).then(function () { msg("authMsgForgot", "Reset link sent — check your inbox.", true); })
+        .catch(function (e) { msg("authMsgForgot", window.DEHCloud.friendly(e)); });
+      return;
+    }
     var code = q("authRecovery").value.trim().toUpperCase(), np = q("authNewPass").value;
     if (hashWith(auth.rSalt, code) !== auth.rHash) { msg("authMsgForgot", "That recovery code is not correct."); return; }
     if (np.length < 4) { msg("authMsgForgot", "New password must be at least 4 characters."); return; }
@@ -346,6 +405,11 @@
   if (changeBtn) changeBtn.addEventListener("click", function () { openAuth("change"); });
   q("authBackLink2").addEventListener("click", closeAuth);
   q("authChangeBtn").addEventListener("click", function () {
+    if (CLOUD()) {
+      window.DEHCloud.changePass(q("authChgNew").value).then(function () { msg("authMsgChange", "Password updated ✓", true); setTimeout(closeAuth, 1000); })
+        .catch(function (e) { msg("authMsgChange", window.DEHCloud.friendly(e)); });
+      return;
+    }
     var cur = q("authCurPass").value, np = q("authChgNew").value, nr = q("authChgRec").value.trim();
     if (hashWith(auth.pSalt, cur) !== auth.pHash) { msg("authMsgChange", "Current password is incorrect."); return; }
     if (np.length < 4) { msg("authMsgChange", "New password must be at least 4 characters."); return; }
@@ -362,7 +426,10 @@
     n.textContent = "Google & phone sign-in switch on once a Firebase project is connected (free). Ask your developer to add the keys — for now use username & password above.";
     n.hidden = false;
   }
-  q("authGoogle").addEventListener("click", socialNote);
+  q("authGoogle").addEventListener("click", function () {
+    if (CLOUD()) { window.DEHCloud.google().then(function () { closeAuth(); }).catch(function (e) { msg("authMsgLogin", window.DEHCloud.friendly(e)); }); }
+    else socialNote();
+  });
   q("authPhone").addEventListener("click", socialNote);
 
   // Direct admin link: #admin or #owner opens the login page.
@@ -406,11 +473,28 @@
     openEdit(d);
   });
 
+  // compress uploads so they stay small (good for cloud + local)
+  function compress(file, cb) {
+    var rd = new FileReader();
+    rd.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var max = 1200, w = img.width, h = img.height;
+        if (w > max || h > max) { if (w >= h) { h = Math.round(h * max / w); w = max; } else { w = Math.round(w * max / h); h = max; } }
+        try {
+          var c = document.createElement("canvas"); c.width = w; c.height = h;
+          c.getContext("2d").drawImage(img, 0, 0, w, h);
+          cb(c.toDataURL("image/jpeg", 0.82));
+        } catch (e) { cb(rd.result); }
+      };
+      img.onerror = function () { cb(rd.result); };
+      img.src = rd.result;
+    };
+    rd.readAsDataURL(file);
+  }
   if (fImg) fImg.addEventListener("change", function () {
     var f = fImg.files && fImg.files[0]; if (!f) return;
-    var rd = new FileReader();
-    rd.onload = function () { pendingImg = rd.result; showPreview(pendingImg); };
-    rd.readAsDataURL(f);
+    compress(f, function (dataUrl) { pendingImg = dataUrl; showPreview(pendingImg); });
   });
 
   document.getElementById("adminSave").addEventListener("click", function () {
@@ -421,14 +505,18 @@
     if (name) o.name = name;
     if (price) o.price = price;
     if (pendingImg) o.img = pendingImg;
-    store[editingId] = o;
-    writeStore(); applyOne(editingId);
-    closeEdit(); say("Saved ✓");
+    store[editingId] = o; applyOne(editingId);
+    if (CLOUD()) {
+      window.DEHCloud.save(editingId, o).then(function () { say("Saved to cloud ✓"); })
+        .catch(function () { say("Cloud save failed — check connection"); });
+    } else { writeStore(); say("Saved ✓"); }
+    closeEdit();
   });
 
   document.getElementById("adminResetItem").addEventListener("click", function () {
     if (editingId == null) return;
-    delete store[editingId]; writeStore();
+    if (CLOUD()) { window.DEHCloud.remove(editingId); }
+    delete store[editingId]; if (!CLOUD()) writeStore();
     var el = dishEl(editingId); var p = parts(el); var o = orig[editingId];
     if (p.name) p.name.textContent = o.name;
     if (p.price) p.price.textContent = o.price;
