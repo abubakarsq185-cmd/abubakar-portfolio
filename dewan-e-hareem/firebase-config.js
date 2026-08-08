@@ -18,3 +18,10 @@ window.DEH_FIREBASE = {
   messagingSenderId: "PASTE_SENDER_ID",
   appId: "PASTE_APP_ID"
 };
+
+/* Owner allowlist — ONLY these emails may sign in as owner and edit the menu.
+   Use the SAME email(s) you add as users in Firebase Authentication, and the
+   SAME email inside firestore.rules. Everyone else is rejected. */
+window.DEH_OWNERS = [
+  "PASTE_OWNER_EMAIL@example.com"
+];

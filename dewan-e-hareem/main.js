@@ -230,21 +230,28 @@
   var exitBtn = document.getElementById("adminExit");
   if (exitBtn) exitBtn.addEventListener("click", function () { exitAdmin(); if (CLOUD()) window.DEHCloud.logout(); });
 
-  // Is a Firebase cloud backend connected?
+  // Is a Firebase cloud backend connected / configured?
   function CLOUD() { return !!(window.DEHCloud && window.DEHCloud.enabled); }
+  function CONFIGURED() { var c = window.DEH_FIREBASE || {}; return !!(c.apiKey && !/PASTE|YOUR_/.test(c.apiKey)); }
+  function notReady() { return CONFIGURED() && !CLOUD(); }   // keys present but SDK still loading
 
   // Apply a full overrides map from the cloud (Firestore); restore originals for removed ids.
   var cloudPrev = {};
   function applyCloudMap(map) {
     map = map || {};
-    Object.keys(cloudPrev).forEach(function (id) {
-      if (!(id in map)) {
-        var el = dishEl(id); if (!el) return; var p = parts(el); var o = orig[id] || {};
+    // Cloud is authoritative: restore originals for any id (previously cloud-applied
+    // OR left over from local storage) that is no longer in the cloud map.
+    var done = {};
+    Object.keys(cloudPrev).concat(Object.keys(store)).forEach(function (id) {
+      if (done[id] || (id in map)) return; done[id] = 1;
+      var el = dishEl(id);
+      if (el) {
+        var p = parts(el); var o = orig[id] || {};
         if (p.name) p.name.textContent = o.name;
         if (p.price) p.price.textContent = o.price;
         if (p.img && o.img) { p.img.style.display = ""; p.img.src = o.img; }
-        delete store[id];
       }
+      delete store[id];
     });
     Object.keys(map).forEach(function (id) { store[id] = map[id]; applyOne(id); });
     cloudPrev = map;
@@ -374,6 +381,7 @@
         .catch(function (e) { msg("authMsgLogin", window.DEHCloud.friendly(e)); });
       return;
     }
+    if (notReady()) { msg("authMsgLogin", "Connecting to the server… please try again in a moment."); return; }
     var now = Date.now();
     if (auth.lockUntil && now < auth.lockUntil) {
       msg("authMsgLogin", "Too many attempts. Try again in " + Math.ceil((auth.lockUntil - now) / 1000) + "s."); return;
@@ -400,6 +408,7 @@
         .catch(function (e) { msg("authMsgForgot", window.DEHCloud.friendly(e)); });
       return;
     }
+    if (notReady()) { msg("authMsgForgot", "Connecting to the server… please try again in a moment."); return; }
     var code = q("authRecovery").value.trim().toUpperCase(), np = q("authNewPass").value;
     if (hashWith(auth.rSalt, code) !== auth.rHash) { msg("authMsgForgot", "That recovery code is not correct."); return; }
     if (np.length < 4) { msg("authMsgForgot", "New password must be at least 4 characters."); return; }
@@ -417,6 +426,7 @@
         .catch(function (e) { msg("authMsgChange", window.DEHCloud.friendly(e)); });
       return;
     }
+    if (notReady()) { msg("authMsgChange", "Connecting to the server… please try again in a moment."); return; }
     var cur = q("authCurPass").value, np = q("authChgNew").value, nr = q("authChgRec").value.trim();
     if (hashWith(auth.pSalt, cur) !== auth.pHash) { msg("authMsgChange", "Current password is incorrect."); return; }
     if (np.length < 4) { msg("authMsgChange", "New password must be at least 4 characters."); return; }
@@ -435,6 +445,7 @@
   }
   q("authGoogle").addEventListener("click", function () {
     if (CLOUD()) { window.DEHCloud.google().then(function () { closeAuth(); }).catch(function (e) { msg("authMsgLogin", window.DEHCloud.friendly(e)); }); }
+    else if (notReady()) { msg("authMsgLogin", "Connecting to the server… please try again in a moment."); }
     else socialNote();
   });
   q("authPhone").addEventListener("click", socialNote);
@@ -502,7 +513,8 @@
         try {
           var c = document.createElement("canvas"); c.width = w; c.height = h;
           c.getContext("2d").drawImage(img, 0, 0, w, h);
-          cb(c.toDataURL("image/jpeg", 0.82));
+          var isPng = /image\/png/i.test(file.type);   // keep PNG transparency
+          cb(isPng ? c.toDataURL("image/png") : c.toDataURL("image/jpeg", 0.82));
         } catch (e) { cb(rd.result); }
       };
       img.onerror = function () { cb(rd.result); };
@@ -524,16 +536,19 @@
     if (price) o.price = price;
     if (pendingImg) o.img = pendingImg;
     store[editingId] = o; applyOne(editingId);
-    if (CLOUD() && !guestMode) {
+    if (!guestMode && CLOUD()) {
       window.DEHCloud.save(editingId, o).then(function () { say("Saved to cloud ✓"); })
         .catch(function () { say("Cloud save failed — check connection"); });
+    } else if (!guestMode && CONFIGURED()) {
+      say("Connecting to the server… please try again in a moment."); return;
     } else { writeStore(); say(guestMode ? "Saved (guest — this device) ✓" : "Saved ✓"); }
     closeEdit();
   });
 
   document.getElementById("adminResetItem").addEventListener("click", function () {
     if (editingId == null) return;
-    if (CLOUD() && !guestMode) { window.DEHCloud.remove(editingId); }
+    if (!guestMode && CLOUD()) { window.DEHCloud.remove(editingId).catch(function () { say("Cloud delete failed — will re-sync"); }); }
+    else if (!guestMode && CONFIGURED()) { say("Connecting to the server… please try again in a moment."); return; }
     delete store[editingId]; if (!CLOUD() || guestMode) writeStore();
     var el = dishEl(editingId); var p = parts(el); var o = orig[editingId];
     if (p.name) p.name.textContent = o.name;

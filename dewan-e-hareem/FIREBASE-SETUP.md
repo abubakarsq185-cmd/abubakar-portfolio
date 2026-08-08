@@ -19,6 +19,10 @@ that every visitor sees live**, connect a free Firebase project. ~5–10 minutes
 3. **Users** tab → **Add user** → create the owner's email + password (this is the login).
 4. **Settings → Authorized domains** → add your live domain (e.g. `dewanehareem.com`)
    and `localhost` for testing.
+5. **Set the owner email in TWO places** (this is what locks it down so no one else can edit):
+   - `firebase-config.js` → `window.DEH_OWNERS = ["owner@yourdomain.com"]`
+   - `firestore.rules` → replace `PASTE_OWNER_EMAIL@example.com` with the same email.
+   Only this verified email can sign in as owner and write to the menu; everyone else is rejected.
 
 ## 4. Create the database
 1. **Build → Firestore Database → Create database** → **Production mode** → pick a region.

@@ -56,9 +56,22 @@
       friendly: friendly
     };
 
+    var OWNERS = (window.DEH_OWNERS || []).map(function (x) { return String(x).toLowerCase(); });
+    function isOwner(user) {
+      if (!user) return false;
+      if (!OWNERS.length) { console.warn("[Dewan-e-Hareem] DEH_OWNERS is empty — set owner email(s) in firebase-config.js to lock this down."); return true; }
+      return OWNERS.indexOf(String(user.email || "").toLowerCase()) !== -1;
+    }
     AU.onAuthStateChanged(auth, function (user) {
       if (!window.DEH) return;
-      if (user) window.DEH.enterAdmin(); else window.DEH.exitAdmin();
+      if (user && isOwner(user)) { window.DEH.enterAdmin(); }
+      else {
+        window.DEH.exitAdmin();
+        if (user) { // signed in but NOT an approved owner → reject
+          AU.signOut(auth);
+          if (window.DEH.say) window.DEH.say("That account is not an approved owner.");
+        }
+      }
     });
 
     FS.onSnapshot(FS.collection(db, COL), function (snap) {
