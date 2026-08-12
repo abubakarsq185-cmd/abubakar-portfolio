@@ -31,8 +31,8 @@ export default async function DashboardPage({
           </p>
         </div>
         <div className="row">
-          <Link className="btn btn-secondary btn-sm" href="/dashboard/attendance">
-            Check a member in
+          <Link className="btn btn-secondary btn-sm" href="/dashboard/members">
+            Find a member
           </Link>
           <Link className="btn btn-primary btn-sm" href="/dashboard/enrol">
             Enrol a member
@@ -104,8 +104,8 @@ export default async function DashboardPage({
             <Panel
               title="Overdue payments"
               action={
-                <Link className="btn btn-sm btn-secondary" href="/dashboard/billing?filter=overdue">
-                  Billing
+                <Link className="btn btn-sm btn-secondary" href="/dashboard/members?risk=unpaid">
+                  See who owes
                 </Link>
               }
               flush

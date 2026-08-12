@@ -11,40 +11,27 @@ async function signOutAction(): Promise<void> {
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { actor, organizationName } = await requireStaff();
 
+  // Only ship links to screens that exist. Everything else is tracked in the
+  // README's status table rather than dangled as a dead link.
   const nav: Array<{ heading: string; links: Array<{ href: string; label: string; show: boolean }> }> = [
     {
       heading: 'Overview',
-      links: [
-        { href: '/dashboard', label: 'Dashboard', show: true },
-        { href: '/dashboard/reports', label: 'Reports', show: can(actor, 'reports.read') },
-      ],
+      links: [{ href: '/dashboard', label: 'Dashboard', show: true }],
     },
     {
       heading: 'People',
       links: [
-        { href: '/dashboard/members', label: 'Members', show: can(actor, 'members.read.all') || can(actor, 'members.read.assigned') },
+        {
+          href: '/dashboard/members',
+          label: 'Members',
+          show: can(actor, 'members.read.all') || can(actor, 'members.read.assigned'),
+        },
         { href: '/dashboard/enrol', label: 'Enrol a member', show: can(actor, 'members.write') },
-        { href: '/dashboard/leads', label: 'Leads & trials', show: can(actor, 'leads.read') },
-        { href: '/dashboard/staff', label: 'Staff', show: can(actor, 'staff.read') },
       ],
     },
     {
       heading: 'Coaching',
-      links: [
-        { href: '/dashboard/coaching', label: 'Coaching queue', show: can(actor, 'checkins.review') },
-        { href: '/dashboard/programs', label: 'Programs & exercises', show: can(actor, 'content.write') },
-        { href: '/dashboard/escalations', label: 'Health escalations', show: can(actor, 'health.read') },
-      ],
-    },
-    {
-      heading: 'Operations',
-      links: [
-        { href: '/dashboard/classes', label: 'Classes', show: can(actor, 'classes.write') || can(actor, 'bookings.write') },
-        { href: '/dashboard/attendance', label: 'Check-in', show: can(actor, 'attendance.write') },
-        { href: '/dashboard/billing', label: 'Billing & payments', show: can(actor, 'finance.read') },
-        { href: '/dashboard/automations', label: 'Automations', show: can(actor, 'automations.write') },
-        { href: '/dashboard/support', label: 'Support', show: can(actor, 'support.read') },
-      ],
+      links: [{ href: '/dashboard/escalations', label: 'Health escalations', show: can(actor, 'health.read') }],
     },
   ];
 

@@ -169,7 +169,7 @@ export async function loadDashboard(actor: Actor): Promise<DashboardData> {
         delta: null,
         deltaLabel: null,
         tone: 'neutral',
-        href: '/dashboard/attendance',
+        href: '/dashboard/members',
       },
       {
         key: 'new_leads',
@@ -179,7 +179,7 @@ export async function loadDashboard(actor: Actor): Promise<DashboardData> {
         delta: null,
         deltaLabel: `${leads.rows.length} awaiting follow-up`,
         tone: leads.rows.length > 4 ? 'warning' : 'neutral',
-        href: '/dashboard/leads',
+        href: '/dashboard/enrol',
       },
       {
         key: 'checkins_awaiting',
@@ -189,7 +189,7 @@ export async function loadDashboard(actor: Actor): Promise<DashboardData> {
         delta: null,
         deltaLabel: null,
         tone: Number(c.checkins_awaiting) > 0 ? 'warning' : 'neutral',
-        href: '/dashboard/coaching',
+        href: '/dashboard/members',
       },
       {
         key: 'open_cases',
@@ -199,7 +199,7 @@ export async function loadDashboard(actor: Actor): Promise<DashboardData> {
         delta: null,
         deltaLabel: null,
         tone: Number(c.open_cases) > 3 ? 'warning' : 'neutral',
-        href: '/dashboard/support',
+        href: '/dashboard/escalations',
       },
     ];
 
@@ -212,7 +212,7 @@ export async function loadDashboard(actor: Actor): Promise<DashboardData> {
         delta: null,
         deltaLabel: null,
         tone: 'positive',
-        href: '/dashboard/billing',
+        href: '/dashboard/members?risk=unpaid',
       });
       metrics.splice(3, 0, {
         key: 'unpaid',
@@ -222,7 +222,7 @@ export async function loadDashboard(actor: Actor): Promise<DashboardData> {
         delta: null,
         deltaLabel: `${failures.rows.length} overdue`,
         tone: Number(c.unpaid_minor) > 0 ? 'warning' : 'neutral',
-        href: '/dashboard/billing?filter=overdue',
+        href: '/dashboard/members?risk=unpaid',
       });
     }
 
@@ -244,7 +244,7 @@ export async function loadDashboard(actor: Actor): Promise<DashboardData> {
           subtitle: `${row.number} · ${formatMoney(Number(row.balance_minor))} · ${row.days_overdue} days overdue`,
           badge: 'overdue',
           tone: Number(row.days_overdue) > 7 ? 'danger' : 'warning',
-          href: `/dashboard/members/${row.user_id}?tab=billing`,
+          href: `/dashboard/members/${row.user_id}`,
           timestamp: null,
         })),
         pendingWaivers: waivers.rows.map((row) => ({
@@ -271,7 +271,7 @@ export async function loadDashboard(actor: Actor): Promise<DashboardData> {
           subtitle: `${row.rule_id} proposes ${row.kind.replace(/_/g, ' ')}`,
           badge: 'review',
           tone: 'neutral',
-          href: `/dashboard/coaching?member=${row.user_id}`,
+          href: `/dashboard/members/${row.user_id}`,
           timestamp: row.created_at,
         })),
         newLeads: leads.rows.map((row) => ({
@@ -280,7 +280,7 @@ export async function loadDashboard(actor: Actor): Promise<DashboardData> {
           subtitle: `${row.status.replace(/_/g, ' ')} · ${row.source.replace(/_/g, ' ')}`,
           badge: null,
           tone: 'neutral',
-          href: '/dashboard/leads',
+          href: '/dashboard/enrol',
           timestamp: row.created_at,
         })),
         tasks: tasks.rows.map((row) => ({
@@ -289,7 +289,7 @@ export async function loadDashboard(actor: Actor): Promise<DashboardData> {
           subtitle: row.due_at ? `Due ${new Date(row.due_at).toLocaleDateString('en-PK')}` : 'No due date',
           badge: row.priority,
           tone: row.priority === 'urgent' || row.priority === 'high' ? 'warning' : 'neutral',
-          href: '/dashboard/tasks',
+          href: '/dashboard',
           timestamp: row.due_at,
         })),
       },

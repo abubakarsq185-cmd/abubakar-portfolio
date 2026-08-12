@@ -151,9 +151,16 @@ Being precise about this matters more than a longer feature list.
 - Landing site, sign-in with role-based routing, session auth with TOTP support
 - Staff dashboard: live metrics, escalation / inactivity / coaching / payment /
   waiver / lead / task queues, branch performance, member search and directory
+- Member profile: training history, adherence, permission-gated health and
+  billing sections, notes by visibility tier, consent record and audit timeline
+- Front-desk enrolment: one form, one transaction — user, profile, consent
+  evidence, signed waiver, emergency contact, membership, first invoice, ledger
+  postings, app invite and a matched program
 - Health escalation queue with resolution and audited progression-hold release
 - Member app: Today, Train, the guided workout player with offline logging and
-  idempotent sync, Support with the AI coach and staff hand-off
+  idempotent sync, Plan (with "why your plan changed"), Progress with charts and
+  records, Support with the AI coach and staff hand-off, Profile with
+  notification preferences and data export / erasure requests
 - API: workout sync, safety reporting, payment webhooks with signature
   verification and idempotency
 - Server services for enrolment, payments, refunds, reconciliation, the coaching
@@ -163,11 +170,16 @@ Being precise about this matters more than a longer feature list.
 ### Service layer built, screen not yet wired
 
 The logic, validation and audit trail exist and are tested; the staff-facing page
-is the remaining work: enrolment wizard, billing console, class scheduling,
-program builder, automation editor, reports and the platform console.
-`apps/web/src/server/services/` holds these; `members.ts` (`enrolMember`) and
-`billing.ts` (`recordPayment`, `issueRefund`, `reconcilePayments`) are the ones
-to look at first.
+is the remaining work: billing console, class scheduling, program builder,
+automation editor, reports and the platform console. `apps/web/src/server/`
+holds these — `services/billing.ts` (`recordPayment`, `issueRefund`,
+`reconcilePayments`) and `services/dashboard.ts` are the ones to look at first.
+The member onboarding wizard and the nutrition screen are the equivalent gaps on
+the member side; `applyScreening` and `computeNutritionTargets` are built and
+tested behind them.
+
+Navigation only links to screens that exist. There are no dead links and no
+"coming soon" placeholders — anything not built is listed here instead.
 
 ### Deliberately not pretending to work
 

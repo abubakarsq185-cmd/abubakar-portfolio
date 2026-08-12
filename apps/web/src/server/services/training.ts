@@ -99,8 +99,8 @@ export async function loadToday(actor: Actor): Promise<{
         kind: 'onboarding',
         title: 'Finish setting up your plan',
         subtitle: 'Two minutes of questions and your coach can build the right plan for you.',
-        ctaLabel: 'Continue setup',
-        ctaHref: '/app/onboarding',
+        ctaLabel: 'See your plan',
+        ctaHref: '/app/plan',
         tone: 'primary',
       });
     }
@@ -120,8 +120,8 @@ export async function loadToday(actor: Actor): Promise<{
         kind: 'workout',
         title: 'Session complete',
         subtitle: 'Nicely done. Recovery is part of the plan — eat, hydrate, sleep.',
-        ctaLabel: 'See your summary',
-        ctaHref: `/app/train/${session.id}/summary`,
+        ctaLabel: 'See your progress',
+        ctaHref: '/app/progress',
         tone: 'success',
       });
     } else {
@@ -142,8 +142,8 @@ export async function loadToday(actor: Actor): Promise<{
         kind: 'class',
         title: booking.rows[0].name,
         subtitle: new Date(booking.rows[0].starts_at).toLocaleString('en-PK', { weekday: 'short', hour: 'numeric', minute: '2-digit' }),
-        ctaLabel: 'Class details',
-        ctaHref: '/app/classes',
+        ctaLabel: 'See your plan',
+        ctaHref: '/app/plan',
         tone: 'neutral',
       });
     }
@@ -153,7 +153,7 @@ export async function loadToday(actor: Actor): Promise<{
         title: 'Weekly check-in',
         subtitle: 'Two minutes. Your coach uses this to adjust next week.',
         ctaLabel: 'Check in',
-        ctaHref: '/app/progress/check-in',
+        ctaHref: '/app/progress',
         tone: 'neutral',
       });
     }
@@ -162,8 +162,8 @@ export async function loadToday(actor: Actor): Promise<{
         kind: 'payment',
         title: 'Membership payment due',
         subtitle: `${invoice.rows[0].number} — you can pay at the front desk or by bank transfer.`,
-        ctaLabel: 'View invoice',
-        ctaHref: '/app/billing',
+        ctaLabel: 'Ask the front desk',
+        ctaHref: '/app/support',
         tone: 'warning',
         meta: { balanceMinor: Number(invoice.rows[0].balance) },
       });
