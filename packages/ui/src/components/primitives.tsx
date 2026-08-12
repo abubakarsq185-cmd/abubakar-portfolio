@@ -219,6 +219,20 @@ export function SafetyBanner({
   );
 }
 
+/**
+ * The outcome of an action the user just took.
+ *
+ * `role` follows the tone rather than being a prop: a failure has to interrupt a
+ * screen reader, a confirmation must not.
+ */
+export function Notice({ tone, children }: { tone: 'success' | 'danger' | 'warning' | 'info'; children: ReactNode }) {
+  return (
+    <p className={cx('notice', `notice-${tone}`)} role={tone === 'danger' ? 'alert' : 'status'}>
+      {children}
+    </p>
+  );
+}
+
 export function AiLabel() {
   return (
     <span className="ai-label">

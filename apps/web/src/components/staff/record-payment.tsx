@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { formatMoney } from '@gymguide/config';
-import { Field } from '@gymguide/ui';
+import { Field, Notice } from '@gymguide/ui';
 import { availablePaymentMethods } from '@/server/adapters/payments';
 
 export interface OpenInvoice {
@@ -46,20 +46,8 @@ export function RecordPaymentForm({
       <input type="hidden" name="currency" value={currency} />
       <input type="hidden" name="idempotencyKey" value={randomUUID()} />
 
-      {message ? (
-        <p
-          role="status"
-          className="small"
-          style={{ padding: '0.75rem 1rem', background: 'var(--success-soft)', color: 'var(--success)', borderRadius: 'var(--radius-md)', fontWeight: 600 }}
-        >
-          {message}
-        </p>
-      ) : null}
-      {error ? (
-        <p role="alert" className="error-text" style={{ padding: '0.75rem 1rem', background: 'var(--danger-soft)', borderRadius: 'var(--radius-md)' }}>
-          {error}
-        </p>
-      ) : null}
+      {message ? <Notice tone="success">{message}</Notice> : null}
+      {error ? <Notice tone="danger">{error}</Notice> : null}
 
       {invoices.length > 0 ? (
         <Field label="Against invoice" htmlFor="invoiceId">

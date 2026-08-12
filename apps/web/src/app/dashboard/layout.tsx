@@ -34,8 +34,22 @@ export default async function DashboardLayout({ children }: { children: React.Re
       links: [{ href: '/dashboard/escalations', label: 'Health escalations', show: can(actor, 'health.read') }],
     },
     {
+      heading: 'Scheduling',
+      links: [
+        {
+          href: '/dashboard/classes',
+          label: 'Classes',
+          show: can(actor, 'bookings.write') || can(actor, 'attendance.write') || can(actor, 'classes.write'),
+        },
+      ],
+    },
+    {
       heading: 'Money',
       links: [{ href: '/dashboard/billing', label: 'Billing', show: can(actor, 'finance.read') }],
+    },
+    {
+      heading: 'Insight',
+      links: [{ href: '/dashboard/reports', label: 'Reports', show: can(actor, 'reports.read') }],
     },
   ];
 

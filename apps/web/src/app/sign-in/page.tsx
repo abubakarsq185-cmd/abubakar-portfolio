@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { loginInput } from '@gymguide/types';
 import { serverEnv } from '@gymguide/config/env';
-import { Field } from '@gymguide/ui';
+import { Field, Notice } from '@gymguide/ui';
 import { getSession, requestMeta, signIn } from '@/server/auth/session';
 
 export const metadata: Metadata = { title: 'Sign in' };
@@ -118,11 +118,7 @@ function SignInForm({ error, email }: { error: string | null; email: string }) {
     <form action={signInAction} className="stack stack-4">
       <h2 style={{ fontSize: '1.25rem' }}>Sign in</h2>
 
-      {error ? (
-        <p className="error-text" role="alert" style={{ padding: '0.75rem 1rem', background: 'var(--danger-soft)', borderRadius: 'var(--radius-md)' }}>
-          {error}
-        </p>
-      ) : null}
+      {error ? <Notice tone="danger">{error}</Notice> : null}
 
       <Field label="Email" htmlFor="email" required>
         <input

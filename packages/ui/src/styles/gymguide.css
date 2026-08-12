@@ -908,6 +908,33 @@ details.faq p { margin-top: 0.75rem; color: var(--text-secondary); max-width: 70
 .safety-banner.info { border-left-color: var(--accent); background: var(--accent-soft); }
 .safety-banner.warning { border-left-color: var(--warning); background: var(--warning-soft); }
 
+/* Result of an action: shown once, above the thing that was acted on. */
+.notice {
+  padding: 0.8125rem 1.0625rem;
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--border-strong);
+  background: var(--surface);
+  font-size: 0.875rem;
+  color: var(--text);
+}
+.notice-success { border-left-color: var(--success); background: var(--success-soft); }
+.notice-danger  { border-left-color: var(--danger);  background: var(--danger-soft); }
+.notice-warning { border-left-color: var(--warning); background: var(--warning-soft); }
+.notice-info    { border-left-color: var(--accent);  background: var(--accent-soft); }
+
+/* A secondary action folded away until wanted — cancelling a class, say. */
+.disclosure > summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0.25rem 0;
+  list-style: none;
+}
+.disclosure > summary::-webkit-details-marker { display: none; }
+.disclosure > summary::before { content: '▸ '; color: var(--text-muted); }
+.disclosure[open] > summary::before { content: '▾ '; }
+.disclosure > summary:hover { color: var(--text); }
+.disclosure > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
 .ai-message {
   padding: 0.875rem 1.125rem;
   border-radius: var(--radius-lg);

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { enrolMemberInput, EXPERIENCE_LABELS, GOAL_LABELS, TRAINING_GOALS, EXPERIENCE_LEVELS } from '@gymguide/types';
 import { formatMoney } from '@gymguide/config';
-import { Badge, Field, SafetyBanner } from '@gymguide/ui';
+import { Badge, Field, Notice, SafetyBanner } from '@gymguide/ui';
 import { requirePermission, tenantSessionFor } from '@/server/auth/session';
 import { withTenant } from '@/server/db/pool';
 import { enrolMember } from '@/server/services/members';
@@ -112,11 +112,7 @@ export default async function EnrolPage({
         </Link>
       </header>
 
-      {params.error ? (
-        <p className="error-text" role="alert" style={{ padding: '0.875rem 1.125rem', background: 'var(--danger-soft)', borderRadius: 'var(--radius-md)' }}>
-          {params.error}
-        </p>
-      ) : null}
+      {params.error ? <Notice tone="danger">{params.error}</Notice> : null}
 
       <form action={enrolAction} className="stack stack-6">
         <section className="card stack stack-4">
