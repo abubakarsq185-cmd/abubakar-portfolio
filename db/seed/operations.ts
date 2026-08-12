@@ -723,6 +723,56 @@ async function seedTrainingHistory(
       }
     }
 
+    /**
+     * The week ahead, still to be done.
+     *
+     * Without this the seed produced history and nothing else: every session was
+     * completed or skipped, so Today had nothing to offer, Train was empty and
+     * the guided player — the most important screen in the product — could not be
+     * reached by navigation at all. A member opening the app is supposed to know
+     * exactly what to do, which requires there to be something to do.
+     *
+     * Members who have genuinely stopped coming are left with nothing pending,
+     * because that is what makes them show up in the retention queue.
+     */
+    const dormant = member.key === 'hamza' || member.key === 'saad';
+    if (!dormant) {
+      const upcomingGroup = weekGroups[Math.min(calendarWeeks, weekGroups.length - 1)]!;
+      const thisMonday = startOfWeek(TODAY);
+
+      for (const day of upcomingGroup.days) {
+        for (const weekOffset of [0, 1]) {
+          const scheduled = addDays(thisMonday, weekOffset * 7 + (day.day_number - 1));
+          // Only forward: anything on or before today already exists as history.
+          if (scheduled <= TODAY) continue;
+
+          const items = await loadWorkoutItems(db, itemCache, day.workout_id);
+          const prescribedSets = items.reduce((sum, item) => sum + item.target_sets, 0);
+
+          await insert(db, 'workout_sessions', {
+            id: uuidFor(`session:${member.key}:upcoming:${weekOffset}:${day.day_number}`),
+            organization_id: org.organizationId,
+            branch_id: branchId,
+            user_id: userId,
+            program_assignment_id: assignmentId,
+            program_day_id: day.id,
+            workout_id: day.workout_id,
+            title: day.workout_name,
+            state: 'scheduled',
+            scheduled_for: isoDate(scheduled),
+            week_number: calendarWeeks + weekOffset + 1,
+            day_number: day.day_number,
+            total_volume_kg: 0,
+            completed_sets: 0,
+            prescribed_sets: prescribedSets,
+            discomfort_reported: false,
+            client_session_id: `seed-${member.key}-upcoming-${weekOffset}-${day.day_number}`,
+            created_at: TODAY.toISOString(),
+          });
+        }
+      }
+    }
+
     await db.query(
       'update member_profiles set last_workout_at = $1, last_visit_at = $1 where user_id = $2',
       [lastWorkoutAt, userId],
@@ -1678,6 +1728,86 @@ async function seedSafetyAndSupport(db: Db, org: OrgContext): Promise<void> {
       body: message.body,
       is_ai_assisted: false,
       created_at: addDays(TODAY, -message.days).toISOString(),
+    });
+  }
+
+  // Ayesha is the account the README points a reviewer at, so she needs her own
+  // AI thread: without one, Support opens empty and the flagship feature looks
+  // broken to the first person who tries it.
+  const ayeshaAiThreadId = uuidFor('conversation:ayesha-ai');
+  await insert(db, 'conversations', {
+    id: ayeshaAiThreadId,
+    organization_id: org.organizationId,
+    branch_id: org.branchIds.gulberg,
+    kind: 'member_ai',
+    subject: 'GymGuide Coach',
+    member_user_id: ayeshaId,
+    last_message_at: addDays(TODAY, -2).toISOString(),
+    created_by_user_id: ayeshaId,
+    created_at: addDays(TODAY, -2).toISOString(),
+  });
+  await insert(db, 'conversation_participants', {
+    id: uuidFor('participant:ayesha-ai'),
+    organization_id: org.organizationId,
+    conversation_id: ayeshaAiThreadId,
+    user_id: ayeshaId,
+    role_in_thread: 'owner',
+    last_read_at: addDays(TODAY, -2).toISOString(),
+  });
+
+  const ayeshaAiId = uuidFor('ai:ayesha-1');
+  await insert(db, 'ai_interactions', {
+    id: ayeshaAiId,
+    organization_id: org.organizationId,
+    user_id: ayeshaId,
+    subject_user_id: ayeshaId,
+    conversation_id: ayeshaAiThreadId,
+    surface: 'member_coach',
+    driver: 'scripted',
+    model: 'gymguide-scripted-v1',
+    prompt_version: 'coach-2026-08-01',
+    user_input: 'My lower back feels tight the morning after deadlifts. Should I stop doing them?',
+    tool_calls: JSON.stringify([
+      { name: 'get_current_plan', arguments: {}, result_summary: 'Fat Loss — 3 Day Full Body, week 7, Build phase' },
+      { name: 'explain_exercise', arguments: { exerciseCode: 'romanian_deadlift' }, result_summary: 'Approved technique content returned' },
+      { name: 'get_approved_substitutions', arguments: { exerciseCode: 'romanian_deadlift' }, result_summary: '2 approved alternatives at this branch' },
+    ]),
+    approved_sources: JSON.stringify([
+      { kind: 'exercise', label: 'Romanian Deadlift', code: 'romanian_deadlift' },
+      { kind: 'program', label: 'Fat Loss — 3 Day Full Body' },
+    ]),
+    // Deliberately does not diagnose, does not tell her to push through, and
+    // routes a persistent problem to a person.
+    output_text:
+      'Tightness the morning after is common when the weight goes up, and it is not the same thing as pain. Two things worth checking in your next session: keep the bar brushing your legs on the way down, and stop the descent when your back wants to round rather than reaching for the floor. Your plan has two approved alternatives if you would rather swap — a hip thrust or a dumbbell RDL from a shorter range. If it is sharp, or it is still there two days later, I am not the right one to judge that: tell the gym staff and someone qualified will look at it with you.',
+    safety_result: 'allowed',
+    safety_reasons: [],
+    latency_ms: 380,
+    feedback_rating: 'helpful',
+    created_at: addDays(TODAY, -2).toISOString(),
+  });
+
+  const ayeshaAiMessages = [
+    {
+      sender: ayeshaId, kind: 'user', ai: false, interaction: null,
+      body: 'My lower back feels tight the morning after deadlifts. Should I stop doing them?',
+    },
+    {
+      sender: null, kind: 'ai', ai: true, interaction: ayeshaAiId,
+      body: 'Tightness the morning after is common when the weight goes up, and it is not the same thing as pain. Two things worth checking in your next session: keep the bar brushing your legs on the way down, and stop the descent when your back wants to round rather than reaching for the floor. Your plan has two approved alternatives if you would rather swap — a hip thrust or a dumbbell RDL from a shorter range. If it is sharp, or it is still there two days later, I am not the right one to judge that: tell the gym staff and someone qualified will look at it with you.',
+    },
+  ];
+  for (const [index, message] of ayeshaAiMessages.entries()) {
+    await insert(db, 'messages', {
+      id: uuidFor(`message:ayesha-ai:${index}`),
+      organization_id: org.organizationId,
+      conversation_id: ayeshaAiThreadId,
+      sender_user_id: message.sender,
+      sender_kind: message.kind,
+      body: message.body,
+      is_ai_assisted: message.ai,
+      ai_interaction_id: message.interaction,
+      created_at: addDays(TODAY, -2).toISOString(),
     });
   }
 

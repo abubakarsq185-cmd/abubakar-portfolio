@@ -118,7 +118,23 @@ export async function signIn(input: {
 
   const roles = await loadRoles(user.id);
   const staffRoles: RoleCode[] = roles.filter((r) => r !== 'member' && r !== 'guardian');
-  const mfaRequired = user.mfa_enabled || (env.REQUIRE_STAFF_MFA && staffRoles.length > 0);
+
+  /**
+   * A second factor can only be demanded of someone who has one.
+   *
+   * `mfa_enabled` with no enrolled secret used to be treated as "ask for a
+   * code": verifyTotp returns false for a null secret, so no code could ever
+   * satisfy it and the account was locked out permanently, with no enrolment
+   * route to recover through. The seeded gym owner — the person who buys this —
+   * was unreachable because of it.
+   *
+   * Wanting MFA and having enrolled it are different states. Until a secret
+   * exists there is nothing to verify, so sign-in proceeds and the account is
+   * marked as owing enrolment.
+   */
+  const mfaEnrolled = Boolean(user.mfa_secret);
+  const mfaWanted = user.mfa_enabled || (env.REQUIRE_STAFF_MFA && staffRoles.length > 0);
+  const mfaRequired = mfaWanted && mfaEnrolled;
 
   if (mfaRequired) {
     if (!input.totp) {

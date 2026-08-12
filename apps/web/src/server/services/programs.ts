@@ -113,7 +113,7 @@ export async function listPrograms(actor: Actor): Promise<ProgramListRow[]> {
                        where copy.derived_from_program_id = p.id
                          and copy.organization_id is not null
                          and copy.deleted_at is null) as already_copied,
-              u.full_name as approved_by_name, p.approved_at
+              u.full_name as approved_by_name, p.approved_at::text as approved_at
          from programs p
          left join users u on u.id = p.approved_by
         where p.deleted_at is null
@@ -181,7 +181,12 @@ export async function loadProgram(actor: Actor, programId: string): Promise<Prog
               p.intent::text as intent, p.experience_level::text as experience_level,
               p.days_per_week, p.session_minutes, p.total_weeks, p.low_impact, p.ramadan_friendly,
               p.requires_equipment_codes, p.contraindications, p.publish_state::text as publish_state,
-              p.organization_id is null as is_platform, p.approved_at,
+              p.organization_id is null as is_platform,
+              -- ::text so the declared type is true. node-postgres hands back a
+              -- Date for timestamptz, and the page formats this by slicing the
+              -- ISO date off the front — which crashed the whole screen the
+              -- moment a program was approved.
+              p.approved_at::text as approved_at,
               u.full_name as approved_by_name,
               parent.name as derived_from_name,
               pv.id as version_id, pv.version, pv.publish_state::text as version_publish_state, pv.changelog,

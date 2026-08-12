@@ -46,6 +46,16 @@ import {
 const TODAY = new Date('2026-08-11T09:00:00.000Z');
 const ORG_SLUG = 'apex-fitness-lahore';
 
+/**
+ * A fixed base32 TOTP secret for the demo staff accounts.
+ *
+ * Present so `mfa_enabled` can be switched on for a demo without inventing an
+ * enrolment flow, and so the account's stored state is truthful either way. It
+ * is deliberately a published constant: it protects nothing in a seeded demo,
+ * and a real deployment enrols per-user secrets through an authenticator app.
+ */
+const DEMO_MFA_SECRET = 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP';
+
 // ---------------------------------------------------------------------------
 
 export async function seed(): Promise<void> {
@@ -118,8 +128,13 @@ async function seedPlatform(db: Db, passwordHash: string): Promise<PlatformIds> 
     password_hash: passwordHash,
     status: 'active',
     is_platform_admin: true,
-    mfa_enabled: true,
-    mfa_enrolled_at: TODAY.toISOString(),
+    // A real secret, so the account's state is internally consistent and MFA is
+    // provably wired rather than merely claimed. Left switched off because the
+    // demo tenant has to be reachable without an authenticator app — see the
+    // README for how to turn it on.
+    mfa_enabled: false,
+    mfa_secret: DEMO_MFA_SECRET,
+    mfa_enrolled_at: null,
     timezone: 'Asia/Karachi',
   });
   await db.query(
@@ -717,8 +732,11 @@ async function seedOrganization(db: Db, platform: PlatformIds, passwordHash: str
       status: 'active',
       locale: person.locale ?? 'en',
       timezone: 'Asia/Karachi',
-      mfa_enabled: person.role === 'gym_owner',
-      mfa_enrolled_at: person.role === 'gym_owner' ? addDays(TODAY, -300).toISOString() : null,
+      // Previously the owner was mfa_enabled with no secret, which no code could
+      // ever satisfy: the person who buys the product could not sign in at all.
+      mfa_enabled: false,
+      mfa_secret: person.role === 'gym_owner' ? DEMO_MFA_SECRET : null,
+      mfa_enrolled_at: null,
       last_login_at: addDays(TODAY, -1).toISOString(),
     });
     await db.query(

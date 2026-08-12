@@ -144,7 +144,7 @@ export async function listAutomations(actor: Actor): Promise<AutomationRow[]> {
               a.max_per_member_per_week, a.cooldown_hours, a.creates_staff_task,
               a.task_assignee_role, a.is_active,
               coalesce(r.sent, 0) as sent, coalesce(r.skipped, 0) as skipped,
-              coalesce(r.failed, 0) as failed, r.last_ran_at
+              coalesce(r.failed, 0) as failed, r.last_ran_at::text as last_ran_at
          from automations a
          left join lateral (
            select count(*) filter (where state = 'sent')    as sent,
@@ -381,7 +381,7 @@ export async function loadAutomationActivity(actor: Actor): Promise<AutomationAc
         ran_at: string;
       }>(
         `select a.name as automation_name, u.full_name as member_name,
-                ar.state, ar.skip_reason, ar.ran_at
+                ar.state, ar.skip_reason, ar.ran_at::text as ran_at
            from automation_runs ar
            join automations a on a.id = ar.automation_id
            left join users u on u.id = ar.target_user_id

@@ -102,7 +102,7 @@ export async function loadPlatformOverview(): Promise<PlatformOverview> {
         created_at: string;
       }>(
         `select o.id as organization_id, o.display_name, o.slug, o.country_code, o.default_currency,
-                o.white_label, o.created_at,
+                o.white_label, o.created_at::text as created_at,
                 (select count(*) from branches b where b.organization_id = o.id and b.deleted_at is null) as branches,
                 (select count(*) from member_profiles mp
                   where mp.organization_id = o.id and mp.lifecycle_stage = 'active' and mp.deleted_at is null) as active_members,
@@ -110,7 +110,7 @@ export async function loadPlatformOverview(): Promise<PlatformOverview> {
                   where sa.organization_id = o.id and (sa.ends_on is null or sa.ends_on >= current_date)) as staff_accounts,
                 sp.name as plan_name, sp.monthly_price_minor,
                 os.billing_interval::text as billing_interval, os.state::text as subscription_state,
-                os.current_period_end, os.active_member_limit, os.seats_purchased,
+                os.current_period_end::text as current_period_end, os.active_member_limit, os.seats_purchased,
                 coalesce((select sum(pi.total_minor - pi.amount_paid_minor) from platform_invoices pi
                            where pi.organization_id = o.id and pi.state in ('open','partially_paid')), 0) as outstanding_minor
            from organizations o
@@ -153,7 +153,8 @@ export async function loadPlatformOverview(): Promise<PlatformOverview> {
       }>(
         `select sas.id, o.display_name as organization_name, u.full_name as platform_user_name,
                 sas.reason, sas.ticket_reference, sas.scope, sas.approved_by_org,
-                sas.started_at, sas.expires_at, sas.ended_at, sas.actions_taken,
+                sas.started_at::text as started_at, sas.expires_at::text as expires_at,
+                sas.ended_at::text as ended_at, sas.actions_taken,
                 (sas.ended_at is null and sas.expires_at > now()) as active
            from support_access_sessions sas
            join organizations o on o.id = sas.organization_id

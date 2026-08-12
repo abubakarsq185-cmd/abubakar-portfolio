@@ -162,7 +162,13 @@ describe('data integrity', () => {
   });
 
   describe('seeded demo tenant', () => {
-    it('has both branches, every staff role and sixteen members', async () => {
+    /**
+     * Asserts the seed produced its cast, not that nobody has since joined.
+     * The earlier version demanded exactly sixteen members and failed the moment
+     * anyone enrolled someone through the interface — a test that breaks because
+     * the product was used is measuring the wrong thing.
+     */
+    it('has both branches, every staff role and its full member cast', async () => {
       const { rows } = await owner.query<{ branches: string; members: string; roles: string }>(
         `select
            (select count(*) from branches b join organizations o on o.id = b.organization_id
@@ -176,8 +182,25 @@ describe('data integrity', () => {
              where o.slug = 'apex-fitness-lahore') as roles`,
       );
       expect(Number(rows[0]!.branches)).toBe(2);
-      expect(Number(rows[0]!.members)).toBe(16);
+      expect(Number(rows[0]!.members)).toBeGreaterThanOrEqual(16);
       expect(Number(rows[0]!.roles)).toBeGreaterThanOrEqual(7);
+
+      // The named members the documentation points at must all be there.
+      const { rows: cast } = await owner.query<{ email: string }>(
+        `select u.email from users u
+           join member_profiles mp on mp.user_id = u.id
+          where u.email = any($1::citext[])`,
+        [[
+          'ayesha.khan@example.com',
+          'bilal.ahmed@example.com',
+          'ahmed.nawaz@example.com',
+          'hamza.raza@example.com',
+          'maryam.javed@example.com',
+          'nida.aslam@example.com',
+          'fatima.sheikh@example.com',
+        ]],
+      );
+      expect(cast).toHaveLength(7);
     });
 
     it('has training history with logged sets', async () => {
