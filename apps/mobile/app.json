@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "GymGuide",
+    "slug": "gymguide-member",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "gymguide",
+    "backgroundColor": "#08090B",
+    "splash": {
+      "backgroundColor": "#08090B",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "app.gymguide.member"
+    },
+    "android": {
+      "package": "app.gymguide.member",
+      "adaptiveIcon": { "backgroundColor": "#08090B" },
+      "permissions": ["CAMERA", "INTERNET"]
+    },
+    "extra": {
+      "apiUrl": "http://localhost:3000"
+    },
+    "plugins": ["expo-status-bar"]
+  }
+}
