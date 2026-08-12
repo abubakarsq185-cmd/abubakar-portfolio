@@ -1,0 +1,30 @@
+{
+  "name": "@gymguide/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start --port 3000",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@gymguide/config": "workspace:*",
+    "@gymguide/domain": "workspace:*",
+    "@gymguide/types": "workspace:*",
+    "@gymguide/ui": "workspace:*",
+    "@tanstack/react-query": "5.62.11",
+    "next": "15.5.4",
+    "pg": "8.13.1",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "zod": "3.24.1"
+  },
+  "devDependencies": {
+    "@types/pg": "8.11.10",
+    "@types/react": "19.0.2",
+    "@types/react-dom": "19.0.2",
+    "typescript": "5.7.3"
+  }
+}

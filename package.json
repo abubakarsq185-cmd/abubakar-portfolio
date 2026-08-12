@@ -1,0 +1,39 @@
+{
+  "name": "gymguide",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GymGuide — multi-tenant gym management platform with an AI-guided digital fitness coach.",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "db:up": "tsx db/scripts/cli.ts up",
+    "db:reset": "tsx db/scripts/cli.ts reset",
+    "db:seed": "tsx db/scripts/cli.ts seed",
+    "db:bootstrap": "tsx db/scripts/cli.ts reset && tsx db/scripts/cli.ts up && tsx db/scripts/cli.ts seed",
+    "typecheck": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:unit": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "test:e2e": "playwright test",
+    "lint": "eslint .",
+    "dev": "pnpm --filter @gymguide/web dev",
+    "build": "pnpm --filter @gymguide/web build",
+    "start": "pnpm --filter @gymguide/web start",
+    "mobile": "pnpm --filter @gymguide/mobile start"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@types/node": "22.10.5",
+    "@types/pg": "8.11.10",
+    "@typescript-eslint/eslint-plugin": "8.20.0",
+    "@typescript-eslint/parser": "8.20.0",
+    "dotenv": "16.4.7",
+    "eslint": "9.18.0",
+    "pg": "8.13.1",
+    "tsx": "4.19.2",
+    "typescript": "5.7.3",
+    "vitest": "2.1.8"
+  }
+}

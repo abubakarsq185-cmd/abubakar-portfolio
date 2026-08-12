@@ -1,0 +1,20 @@
+{
+  "name": "@gymguide/domain",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./coaching": "./src/coaching/index.ts",
+    "./safety": "./src/safety/index.ts",
+    "./billing": "./src/billing/index.ts",
+    "./nutrition": "./src/nutrition/index.ts",
+    "./engagement": "./src/engagement/index.ts",
+    "./ai": "./src/ai/index.ts"
+  },
+  "dependencies": {
+    "@gymguide/types": "workspace:*"
+  }
+}
