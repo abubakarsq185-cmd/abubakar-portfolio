@@ -1,16 +1,67 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import type { Metadata } from 'next';
 import { formatDate, formatMoney, formatRelativeDays } from '@gymguide/config';
 import { GOAL_LABELS, EXPERIENCE_LABELS } from '@gymguide/types';
 import { Avatar, Badge, EmptyState, Panel, ProgressRing, SafetyBanner } from '@gymguide/ui';
-import { requireStaff } from '@/server/auth/session';
+import { requirePermission, requireStaff } from '@/server/auth/session';
 import { getMemberDetail } from '@/server/services/members';
+import { recordPayment } from '@/server/services/billing';
+import { parseMoneyToMinor } from '@gymguide/config';
+import { RecordPaymentForm } from '@/components/staff/record-payment';
 
 export const metadata: Metadata = { title: 'Member' };
 
-export default async function MemberDetailPage({ params }: { params: Promise<{ userId: string }> }) {
-  const [{ actor }, { userId }] = await Promise.all([requireStaff(), params]);
+/**
+ * Take a payment. Validation, the ledger posting and the audit record all live
+ * in the billing service; this only translates a form into its input.
+ */
+async function recordPaymentAction(formData: FormData): Promise<void> {
+  'use server';
+  const { actor } = await requirePermission('finance.write');
+
+  const userId = String(formData.get('userId'));
+  const currency = String(formData.get('currency') || 'PKR');
+  const amountMinor = parseMoneyToMinor(String(formData.get('amount') ?? ''), currency);
+
+  if (amountMinor === null || amountMinor <= 0) {
+    redirect(`/dashboard/members/${userId}?payError=${encodeURIComponent('Enter an amount greater than zero.')}`);
+  }
+
+  const result = await recordPayment(actor, {
+    userId,
+    branchId: String(formData.get('branchId')),
+    invoiceId: (formData.get('invoiceId') as string) || null,
+    amountMinor,
+    currency,
+    method: String(formData.get('method')) as 'cash',
+    bankReference: (formData.get('bankReference') as string) || undefined,
+    depositorName: (formData.get('depositorName') as string) || undefined,
+    note: (formData.get('note') as string) || undefined,
+    idempotencyKey: String(formData.get('idempotencyKey')),
+  });
+
+  if (!result.ok) {
+    redirect(`/dashboard/members/${userId}?payError=${encodeURIComponent(result.message)}`);
+  }
+
+  revalidatePath(`/dashboard/members/${userId}`);
+  redirect(
+    `/dashboard/members/${userId}?paid=${encodeURIComponent(
+      result.duplicate ? result.message : `Payment recorded. Receipt ${result.receiptNumber ?? ''}.`,
+    )}`,
+  );
+}
+
+export default async function MemberDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ userId: string }>;
+  searchParams: Promise<{ paid?: string; payError?: string; enrolled?: string }>;
+}) {
+  const [{ actor }, { userId }, query] = await Promise.all([requireStaff(), params, searchParams]);
   const detail = await getMemberDetail(actor, userId);
   if (!detail) notFound();
 
@@ -47,6 +98,16 @@ export default async function MemberDetailPage({ params }: { params: Promise<{ u
           </div>
         </div>
       </header>
+
+      {query.enrolled ? (
+        <div className="safety-banner info" role="status">
+          <strong>Member enrolled</strong>
+          <p className="small secondary" style={{ marginTop: '0.375rem' }}>
+            Their membership is active and the first invoice is raised. Take payment below, and they will find their
+            plan waiting in the app.
+          </p>
+        </div>
+      ) : null}
 
       {profile.progressionHoldReason ? (
         <SafetyBanner tone="warning" title="Automatic progression is paused for this member">
@@ -219,6 +280,23 @@ export default async function MemberDetailPage({ params }: { params: Promise<{ u
               </div>
             </div>
           </Panel>
+
+          {billing && actor.permissions.includes('finance.write') ? (
+            <Panel title="Take a payment">
+              <RecordPaymentForm
+                action={recordPaymentAction}
+                userId={member.userId}
+                branchId={member.branchId}
+                currency={member.currency}
+                balanceMinor={billing.balanceMinor}
+                invoices={billing.invoices
+                  .filter((invoice) => invoice.balanceMinor > 0)
+                  .map((invoice) => ({ id: invoice.id, number: invoice.number, balanceMinor: invoice.balanceMinor }))}
+                message={query.paid ?? null}
+                error={query.payError ?? null}
+              />
+            </Panel>
+          ) : null}
 
           {billing ? (
             <Panel title="Billing" action={billing.balanceMinor > 0 ? <Badge tone="danger">Owes money</Badge> : null}>

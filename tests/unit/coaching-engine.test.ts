@@ -19,8 +19,13 @@ import {
   type SubstitutionCandidate,
 } from '@gymguide/domain';
 
+// `sets` is replaced rather than intersected: intersecting Partial<Record> with
+// a looser `sets` leaves the element type as the full SetRecord, which would
+// force every test to spell out a whole set just to override one field.
 function session(
-  overrides: Partial<ExerciseSessionRecord> & { sets?: Array<Partial<ExerciseSessionRecord['sets'][number]>> } = {},
+  overrides: Omit<Partial<ExerciseSessionRecord>, 'sets'> & {
+    sets?: Array<Partial<ExerciseSessionRecord['sets'][number]>>;
+  } = {},
 ): ExerciseSessionRecord {
   const sets = (overrides.sets ?? [{}, {}, {}]).map((set, index) => ({
     setNumber: index + 1,

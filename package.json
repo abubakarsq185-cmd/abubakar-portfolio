@@ -12,7 +12,7 @@
     "db:reset": "tsx db/scripts/cli.ts reset",
     "db:seed": "tsx db/scripts/cli.ts seed",
     "db:bootstrap": "tsx db/scripts/cli.ts reset && tsx db/scripts/cli.ts up && tsx db/scripts/cli.ts seed",
-    "typecheck": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -p packages/types --noEmit && tsc -p packages/config --noEmit && tsc -p packages/domain --noEmit && tsc -p packages/ui --noEmit && tsc -p apps/web --noEmit && tsc -p apps/mobile --noEmit && tsc -p tsconfig.tools.json --noEmit",
     "test": "vitest run",
     "test:unit": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
@@ -35,5 +35,19 @@
     "tsx": "4.19.2",
     "typescript": "5.7.3",
     "vitest": "2.1.8"
+  },
+  "pnpm": {
+    "packageExtensions": {
+      "next": {
+        "peerDependencies": {
+          "@types/react": "*"
+        },
+        "peerDependenciesMeta": {
+          "@types/react": {
+            "optional": true
+          }
+        }
+      }
+    }
   }
 }

@@ -33,6 +33,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
       heading: 'Coaching',
       links: [{ href: '/dashboard/escalations', label: 'Health escalations', show: can(actor, 'health.read') }],
     },
+    {
+      heading: 'Money',
+      links: [{ href: '/dashboard/billing', label: 'Billing', show: can(actor, 'finance.read') }],
+    },
   ];
 
   return (

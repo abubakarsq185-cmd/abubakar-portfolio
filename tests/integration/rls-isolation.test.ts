@@ -274,13 +274,51 @@ describe('row-level security', () => {
     });
 
     it('the ledger cannot be rewritten, even by the owner of the database', async () => {
+      // Prove a row exists first: a statement that matches nothing never fires a
+      // row-level trigger, so an empty table would make this pass for the wrong
+      // reason.
+      const { rows } = await owner.query<{ count: number }>('select count(*)::int as count from ledger_entries');
+      expect(rows[0]!.count).toBeGreaterThan(0);
+
       await expect(owner.query('update ledger_entries set amount_minor = 1 where id > 0')).rejects.toThrow(
         /append-only/i,
       );
     });
 
-    it('consent history cannot be deleted', async () => {
-      await expect(owner.query('delete from consents where id is not null')).rejects.toThrow(/append-only/i);
+    it('consent history cannot be rewritten by anyone', async () => {
+      // Self-contained: insert the row we are about to attack, so the assertion
+      // cannot silently pass on an empty table.
+      const { rows } = await owner.query<{ id: string }>(
+        `insert into consents (organization_id, user_id, kind, granted, version, collected_channel, granted_at)
+         select organization_id, user_id, 'marketing_email', true, 'test', 'front_desk', now()
+           from member_profiles where user_id = $1
+         returning id`,
+        [member.userId],
+      );
+      const consentId = rows[0]!.id;
+
+      try {
+        await expect(
+          owner.query('update consents set granted = false where id = $1', [consentId]),
+        ).rejects.toThrow(/append-only/i);
+      } finally {
+        // The database owner may delete; only the application role may not.
+        await owner.query('delete from consents where id = $1', [consentId]);
+      }
+    });
+
+    it('the application can never delete consent, but a privileged erasure job can', async () => {
+      // Immutability and deletion rights are separate concerns. The trigger makes
+      // content unrewritable for everyone; revoked privileges stop the app from
+      // deleting, while leaving an erasure request able to remove a person.
+      await expect(
+        asActor(app, apexOwner, (db) => db.query('delete from consents where id is not null')),
+      ).rejects.toThrow(/permission denied/i);
+
+      const { rows } = await owner.query<{ has_delete: boolean }>(
+        `select has_table_privilege('gymguide_app', 'consents', 'DELETE') as has_delete`,
+      );
+      expect(rows[0]!.has_delete).toBe(false);
     });
   });
 });

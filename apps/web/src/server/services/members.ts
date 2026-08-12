@@ -389,12 +389,15 @@ export async function enrolMember(actor: Actor, input: EnrolMemberInput): Promis
 
   try {
     const result = await withTenant(session, async (db) => {
-      // 1. Member number, sequential per organization.
-      const { rows: numberRows } = await db.query<{ next: string }>(
-        `select coalesce(max(substring(member_number from '[0-9]+$')::int), 1000) + 1 as next
-           from member_profiles`,
+      // 1. Member number. Allocated by a SECURITY DEFINER function so the
+      // counter does not depend on what this actor can see — a branch-scoped
+      // user must not derive a number from their branch's highest — and so two
+      // concurrent enrolments cannot collide.
+      const { rows: numberRows } = await db.query<{ member_number: string }>(
+        'select app.next_member_number($1) as member_number',
+        [actor.organizationId],
       );
-      const memberNumber = `APX-${numberRows[0]?.next ?? 1001}`;
+      const memberNumber = numberRows[0]!.member_number;
 
       // 2. User + role.
       const { rows: userRows } = await db.query<{ id: string }>(
@@ -527,7 +530,7 @@ export async function enrolMember(actor: Actor, input: EnrolMemberInput): Promis
       }
 
       const computed = computeInvoice(lines, plan.currency);
-      const number = await nextInvoiceNumber(db);
+      const number = await nextInvoiceNumber(db, actor.organizationId!);
 
       const { rows: invoiceRows } = await db.query<{ id: string }>(
         `insert into invoices
@@ -694,15 +697,17 @@ export async function enrolMember(actor: Actor, input: EnrolMemberInput): Promis
   }
 }
 
-async function nextInvoiceNumber(db: Queryable): Promise<string> {
-  const year = new Date().getFullYear();
-  const { rows } = await db.query<{ number: string | null }>(
-    `select max(number) as number from invoices where number like $1`,
-    [`APX-${year}-%`],
+/**
+ * Invoice numbers come from the atomic allocator, not from `max(number)`:
+ * a branch-scoped user cannot see every invoice, and two people invoicing at
+ * once must not be handed the same number.
+ */
+async function nextInvoiceNumber(db: Queryable, organizationId: string): Promise<string> {
+  const { rows } = await db.query<{ number: string }>(
+    `select app.next_document_number($1, 'invoice', 'APX', $2) as number`,
+    [organizationId, String(new Date().getFullYear())],
   );
-  const last = rows[0]?.number;
-  const sequence = last ? Number(last.split('-').pop()) + 1 : 1;
-  return `APX-${year}-${String(sequence).padStart(4, '0')}`;
+  return rows[0]!.number;
 }
 
 /**

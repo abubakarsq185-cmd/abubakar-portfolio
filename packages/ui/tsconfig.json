@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    // pnpm links dependencies into this package as symlinks. Without this,
+    // TypeScript reaches @types/react by its symlink path in one place and by
+    // its real path in the store in another, treats them as two packages, and
+    // decides ReactNode is not assignable to ReactNode. Resolving symlinked
+    // paths as written keeps one identity per package.
+    "preserveSymlinks": true
+  },
+  "include": ["src"]
+}

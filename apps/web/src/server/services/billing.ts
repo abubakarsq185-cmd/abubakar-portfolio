@@ -60,8 +60,8 @@ export async function recordPayment(actor: Actor, input: RecordPaymentInput): Pr
       );
       if (!member.rows[0]) throw new Error('That member is not in your scope.');
 
-      const reference = await nextReference(db, 'PAY');
-      const receiptNumber = await nextReference(db, 'APX-R');
+      const reference = await nextReference(db, actor.organizationId!, 'payment');
+      const receiptNumber = await nextReference(db, actor.organizationId!, 'receipt');
 
       const intent = await adapter.createIntent({
         organizationId: actor.organizationId!,
@@ -89,18 +89,39 @@ export async function recordPayment(actor: Actor, input: RecordPaymentInput): Pr
             provider_payment_id, currency, amount_minor, fee_minor, net_minor, received_at,
             settled_at, bank_reference, depositor_name, reconciled_at, reconciled_by,
             collected_by_user_id, receipt_number, idempotency_key, metadata)
-         values ($1,$2,$3,$4,$5,$6::payment_state,$7::payment_method_kind,$8,$9,$10,$11,$12,$13,
-                 coalesce($14, now()), case when $6 = 'succeeded' then now() else null end,
-                 $15,$16, case when $7 = 'cash' then now() else null end,
-                 case when $7 = 'cash' then $17 else null end, $17, $18, $19, $20)
+         values ($1, $2, $3, $4, $5, $6::payment_state, $7::payment_method_kind, $8, $9, $10,
+                 $11, $12, $13,
+                 coalesce($14::timestamptz, now()),
+                 case when $6 = 'succeeded' then now() else null end,
+                 $15, $16,
+                 -- Cash is reconciled the moment it is in the drawer. A transfer
+                 -- stays unreconciled until someone matches it to a statement.
+                 case when $7 = 'cash' then now() else null end,
+                 case when $7 = 'cash' then $17::uuid else null end,
+                 $18::uuid, $19, $20, $21::jsonb)
          returning id`,
         [
-          actor.organizationId, input.branchId, input.userId, input.invoiceId ?? null, reference,
-          state, input.method, adapter.key, intent.providerPaymentId, input.currency,
-          input.amountMinor, intent.feeMinor, input.amountMinor - intent.feeMinor,
-          input.receivedAt ?? null, input.bankReference ?? null, input.depositorName ?? null,
-          actor.userId, receiptNumber, input.idempotencyKey,
-          JSON.stringify({ note: input.note ?? null, adapterStatus: intent.status }),
+          /*  1 */ actor.organizationId,
+          /*  2 */ input.branchId,
+          /*  3 */ input.userId,
+          /*  4 */ input.invoiceId ?? null,
+          /*  5 */ reference,
+          /*  6 */ state,
+          /*  7 */ input.method,
+          /*  8 */ adapter.key,
+          /*  9 */ intent.providerPaymentId,
+          /* 10 */ input.currency,
+          /* 11 */ input.amountMinor,
+          /* 12 */ intent.feeMinor,
+          /* 13 */ input.amountMinor - intent.feeMinor,
+          /* 14 */ input.receivedAt ?? null,
+          /* 15 */ input.bankReference ?? null,
+          /* 16 */ input.depositorName ?? null,
+          /* 17 */ actor.userId, // reconciled_by, when cash
+          /* 18 */ actor.userId, // collected_by_user_id
+          /* 19 */ receiptNumber,
+          /* 20 */ input.idempotencyKey,
+          /* 21 */ JSON.stringify({ note: input.note ?? null, adapterStatus: intent.status }),
         ],
       );
       const paymentId = paymentRows[0]!.id;
@@ -332,16 +353,21 @@ async function writeLedgerGroup(
   }
 }
 
-async function nextReference(db: Queryable, prefix: string): Promise<string> {
-  const year = new Date().getFullYear();
-  const column = prefix === 'PAY' ? 'reference' : 'receipt_number';
-  const { rows } = await db.query<{ value: string | null }>(
-    `select max(${column}) as value from payments where ${column} like $1`,
-    [`${prefix}-${year}-%`],
+/**
+ * Payment references and receipt numbers come from the atomic allocator. They
+ * must be unique per tenant regardless of the caller's branch scope, and two
+ * simultaneous payments must never share a receipt number.
+ */
+async function nextReference(
+  db: Queryable,
+  organizationId: string,
+  kind: 'payment' | 'receipt',
+): Promise<string> {
+  const { rows } = await db.query<{ value: string }>(
+    `select app.next_document_number($1, $2, $3, $4) as value`,
+    [organizationId, kind, kind === 'payment' ? 'PAY' : 'APX-R', String(new Date().getFullYear())],
   );
-  const last = rows[0]?.value;
-  const sequence = last ? Number(last.split('-').pop()) + 1 : 1;
-  return `${prefix}-${year}-${String(sequence).padStart(5, '0')}`;
+  return rows[0]!.value;
 }
 
 // ---------------------------------------------------------------------------

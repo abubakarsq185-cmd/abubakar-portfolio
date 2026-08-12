@@ -10,6 +10,12 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "allowJs": true,
+    // Only ambient packages here. Left to scan automatically, TypeScript pulls
+    // @types/react in globally by its symlink path while files in
+    // packages/ui resolve the same package by its real path in the pnpm store,
+    // then reports that ReactNode is not assignable to ReactNode. React 19
+    // types arrive through `react/jsx-runtime` anyway, so nothing is lost.
+    "types": ["node"],
     "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["./src/*"]

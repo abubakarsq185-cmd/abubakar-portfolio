@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"],
+    // The workspace packages are not linked into the root node_modules, so
+    // mirror the aliases vitest.workspace.ts uses at runtime. Keep the two in
+    // step: a mismatch shows up as tests that run but do not typecheck.
+    "baseUrl": ".",
+    "paths": {
+      "@gymguide/types": ["packages/types/src/index.ts"],
+      "@gymguide/types/*": ["packages/types/src/*"],
+      "@gymguide/config/env": ["packages/config/src/env.ts"],
+      "@gymguide/config": ["packages/config/src/index.ts"],
+      "@gymguide/domain": ["packages/domain/src/index.ts"],
+      "@gymguide/ui": ["packages/ui/src/index.ts"],
+      "@/*": ["apps/web/src/*"],
+      "server-only": ["tests/setup/server-only-stub.ts"]
+    }
+  },
+  "include": ["db/**/*.ts", "tests/**/*.ts", "vitest.workspace.ts"]
+}
