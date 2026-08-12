@@ -714,7 +714,7 @@ async function nextInvoiceNumber(db: Queryable, organizationId: string): Promise
  * Pick an approved template for a new member. Returns needsHuman when the
  * matcher is not confident enough to assign without a coach looking.
  */
-async function assignBestProgram(
+export async function assignBestProgram(
   db: Queryable,
   input: {
     organizationId: string;
@@ -723,6 +723,21 @@ async function assignBestProgram(
     goal: string;
     experienceLevel: string;
     assignedBy: string;
+    /**
+     * What the member told us. At enrolment the desk has none of this, so the
+     * matcher falls back to cautious defaults; after onboarding the member's
+     * own answers are used, which is what makes the second match better than
+     * the first.
+     */
+    preferences?: {
+      daysPerWeek?: number;
+      sessionMinutes?: number;
+      needsLowImpact?: boolean;
+      ramadanMode?: boolean;
+      trainsAtHome?: boolean;
+      conditions?: string[];
+      requiresHumanReview?: boolean;
+    };
   },
 ): Promise<{ programName: string | null; needsHuman: boolean }> {
   const { rows: equipment } = await db.query<{ code: string }>(
@@ -760,17 +775,18 @@ async function assignBestProgram(
     scope: row.scope as ProgramCandidate['scope'],
   }));
 
+  const preferences = input.preferences ?? {};
   const profile: MatchProfile = {
     goal: input.goal as MatchProfile['goal'],
     experienceLevel: input.experienceLevel as MatchProfile['experienceLevel'],
-    daysPerWeek: input.experienceLevel === 'first_time' ? 2 : 3,
-    sessionMinutes: input.experienceLevel === 'first_time' ? 30 : 45,
+    daysPerWeek: preferences.daysPerWeek ?? (input.experienceLevel === 'first_time' ? 2 : 3),
+    sessionMinutes: preferences.sessionMinutes ?? (input.experienceLevel === 'first_time' ? 30 : 45),
     availableEquipmentCodes: equipment.map((row) => row.code),
-    needsLowImpact: false,
-    ramadanMode: false,
-    trainsAtHome: false,
-    conditions: [],
-    requiresHumanReview: false,
+    needsLowImpact: preferences.needsLowImpact ?? false,
+    ramadanMode: preferences.ramadanMode ?? false,
+    trainsAtHome: preferences.trainsAtHome ?? false,
+    conditions: preferences.conditions ?? [],
+    requiresHumanReview: preferences.requiresHumanReview ?? false,
   };
 
   const outcome = matchProgram(profile, candidates);

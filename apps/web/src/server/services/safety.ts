@@ -101,7 +101,9 @@ async function applySafetyDecision(
     let caseReference: string | null = null;
 
     if (decision.staffEscalation) {
-      caseReference = await nextCaseReference(db);
+      // The member's organization, not the actor's: the case belongs to the gym
+      // the member is in, and that is the same value the insert below uses.
+      caseReference = await nextCaseReference(db, memberRow.organization_id);
       const { rows } = await db.query<{ id: string }>(
         `insert into support_cases
            (organization_id, branch_id, reference, member_user_id, raised_by_user_id, raised_by_ai,
@@ -240,13 +242,19 @@ async function notifyStaffRole(
   });
 }
 
-async function nextCaseReference(db: Queryable): Promise<string> {
-  const { rows } = await db.query<{ reference: string | null }>(
-    `select max(reference) as reference from support_cases where reference like 'APX-C-%'`,
+/**
+ * Case references come from the atomic allocator, for the same two reasons the
+ * invoice and member numbers do (migrations 0014 and 0015): `max(reference)`
+ * reads through row-level security, so a branch-scoped user computes a number
+ * already issued elsewhere, and two escalations raised at the same moment
+ * compute the same one. This one was missed when the others were fixed.
+ */
+async function nextCaseReference(db: Queryable, organizationId: string): Promise<string> {
+  const { rows } = await db.query<{ reference: string }>(
+    `select app.next_document_number($1, 'support_case', 'APX-C') as reference`,
+    [organizationId],
   );
-  const last = rows[0]?.reference;
-  const sequence = last ? Number(last.split('-').pop()) + 1 : 1001;
-  return `APX-C-${sequence}`;
+  return rows[0]!.reference;
 }
 
 /** The escalation queue for staff with health.read. */

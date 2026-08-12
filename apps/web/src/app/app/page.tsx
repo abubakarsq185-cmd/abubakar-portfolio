@@ -3,11 +3,15 @@ import type { Metadata } from 'next';
 import { ProgressRing, SafetyBanner, Badge } from '@gymguide/ui';
 import { requireMember } from '@/server/auth/session';
 import { loadToday } from '@/server/services/training';
+import { requireOnboarded } from '@/server/services/onboarding';
 
 export const metadata: Metadata = { title: 'Today' };
 
 export default async function TodayPage() {
   const { actor } = await requireMember();
+  // A member who has not finished onboarding has no plan to show, so send them
+  // to the wizard rather than presenting an empty Today screen.
+  await requireOnboarded(actor);
   const today = await loadToday(actor);
 
   const hour = new Date().getHours();
@@ -88,6 +92,16 @@ export default async function TodayPage() {
           ))}
         </section>
       ) : null}
+
+      <article className="card card-hover row-between">
+        <div className="stack" style={{ gap: '0.125rem', minWidth: 0 }}>
+          <strong className="small">Eating</strong>
+          <span className="micro muted">Portion guidance, your plan for today, and a place to log meals.</span>
+        </div>
+        <Link className="btn btn-secondary btn-sm" href="/app/nutrition">
+          Open nutrition
+        </Link>
+      </article>
 
       <p className="micro muted" style={{ textAlign: 'center' }}>
         Something not right? <Link href="/app/support">Talk to gym staff</Link> — a real person, not the app.

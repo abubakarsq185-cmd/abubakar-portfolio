@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { Metadata } from 'next';
 import { Badge, EmptyState, SafetyBanner } from '@gymguide/ui';
 import { formatDate } from '@gymguide/config';
@@ -162,6 +163,16 @@ export default async function PlanPage() {
           </p>
         </section>
       ) : null}
+
+      <article className="card card-hover row-between">
+        <div className="stack" style={{ gap: '0.125rem', minWidth: 0 }}>
+          <strong className="small">Eating alongside this plan</strong>
+          <span className="micro muted">Portion guidance and, if your gym has set them, calorie and macro targets.</span>
+        </div>
+        <Link className="btn btn-secondary btn-sm" href="/app/nutrition">
+          Open nutrition
+        </Link>
+      </article>
     </div>
   );
 }

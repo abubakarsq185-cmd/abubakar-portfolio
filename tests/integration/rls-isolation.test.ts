@@ -221,6 +221,43 @@ describe('row-level security', () => {
       expect(ledger).toBe(0);
     });
 
+    it('a member can see their own gym’s equipment but not edit it', async () => {
+      // The workout player's substitutions and the program matcher both run as
+      // the member and both need this. Regressing it silently degrades both
+      // rather than failing, which is why it is asserted here.
+      const codes = await asActor(app, member, async (db) => {
+        const result = await db.query<{ code: string }>(
+          `select e.code from branch_equipment be join equipment e on e.id = be.equipment_id
+            where be.is_available`,
+        );
+        return result.rows.map((row) => row.code);
+      });
+      expect(codes.length).toBeGreaterThan(3);
+      expect(codes).toContain('dumbbell');
+
+      const updated = await asActor(app, member, async (db) => {
+        const result = await db.query('update branch_equipment set is_available = false');
+        return result.rowCount;
+      });
+      expect(updated).toBe(0);
+    });
+
+    it('a member cannot see another branch’s equipment', async () => {
+      const branchIds = await asActor(app, member, async (db) => {
+        const result = await db.query<{ branch_id: string }>(
+          'select distinct branch_id from branch_equipment',
+        );
+        return result.rows.map((row) => row.branch_id);
+      });
+      expect(branchIds).toHaveLength(1);
+
+      const { rows } = await owner.query<{ branch_id: string }>(
+        'select branch_id from member_profiles where user_id = $1',
+        [member.userId],
+      );
+      expect(branchIds[0]).toBe(rows[0]!.branch_id);
+    });
+
     it('progress photos stay private unless the member shared them', async () => {
       const memberUserId = await userIdFor(owner, 'ayesha.khan@example.com');
       await owner.query(

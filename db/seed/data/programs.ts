@@ -505,6 +505,123 @@ export const WORKOUTS: SeedWorkout[] = [
       COOLDOWN_GENERAL,
     ],
   },
+
+  // --- Beginner muscle gain -------------------------------------------------
+  // The most common thing a new member wants. Without these, a beginner asking
+  // for muscle gain matched nothing and had to wait for a coach — which fails
+  // the whole premise of someone opening the app and knowing what to do.
+  {
+    code: 'foundations_full_a',
+    name: 'Foundations A — Squat & Press',
+    focus: 'full_body',
+    estimatedMinutes: 45,
+    difficulty: 'beginner',
+    effortScale: 'rpe',
+    memberIntro:
+      'Three compound lifts and two smaller ones. Leave one or two reps in the tank on every set — that is where muscle is built, not at failure.',
+    blocks: [
+      WARMUP_GENERAL,
+      {
+        kind: 'main',
+        label: 'Main lifts',
+        items: [
+          { exercise: 'goblet_squat', sets: 3, repsMin: 8, repsMax: 12, rpe: 7, restSeconds: 120, startingLoadKg: 14 },
+          {
+            exercise: 'dumbbell_bench_press',
+            sets: 3,
+            repsMin: 8,
+            repsMax: 12,
+            rpe: 7,
+            restSeconds: 120,
+            startingLoadKg: 12,
+          },
+          { exercise: 'seated_cable_row', sets: 3, repsMin: 10, repsMax: 12, rpe: 7, restSeconds: 90, startingLoadKg: 27 },
+        ],
+      },
+      {
+        kind: 'superset',
+        label: 'Arms and shoulders',
+        instructions: 'Alternate the two with about 60 seconds between sets.',
+        items: [
+          { exercise: 'lateral_raise', sets: 2, repsMin: 12, repsMax: 15, rpe: 8, startingLoadKg: 5 },
+          { exercise: 'triceps_pushdown', sets: 2, repsMin: 10, repsMax: 15, rpe: 8, startingLoadKg: 15 },
+        ],
+      },
+      COOLDOWN_GENERAL,
+    ],
+  },
+  {
+    code: 'foundations_full_b',
+    name: 'Foundations B — Hinge & Pull',
+    focus: 'full_body',
+    estimatedMinutes: 45,
+    difficulty: 'beginner',
+    effortScale: 'rpe',
+    memberIntro:
+      'Today is the back of your body. Keep the hinge slow on the way down — that is the part that builds hamstrings.',
+    blocks: [
+      WARMUP_GENERAL,
+      {
+        kind: 'main',
+        label: 'Main lifts',
+        items: [
+          { exercise: 'dumbbell_rdl', sets: 3, repsMin: 8, repsMax: 12, rpe: 7, restSeconds: 120, startingLoadKg: 14 },
+          { exercise: 'lat_pulldown', sets: 3, repsMin: 8, repsMax: 12, rpe: 7, restSeconds: 90, startingLoadKg: 27 },
+          {
+            exercise: 'dumbbell_shoulder_press',
+            sets: 3,
+            repsMin: 8,
+            repsMax: 12,
+            rpe: 7,
+            restSeconds: 90,
+            startingLoadKg: 8,
+          },
+        ],
+      },
+      {
+        kind: 'superset',
+        label: 'Arms and core',
+        instructions: 'Alternate the two with about 60 seconds between sets.',
+        items: [
+          { exercise: 'biceps_curl', sets: 2, repsMin: 10, repsMax: 15, rpe: 8, startingLoadKg: 7 },
+          { exercise: 'dead_bug', sets: 2, repsMin: 8, repsMax: 10 },
+        ],
+      },
+      COOLDOWN_GENERAL,
+    ],
+  },
+  {
+    code: 'foundations_full_c',
+    name: 'Foundations C — Legs & Upper Back',
+    focus: 'full_body',
+    estimatedMinutes: 45,
+    difficulty: 'beginner',
+    effortScale: 'rpe',
+    memberIntro:
+      'One leg at a time today, which is harder than it looks. Hold something for balance if you need to — that is not cheating.',
+    blocks: [
+      WARMUP_GENERAL,
+      {
+        kind: 'main',
+        label: 'Main lifts',
+        items: [
+          { exercise: 'split_squat', sets: 3, repsMin: 8, repsMax: 12, rpe: 7, restSeconds: 90, startingLoadKg: 8 },
+          { exercise: 'hip_thrust', sets: 3, repsMin: 10, repsMax: 12, rpe: 7, restSeconds: 90, startingLoadKg: 20 },
+          { exercise: 'dumbbell_row', sets: 3, repsMin: 8, repsMax: 12, rpe: 7, restSeconds: 90, startingLoadKg: 12 },
+        ],
+      },
+      {
+        kind: 'superset',
+        label: 'Shoulders and calves',
+        instructions: 'Alternate the two with about 60 seconds between sets.',
+        items: [
+          { exercise: 'face_pull', sets: 2, repsMin: 12, repsMax: 15, rpe: 8, startingLoadKg: 12 },
+          { exercise: 'calf_raise', sets: 2, repsMin: 12, repsMax: 15, rpe: 8, startingLoadKg: 20 },
+        ],
+      },
+      COOLDOWN_GENERAL,
+    ],
+  },
 ];
 
 export const PROGRAMS: SeedProgram[] = [
@@ -531,6 +648,76 @@ export const PROGRAMS: SeedProgram[] = [
         memberSummary:
           'Four weeks to get comfortable. We add reps before we add weight, so nothing ever feels like a jump.',
         days: { 1: 'induction_a', 2: null, 3: null, 4: 'induction_b', 5: null, 6: null, 7: null },
+      },
+    ],
+  },
+  {
+    code: 'muscle_foundations_3d',
+    name: 'Muscle Foundations — 3 Day Full Body',
+    summary:
+      'Three full-body sessions a week for someone new to lifting who wants to put on muscle. Compound lifts first, moderate reps, and weight added only once the reps are there.',
+    intent: 'hypertrophy',
+    goal: 'muscle_gain',
+    experienceLevel: 'beginner',
+    daysPerWeek: 3,
+    sessionMinutes: 45,
+    totalWeeks: 12,
+    // Deliberately modest: dumbbells and cables, which both branches have. A
+    // beginner program that needs a squat rack excludes half the members who
+    // most need it.
+    requiresEquipmentCodes: ['dumbbell', 'cable'],
+    ramadanFriendly: true,
+    phases: [
+      {
+        name: 'Learn the lifts',
+        focus: 'technique under light load',
+        weeks: 4,
+        progressionRule: 'rep_progression',
+        memberSummary:
+          'Four weeks getting the movements right. We add reps before weight, so nothing ever jumps.',
+        days: {
+          1: 'foundations_full_a',
+          2: null,
+          3: 'foundations_full_b',
+          4: null,
+          5: 'foundations_full_c',
+          6: null,
+          7: null,
+        },
+      },
+      {
+        name: 'Build',
+        focus: 'add load steadily',
+        weeks: 6,
+        progressionRule: 'double_progression',
+        deloadAtEnd: true,
+        memberSummary:
+          'Same three sessions, heavier each time you hit the top of the rep range twice. This is where the size comes from.',
+        days: {
+          1: 'foundations_full_a',
+          2: null,
+          3: 'foundations_full_b',
+          4: null,
+          5: 'foundations_full_c',
+          6: null,
+          7: null,
+        },
+      },
+      {
+        name: 'Consolidate',
+        focus: 'let the body catch up',
+        weeks: 2,
+        progressionRule: 'none',
+        memberSummary: 'Two lighter weeks. You will come back stronger than if you had pushed through.',
+        days: {
+          1: 'foundations_full_a',
+          2: null,
+          3: null,
+          4: 'foundations_full_c',
+          5: null,
+          6: null,
+          7: null,
+        },
       },
     ],
   },

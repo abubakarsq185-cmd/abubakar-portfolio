@@ -898,7 +898,8 @@ async function seedOrganization(db: Db, platform: PlatformIds, passwordHash: str
       preferred_session_minutes: member.experience === 'first_time' ? 30 : 45,
       preferred_training_time: member.gender === 'female' ? 'morning' : 'evening',
       ramadan_mode: member.ramadanMode ?? false,
-      onboarding_step: onboardingComplete ? 'complete' : 'health_screening',
+      // Canonical step names live in apps/web/src/server/services/onboarding.ts.
+      onboarding_step: onboardingComplete ? 'plan' : 'health',
       onboarding_completed_at: onboardingComplete ? addDays(joinedOn, 1).toISOString() : null,
       assigned_coach_id: staffIds.get(member.coach),
       assigned_nutritionist_id: ['ali', 'ayesha', 'junaid'].includes(member.key) ? staffIds.get('nutritionist') : null,

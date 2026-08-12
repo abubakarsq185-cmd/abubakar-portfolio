@@ -1,8 +1,8 @@
 # Testing
 
 ```bash
-pnpm test              # everything — 172 tests
-pnpm test:unit         # 149 tests, no database, ~20ms
+pnpm test              # everything — 214 tests
+pnpm test:unit         # 120 tests, no database, ~70ms
 pnpm test:integration  # 23 tests against real PostgreSQL
 ```
 
@@ -40,8 +40,12 @@ prove nothing.
 
 | File | Tests | Covers |
 | --- | --- | --- |
-| `rls-isolation.test.ts` | 23 | Cross-tenant reads and writes, member self-scope, coach caseload, branch scope, permission-gated health and financial data, unauthenticated access, append-only enforcement |
+| `rls-isolation.test.ts` | 26 | Cross-tenant reads and writes, member self-scope, coach caseload, branch scope, permission-gated health and financial data, equipment visibility, unauthenticated access, append-only enforcement |
 | `data-integrity.test.ts` | 23 | RBAC matrix parity between code and database, enum parity, ledger balance, invoice state consistency, seed shape, RLS coverage, `security_invoker` on every view |
+| `enrolment-payment.test.ts` | 6 | Acceptance criterion 1 driven through the real services as a front-desk actor: enrolment artefacts, joining fee, balanced ledger, payment idempotency, audit trail |
+| `onboarding.test.ts` | 15 | Acceptance criteria 2 and 4 from the member's side: step resumption, validation, clean screening, chest-pain escalation with a restricted high-priority case, movement restriction without a full hold, template matching, coach hand-off; plus nutrition logging and diary isolation |
+| `scheduling.test.ts` | 9 | Class check-in and attendance, double check-in refusal, waitlist promotion only under capacity, longest-waiting member wins a released place, late-cancellation window, class cancellation releasing everyone, permission boundaries |
+| `platform-support-access.test.ts` | 9 | Support access requiring a real reason, platform-only, time-limited and clamped, write access requiring the gym's approval, close recording, and the console's shape excluding health data |
 | `webhook-idempotency.test.ts` | 6 | Webhook deduplication under replay and race, rejected-signature recording, signature verification, offline sync idempotency |
 
 ## Bugs these tests actually caught
@@ -67,6 +71,64 @@ rejected it — correctly. The key now includes the channel.
 **Urdu triage never matched.** `\b` is ASCII-only in JavaScript, so
 `/\b(سینے میں درد)\b/` could never match. Caught by the multilingual triage
 test; Urdu-script patterns are now matched without word boundaries.
+
+**Front desk could not enrol anyone.** The `user_roles` insert policy demanded
+`staff.roles.write`, which only an owner holds, so the very first step of
+acceptance criterion 1 failed on RLS. Fixed in `0013_member_role_grant.sql`:
+`members.write` may assign the member and guardian roles, staff roles still may
+not.
+
+**Four identifier allocators read through row-level security.** Member numbers,
+invoice numbers, payment references, receipt numbers and — found later, by the
+onboarding tests — support-case references were all derived with `max(...) + 1`.
+A branch-scoped user sees fewer rows, computes a lower maximum, and collides with
+a number already issued at another branch; and two people acting at once compute
+the same one. Fixed in `0014_member_number_sequence.sql` and
+`0015_document_sequences.sql` with atomic `SECURITY DEFINER` allocators, with
+support cases switched over in `services/safety.ts` once the onboarding test
+caught the one that had been missed.
+
+**Deleting a user was impossible.** `audit_logs` referenced `users` with
+`ON DELETE SET NULL` while the append-only trigger blocked UPDATE, so an erasure
+request could never complete. `0016_audit_outlives_subject.sql` drops those
+foreign keys: an audit record is supposed to outlive the row it describes.
+
+**Erasure was impossible for a second reason.** Append-only DELETE triggers
+refused cascades. Immutability and deletion rights had been conflated;
+`0017_append_only_semantics.sql` separates them — the trigger keeps content
+unrewritable for everyone, revoked privileges stop the application deleting, and
+a privileged erasure job can still remove a person.
+
+**The counters backfilled themselves at migration time.** On a database built
+from scratch the migrations run before the seed, so the seed's hard-coded numbers
+never moved the counters and the first real enrolment collided.
+`0018_sequence_backfill_triggers.sql` makes a counter advance past any number
+inserted explicitly — which is also what importing history from another system
+needs.
+
+**Members could not see their own gym's equipment.** `branch_equipment` was
+staff-only. Two features run as the member and depend on it: the workout player's
+substitutions, which concluded the gym owned nothing and offered no alternatives,
+and onboarding's program matcher, which found every template unequippable and
+declined on safety grounds — correctly reasoning from wrong input. Caught by
+*"finishes onboarding by matching an approved template"*, fixed in
+`0019_members_can_see_their_gym.sql`. Which machines a gym owns is not
+confidential; the member is standing in the room looking at them.
+
+**No template existed for a beginner wanting muscle gain.** The most common thing
+a new member asks for matched nothing, so every such member was told to wait for
+a coach — which defeats the point of the app. The matcher was behaving correctly;
+the content was missing. `muscle_foundations_3d` and its three sessions were
+added to the seed.
+
+**A payment INSERT bound one parameter to two column types.** `$17` was used for
+both `reconciled_by` (uuid) and `receipt_number` (text). PostgreSQL rejected it;
+the statement is now written with 21 distinct, commented parameters.
+
+**`pnpm typecheck` pointed at a tsconfig that was never created.** Nothing
+outside the tests had ever been type-checked. All six projects now typecheck, and
+that immediately surfaced two copies of `@types/react` in one program — see
+`docs/decisions/react-types-resolution.md`.
 
 ## Conventions
 

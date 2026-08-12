@@ -34,7 +34,7 @@ pnpm dev                   # http://localhost:3000
 row-level security — and it is the role the application and the tests use.
 
 ```bash
-pnpm test                  # 172 tests: unit + integration against real Postgres
+pnpm test                  # 214 tests: unit + integration against real Postgres
 pnpm test:unit             # pure domain logic, no database
 pnpm test:integration      # tenant isolation, idempotency, ledger integrity
 pnpm build                 # production build of the web app
@@ -80,11 +80,12 @@ packages/
   domain/               Coaching engine, safety engine, billing, nutrition, AI contract
   ui/                   Design tokens, CSS design system, React primitives, charts
 db/
-  migrations/           12 SQL migrations — schema, RLS, RBAC reference, views
+  migrations/           19 SQL migrations — schema, RLS, RBAC reference, views,
+                        atomic document numbering, append-only semantics
   seed/                 "Apex Fitness Lahore" demo tenant
   scripts/              Migration runner and CLI
 tests/
-  unit/                 149 tests — engines, money, safety, adherence
+  unit/                 120 tests — engines, money, safety, adherence
   integration/          23 tests — isolation, idempotency, parity, ledger
 docs/                   Architecture, security, permissions, integrations
 ```
@@ -157,26 +158,39 @@ Being precise about this matters more than a longer feature list.
   evidence, signed waiver, emergency contact, membership, first invoice, ledger
   postings, app invite and a matched program
 - Health escalation queue with resolution and audited progression-hold release
+- Billing console: overdue invoices, collections by method, ledger balances,
+  payment-method readiness, and taking a payment from the member profile
+- Classes: day timetable with rosters, check-in, place cancellation with the
+  late-cancellation window applied from the class's own rules, waitlist
+  promotion, and class cancellation that releases everyone without charge
+- Reports: branch comparison, ledger revenue, check-ins, weekly adherence
+  against the engine's threshold, joiners, coach workload and tenure buckets —
+  scoped by the reader, so a branch manager sees their branch
+- Platform console: tenants and subscriptions, plan mix, system health, and
+  support access that is time-limited, reasoned, and written into the gym's own
+  audit trail. Write access needs the gym's approval first
 - Member app: Today, Train, the guided workout player with offline logging and
   idempotent sync, Plan (with "why your plan changed"), Progress with charts and
-  records, Support with the AI coach and staff hand-off, Profile with
-  notification preferences and data export / erasure requests
+  records, Nutrition (plate guidance always, calorie targets only when a
+  qualified person has set them), Support with the AI coach and staff hand-off,
+  Profile with notification preferences and data export / erasure requests
+- Member onboarding: six saved steps, health screening straight through the risk
+  engine, and a program matched from approved templates using the member's own
+  answers — or handed to a coach when the matcher is not confident
 - API: workout sync, safety reporting, payment webhooks with signature
   verification and idempotency
 - Server services for enrolment, payments, refunds, reconciliation, the coaching
   engine and the AI runtime — all with audit trails
-- The full database, RLS, seed and 172 tests
+- The full database, RLS, seed and 214 tests
 
 ### Service layer built, screen not yet wired
 
-The logic, validation and audit trail exist and are tested; the staff-facing page
-is the remaining work: billing console, class scheduling, program builder,
-automation editor, reports and the platform console. `apps/web/src/server/`
-holds these — `services/billing.ts` (`recordPayment`, `issueRefund`,
-`reconcilePayments`) and `services/dashboard.ts` are the ones to look at first.
-The member onboarding wizard and the nutrition screen are the equivalent gaps on
-the member side; `applyScreening` and `computeNutritionTargets` are built and
-tested behind them.
+Two staff screens remain: the program builder and the automation editor. The
+logic behind both exists and is tested — `packages/domain/src/coaching/` for
+program structure and progression, `services/dashboard.ts` for the automation
+queues — but a coach cannot yet author a template or edit a sequence from the
+interface. Program assignment, override and the automation runtime all work; it
+is authoring that is missing.
 
 Navigation only links to screens that exist. There are no dead links and no
 "coming soon" placeholders — anything not built is listed here instead.
