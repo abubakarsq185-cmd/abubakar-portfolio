@@ -18,6 +18,25 @@ the same system.
 
 Requires Node 20+, pnpm 10+, and PostgreSQL 15+.
 
+### One command
+
+```bash
+./start.sh
+```
+
+Checks what it needs, generates real secrets into `.env`, creates the database,
+applies the migrations, seeds the demo gym, builds, and starts on
+<http://localhost:3000>. Safe to re-run. Needs Node 20.11+ and a local
+PostgreSQL 14+.
+
+No PostgreSQL installed, or you would rather not touch your machine:
+
+```bash
+docker compose up
+```
+
+### By hand
+
 ```bash
 pnpm install
 
@@ -38,6 +57,15 @@ pnpm test                  # 241 tests: unit + integration against real Postgres
 pnpm test:unit             # pure domain logic, no database
 pnpm test:integration      # tenant isolation, idempotency, ledger integrity
 pnpm build                 # production build of the web app
+```
+
+With the app running on :3000, two tools drive it rather than describe it:
+
+```bash
+node tools/walkthrough.mjs   # 43 steps through 8 journeys, asserting each one.
+                             # This found four real defects; see docs/TESTING.md.
+node tools/make-preview.mjs  # one self-contained HTML file of every screen,
+                             # openable with no server. A preview, not the app.
 ```
 
 ### Demo accounts

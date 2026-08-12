@@ -1,0 +1,55 @@
+# Run GymGuide without installing Node or PostgreSQL.
+#
+#   docker compose up
+#
+# Then open http://localhost:3000 and sign in — every demo account uses the
+# password GymGuide!Demo2026.
+#
+# The database is a named volume, so stopping and starting keeps your data.
+# To get back to a clean demo:  docker compose down -v && docker compose up
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: gymguide
+      POSTGRES_DB: gymguide
+    ports:
+      # Exposed so you can point psql or a GUI at it while the stack runs.
+      - '5432:5432'
+    volumes:
+      - gymguide-db:/var/lib/postgresql/data
+    healthcheck:
+      # The app must not start migrating before the server accepts connections.
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d gymguide']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      APP_ENV: development
+      APP_URL: http://localhost:3000
+      APP_NAME: GymGuide
+      # The owner connection runs migrations; the app connection is the
+      # non-privileged role that row-level security actually constrains.
+      DATABASE_URL: postgres://postgres:gymguide@db:5432/gymguide
+      DATABASE_APP_URL: postgres://gymguide_app:gymguide-app@db:5432/gymguide
+      DATABASE_SSL: 'false'
+      # Fine for a local demo. A deployment must supply its own.
+      SESSION_SECRET: local-demo-session-secret-not-for-any-real-deployment
+      SEED_DEMO_PASSWORD: GymGuide!Demo2026
+      REQUIRE_STAFF_MFA: 'false'
+      STORAGE_DRIVER: local
+      LOG_LEVEL: info
+    ports:
+      - '3000:3000'
+    command: >
+      sh -c "pnpm db:bootstrap && pnpm start"
+
+volumes:
+  gymguide-db:
