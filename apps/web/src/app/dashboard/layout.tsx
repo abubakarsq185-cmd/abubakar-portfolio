@@ -31,7 +31,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
     },
     {
       heading: 'Coaching',
-      links: [{ href: '/dashboard/escalations', label: 'Health escalations', show: can(actor, 'health.read') }],
+      links: [
+        { href: '/dashboard/escalations', label: 'Health escalations', show: can(actor, 'health.read') },
+        {
+          href: '/dashboard/programs',
+          label: 'Programs',
+          show: can(actor, 'content.write') || can(actor, 'programs.assign'),
+        },
+      ],
     },
     {
       heading: 'Scheduling',

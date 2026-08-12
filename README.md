@@ -34,7 +34,7 @@ pnpm dev                   # http://localhost:3000
 row-level security — and it is the role the application and the tests use.
 
 ```bash
-pnpm test                  # 214 tests: unit + integration against real Postgres
+pnpm test                  # 229 tests: unit + integration against real Postgres
 pnpm test:unit             # pure domain logic, no database
 pnpm test:integration      # tenant isolation, idempotency, ledger integrity
 pnpm build                 # production build of the web app
@@ -181,16 +181,17 @@ Being precise about this matters more than a longer feature list.
   verification and idempotency
 - Server services for enrolment, payments, refunds, reconciliation, the coaching
   engine and the AI runtime — all with audit trails
-- The full database, RLS, seed and 214 tests
+- Program library: platform templates and the gym's own copies, phase editing
+  with the engine's own progression rules, equipment warnings, and publishing
+  that records a named approver
+- The full database, RLS, seed and 229 tests
 
 ### Service layer built, screen not yet wired
 
-Two staff screens remain: the program builder and the automation editor. The
-logic behind both exists and is tested — `packages/domain/src/coaching/` for
-program structure and progression, `services/dashboard.ts` for the automation
-queues — but a coach cannot yet author a template or edit a sequence from the
-interface. Program assignment, override and the automation runtime all work; it
-is authoring that is missing.
+One staff screen remains: the automation editor. The automation runtime,
+notification ledger, consent gating and quiet hours all work and are tested —
+`services/dashboard.ts` holds the queues — but a manager cannot yet edit a
+sequence from the interface.
 
 Navigation only links to screens that exist. There are no dead links and no
 "coming soon" placeholders — anything not built is listed here instead.

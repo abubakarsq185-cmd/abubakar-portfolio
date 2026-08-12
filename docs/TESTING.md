@@ -1,7 +1,7 @@
 # Testing
 
 ```bash
-pnpm test              # everything — 214 tests
+pnpm test              # everything — 229 tests
 pnpm test:unit         # 120 tests, no database, ~70ms
 pnpm test:integration  # 23 tests against real PostgreSQL
 ```
@@ -45,6 +45,7 @@ prove nothing.
 | `enrolment-payment.test.ts` | 6 | Acceptance criterion 1 driven through the real services as a front-desk actor: enrolment artefacts, joining fee, balanced ledger, payment idempotency, audit trail |
 | `onboarding.test.ts` | 15 | Acceptance criteria 2 and 4 from the member's side: step resumption, validation, clean screening, chest-pain escalation with a restricted high-priority case, movement restriction without a full hold, template matching, coach hand-off; plus nutrition logging and diary isolation |
 | `scheduling.test.ts` | 9 | Class check-in and attendance, double check-in refusal, waitlist promotion only under capacity, longest-waiting member wins a released place, late-cancellation window, class cancellation releasing everyone, permission boundaries |
+| `programs.test.ts` | 15 | Platform templates read-only to a gym, copy-and-adapt carrying phases and days, unique codes, summary and progression-rule validation, publishing with a named approver, refusing to publish an empty program, withdrawal leaving existing members alone, and front desk being unable to author |
 | `platform-support-access.test.ts` | 9 | Support access requiring a real reason, platform-only, time-limited and clamped, write access requiring the gym's approval, close recording, and the console's shape excluding health data |
 | `webhook-idempotency.test.ts` | 6 | Webhook deduplication under replay and race, rejected-signature recording, signature verification, offline sync idempotency |
 
@@ -124,6 +125,14 @@ added to the seed.
 **A payment INSERT bound one parameter to two column types.** `$17` was used for
 both `reconciled_by` (uuid) and `receipt_number` (text). PostgreSQL rejected it;
 the statement is now written with 21 distinct, commented parameters.
+
+**A coach was told nobody was on a program they were withdrawing.** The
+"members on it" count was a subquery inside the caller's own query, so it ran
+through row-level security: a coach saw only the members they personally coach,
+and a program a hundred people were running looked empty. The count is a fact
+about the program, not about who is asking, so it now reads with the owner
+connection. Caught by *"withdrawing does not take the plan away from anyone
+already on it"*.
 
 **`pnpm typecheck` pointed at a tsconfig that was never created.** Nothing
 outside the tests had ever been type-checked. All six projects now typecheck, and
