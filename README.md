@@ -34,7 +34,7 @@ pnpm dev                   # http://localhost:3000
 row-level security — and it is the role the application and the tests use.
 
 ```bash
-pnpm test                  # 229 tests: unit + integration against real Postgres
+pnpm test                  # 241 tests: unit + integration against real Postgres
 pnpm test:unit             # pure domain logic, no database
 pnpm test:integration      # tenant isolation, idempotency, ledger integrity
 pnpm build                 # production build of the web app
@@ -184,14 +184,23 @@ Being precise about this matters more than a longer feature list.
 - Program library: platform templates and the gym's own copies, phase editing
   with the engine's own progression rules, equipment warnings, and publishing
   that records a named approver
-- The full database, RLS, seed and 229 tests
+- Automations: every sequence with its trigger, channels, frequency ceiling,
+  quiet hours and skip reasons — with marketing consent and escalation urgency
+  enforced in the service rather than left to whoever edits the form
+- The full database, RLS, seed and 241 tests
 
-### Service layer built, screen not yet wired
+### Not built
 
-One staff screen remains: the automation editor. The automation runtime,
-notification ledger, consent gating and quiet hours all work and are tested —
-`services/dashboard.ts` holds the queues — but a manager cannot yet edit a
-sequence from the interface.
+- **Program authoring below the phase level.** A coach can copy a template,
+  edit its metadata and its phases, and publish it. Editing the exercises inside
+  a workout — sets, reps, load guidance — still means editing the seed. The
+  schema (`workout_blocks`, `workout_items`) supports it; the screen does not.
+- **Guardian and family payer screens.** The role, permissions, consent rules
+  and `family_links` isolation all exist and are tested; there is no dedicated
+  interface for a parent paying for a child.
+- **Playwright end-to-end specs, accessibility automation and load testing.**
+  The config and Chromium are in place. Verification today is 241 unit and
+  integration tests plus manual runtime checks per role.
 
 Navigation only links to screens that exist. There are no dead links and no
 "coming soon" placeholders — anything not built is listed here instead.

@@ -209,6 +209,57 @@ export function notificationAdapterFor(channel: NotificationChannel): Notificati
   }
 }
 
+/**
+ * Which channels can actually deliver right now.
+ *
+ * `ready: false` means the adapter falls back to logging: the message is
+ * recorded but nobody receives it. The automation editor shows this rather than
+ * letting a manager configure a WhatsApp sequence that silently goes nowhere.
+ */
+export function availableNotificationChannels(): Array<{
+  channel: NotificationChannel;
+  label: string;
+  ready: boolean;
+  note: string;
+}> {
+  const env = serverEnv();
+  const live = (channel: NotificationChannel) => notificationAdapterFor(channel).provider !== 'console';
+
+  return [
+    { channel: 'in_app', label: 'In-app', ready: true, note: 'Always available — the notification row itself.' },
+    {
+      channel: 'push',
+      label: 'Push',
+      ready: live('push'),
+      note: live('push')
+        ? 'Live via Expo.'
+        : 'Logged only. Needs NOTIFY_PUSH_DRIVER=expo and EXPO_ACCESS_TOKEN.',
+    },
+    {
+      channel: 'email',
+      label: 'Email',
+      ready: live('email'),
+      note: live('email') ? 'Live via SMTP.' : 'Logged only. Needs NOTIFY_EMAIL_DRIVER=smtp and SMTP_URL.',
+    },
+    {
+      channel: 'sms',
+      label: 'SMS',
+      ready: live('sms'),
+      note: live('sms') ? 'Live via Twilio.' : 'Logged only. Needs NOTIFY_SMS_DRIVER=twilio and Twilio credentials.',
+    },
+    {
+      channel: 'whatsapp',
+      label: 'WhatsApp',
+      ready: live('whatsapp'),
+      note: live('whatsapp')
+        ? 'Live via the Meta Cloud API.'
+        : `Logged only. Needs NOTIFY_WHATSAPP_DRIVER=meta_cloud, credentials, and templates approved by Meta${
+            env.WHATSAPP_PHONE_NUMBER_ID ? '' : ' (no phone number id set)'
+          }.`,
+    },
+  ];
+}
+
 /** Render a stored template with `{{placeholder}}` substitution. */
 export function renderTemplate(template: string, variables: Record<string, string | number | null>): string {
   return template.replace(/\{\{(\w+)\}\}/g, (_match, key: string) => {

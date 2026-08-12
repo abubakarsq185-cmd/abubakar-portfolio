@@ -1,7 +1,7 @@
 # Testing
 
 ```bash
-pnpm test              # everything — 229 tests
+pnpm test              # everything — 241 tests
 pnpm test:unit         # 120 tests, no database, ~70ms
 pnpm test:integration  # 23 tests against real PostgreSQL
 ```
@@ -46,6 +46,7 @@ prove nothing.
 | `onboarding.test.ts` | 15 | Acceptance criteria 2 and 4 from the member's side: step resumption, validation, clean screening, chest-pain escalation with a restricted high-priority case, movement restriction without a full hold, template matching, coach hand-off; plus nutrition logging and diary isolation |
 | `scheduling.test.ts` | 9 | Class check-in and attendance, double check-in refusal, waitlist promotion only under capacity, longest-waiting member wins a released place, late-cancellation window, class cancellation releasing everyone, permission boundaries |
 | `programs.test.ts` | 15 | Platform templates read-only to a gym, copy-and-adapt carrying phases and days, unique codes, summary and progression-rule validation, publishing with a named approver, refusing to publish an empty program, withdrawal leaving existing members alone, and front desk being unable to author |
+| `automations.test.ts` | 12 | Marketing classified from the trigger rather than a clearable flag, consent forced back on, quiet hours never applied to urgent triggers but kept on routine nudges, the contact ceiling, channel and time validation, tasks needing an assignee, and a coach being unable to edit |
 | `platform-support-access.test.ts` | 9 | Support access requiring a real reason, platform-only, time-limited and clamped, write access requiring the gym's approval, close recording, and the console's shape excluding health data |
 | `webhook-idempotency.test.ts` | 6 | Webhook deduplication under replay and race, rejected-signature recording, signature verification, offline sync idempotency |
 
@@ -133,6 +134,17 @@ and a program a hundred people were running looked empty. The count is a fact
 about the program, not about who is asking, so it now reads with the owner
 connection. Caught by *"withdrawing does not take the plan away from anyone
 already on it"*.
+
+**The "logged only" channel warning could never appear.** The set of
+deliverable channels was built from every channel rather than only the ready
+ones, so `unavailableChannels` was always empty and a manager configuring a
+WhatsApp sequence would have been told nothing. Caught by *"lists every
+automation with what it did and whether its channels can deliver"*.
+
+**Enum arrays arrived as strings.** `notification_channel[]` has no
+node-postgres parser, so `automations.channels` came back as the literal
+`"{in_app,push}"` and every array operation on it threw. Cast to `text[]` in the
+query.
 
 **`pnpm typecheck` pointed at a tsconfig that was never created.** Nothing
 outside the tests had ever been type-checked. All six projects now typecheck, and

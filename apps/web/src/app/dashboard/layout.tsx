@@ -55,6 +55,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
       links: [{ href: '/dashboard/billing', label: 'Billing', show: can(actor, 'finance.read') }],
     },
     {
+      heading: 'Operations',
+      links: [
+        { href: '/dashboard/automations', label: 'Automations', show: can(actor, 'automations.write') },
+      ],
+    },
+    {
       heading: 'Insight',
       links: [{ href: '/dashboard/reports', label: 'Reports', show: can(actor, 'reports.read') }],
     },
