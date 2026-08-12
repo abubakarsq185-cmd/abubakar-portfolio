@@ -57,6 +57,7 @@ Every seeded account uses the password in `SEED_DEMO_PASSWORD`
 | Member (escalation) | `ahmed.nawaz@example.com` | Open knee-pain escalation, progression paused |
 | Member (at risk) | `hamza.raza@example.com` | Five weeks inactive, in the retention queue |
 | Member (Urdu) | `maryam.javed@example.com` | Urdu locale, Ramadan mode, hybrid plan |
+| Member (mid-onboarding) | `nida.aslam@example.com` | Resumes the wizard at the health step; `/app` redirects there |
 | Guardian | `tariq.noor@example.com` | Pays for a dependent, cannot see her health data |
 | Platform admin | `support@gymguide.app` | The platform console |
 
