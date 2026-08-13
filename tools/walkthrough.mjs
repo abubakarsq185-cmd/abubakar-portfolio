@@ -11,6 +11,7 @@
  */
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { chromium } from '@playwright/test';
+import { launchOptions } from './browser-launch.mjs';
 
 const BASE = process.env.WALK_BASE_URL ?? 'http://localhost:3000';
 const OUT = process.env.WALK_DIR ??
@@ -66,7 +67,7 @@ async function newPage(browser, viewport) {
 }
 
 const stamp = Date.now().toString().slice(-7);
-const browser = await chromium.launch();
+const browser = await chromium.launch(launchOptions(BASE));
 
 // =========================================================================
 // A — Front desk enrols a member and takes the money

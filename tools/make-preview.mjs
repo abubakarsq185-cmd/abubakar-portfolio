@@ -12,6 +12,7 @@ import { randomBytes, createHash } from 'node:crypto';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import pg from 'pg';
 import { chromium } from '@playwright/test';
+import { launchOptions } from './browser-launch.mjs';
 
 const BASE = 'http://localhost:3000';
 const TMP = '/tmp/preview-shots';
@@ -129,7 +130,7 @@ const GROUPS = [
   },
 ];
 
-const browser = await chromium.launch();
+const browser = await chromium.launch(launchOptions(BASE));
 const captured = [];
 
 for (const group of GROUPS) {

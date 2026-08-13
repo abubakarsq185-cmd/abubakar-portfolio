@@ -20,6 +20,7 @@ import { execSync, spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import pg from 'pg';
+import { launchOptions } from './browser-launch.mjs';
 
 const require = createRequire(import.meta.url);
 const ROOT = new URL('..', import.meta.url).pathname;
@@ -210,7 +211,7 @@ try {
   const MEMBERS = ['member', 'guardian'];
   const expand = (a) => a === 'all' ? Object.keys(ROLES) : a === 'staff' ? STAFF : a === 'members' ? MEMBERS : a;
 
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(launchOptions(BASE));
   const tokens = {};
   for (const [key, email] of Object.entries(ROLES)) {
     const token = randomBytes(32).toString('base64url');
@@ -235,6 +236,10 @@ try {
     await ctx.addCookies([{ name: 'gg_session', value: tokens[role], domain: 'localhost', path: '/', httpOnly: true, sameSite: 'Lax' }]);
     const page = await ctx.newPage();
 
+    // Narrate the sweep. It is the longest section, and a section that prints
+    // nothing for minutes is indistinguishable from one that has hung.
+    process.stdout.write(`  ${D}… ${role}${O}`);
+
     for (const [route, allow] of ROUTES) {
       const allowed = new Set(expand(allow));
       const response = await page.goto(BASE + route, { waitUntil: 'domcontentloaded', timeout: 20_000 }).catch(() => null);
@@ -258,6 +263,7 @@ try {
     }
     await ctx.close();
   }
+  process.stdout.write('\n');
   await browser.close();
 
   check(`${checked} route/role combinations rendered without a server error`,
