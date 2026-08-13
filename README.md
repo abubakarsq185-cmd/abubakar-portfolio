@@ -35,6 +35,12 @@ No PostgreSQL installed, or you would rather not touch your machine:
 docker compose up
 ```
 
+`./start.sh` is verified from a genuine cold start — empty database, no `.env`,
+nothing installed — and reaches a serving app in about seventy seconds. The
+Docker path is written and its compose file validates, but it has not been run
+end to end here, because this machine has the Docker CLI and no daemon. If you
+have one, that is the first thing worth confirming.
+
 ### By hand
 
 ```bash
@@ -59,14 +65,22 @@ pnpm test:integration      # tenant isolation, idempotency, ledger integrity
 pnpm build                 # production build of the web app
 ```
 
-With the app running on :3000, two tools drive it rather than describe it:
+With the app running on :3000, three tools drive it rather than describe it:
 
 ```bash
+node tools/readiness.mjs     # the full audit — environment, RLS posture,
+                             # typecheck, build, tests, every page as every
+                             # role. Writes readiness-report.html, exits
+                             # non-zero on any failure. Start here.
 node tools/walkthrough.mjs   # 43 steps through 8 journeys, asserting each one.
-                             # This found four real defects; see docs/TESTING.md.
 node tools/make-preview.mjs  # one self-contained HTML file of every screen,
                              # openable with no server. A preview, not the app.
 ```
+
+These found four real defects that no unit or integration test could have —
+including one that locked the gym owner out of their own account. They are
+listed in [docs/TESTING.md](docs/TESTING.md). Before handing this to a gym, work
+through [docs/GO-LIVE.md](docs/GO-LIVE.md).
 
 ### Demo accounts
 
@@ -227,9 +241,10 @@ Being precise about this matters more than a longer feature list.
 - **Guardian and family payer screens.** The role, permissions, consent rules
   and `family_links` isolation all exist and are tested; there is no dedicated
   interface for a parent paying for a child.
-- **Playwright end-to-end specs, accessibility automation and load testing.**
-  The config and Chromium are in place. Verification today is 241 unit and
-  integration tests plus manual runtime checks per role.
+- **Accessibility automation, load testing and a browser matrix.** Verification
+  today is 241 unit and integration tests, 43 asserted journey steps through the
+  real interface, and every page opened as every role — all in Chromium, none of
+  it audited for accessibility or tested above a handful of users.
 
 Navigation only links to screens that exist. There are no dead links and no
 "coming soon" placeholders — anything not built is listed here instead.

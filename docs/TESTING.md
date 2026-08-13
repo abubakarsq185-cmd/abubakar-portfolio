@@ -160,13 +160,56 @@ that immediately surfaced two copies of `@types/react` in one program — see
 - Deterministic time: the seed pins a date and the PRNG is seeded, so
   "flaky test" is not a category here.
 
+## Driving the real interface
+
+Unit and integration tests prove the logic and the isolation. They cannot prove
+that a person can *use* the thing. Two tools do that, against a running server,
+with a real browser:
+
+```bash
+./start.sh                    # leave running on :3000
+node tools/walkthrough.mjs    # 43 steps, 8 journeys, each one asserted
+node tools/readiness.mjs      # the full audit; writes readiness-report.html
+```
+
+`walkthrough.mjs` signs in as each role and does the work: enrols a member and
+takes a payment, answers "yes" to chest pain and checks the warning names no
+condition, opens the workout player, checks a member into a class, publishes a
+program, reads the automation skip reasons, opens the reports, and takes
+time-limited support access from the platform console. Every step asserts; it
+captures what it saw so a failure is inspectable rather than a bare stack trace.
+
+`readiness.mjs` is the wider audit: environment, database and RLS posture,
+typecheck, build, the whole test suite, then **every page opened as every role**
+— 23 routes × 8 roles — asserting no server error and that access matches the
+permission matrix. It labels each finding PASS, FAIL or GATE and exits non-zero
+on any FAIL, so it can sit in CI.
+
+### Defects these found that nothing else would have
+
+**Staff MFA locked the owner out permanently.** With `REQUIRE_STAFF_MFA` set,
+sign-in demanded a TOTP code from any staff account — including accounts that
+had never enrolled, which therefore had no secret to generate a code from. The
+sign-in form was, for them, an unpassable door. MFA is now required only where
+it is also *enrolled*.
+
+**Publishing a program then 500'd its own page.** `approved_at` came back from
+node-postgres as a `Date`, and the page called `.slice()` on it. Nobody had ever
+published one in a test, because the test asserted the service's return value
+rather than opening the page afterwards.
+
+**No member had anything to do.** The seed's sessions were all historic. Every
+member's Today screen and workout player — the core of the product — was
+unreachable, and no test noticed because they queried sessions by id rather than
+asking "what is next?". The seed now schedules forward.
+
+**A guardian got a 500 on `/app/onboarding`.** `loadOnboarding` assumed every
+actor has a member profile. A guardian pays for a dependent and has none.
+
 ## Not yet covered
 
-- **End-to-end.** Playwright is configured and Chromium is available, but no
-  specs are written. The first three should be: front-desk enrolment through to
-  a working member login; a member completing a workout offline and syncing; a
-  member reporting pain and a coach seeing the escalation.
 - **Accessibility.** Semantics, focus management, contrast and reduced-motion
   are handled in the design system, but no automated axe run exists.
 - **Load.** No performance testing has been done. The indexes are considered but
   unproven at scale.
+- **Browser matrix.** Everything above runs in Chromium only.
