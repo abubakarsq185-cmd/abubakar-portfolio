@@ -60,7 +60,15 @@ export interface OnboardingState {
   equipmentAtBranch: string[];
 }
 
-export async function loadOnboarding(actor: Actor): Promise<OnboardingState> {
+/**
+ * Returns null when the signed-in account has no member profile.
+ *
+ * A guardian pays for someone else and never has one, so asking them to
+ * onboard is meaningless — and throwing here returned a 500 for a role the
+ * product supports. Not finding a profile is a fact about who is asking, not
+ * an error.
+ */
+export async function loadOnboarding(actor: Actor): Promise<OnboardingState | null> {
   const session = tenantSessionFor(actor);
 
   return withTenant(session, async (db) => {
@@ -96,7 +104,7 @@ export async function loadOnboarding(actor: Actor): Promise<OnboardingState> {
       [actor.userId],
     );
     const row = rows[0];
-    if (!row) throw new Error('No member profile found for this account.');
+    if (!row) return null;
 
     const { rows: equipment } = await db.query<{ name: string }>(
       `select e.name from branch_equipment be join equipment e on e.id = be.equipment_id

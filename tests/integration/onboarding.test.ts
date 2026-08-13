@@ -145,8 +145,9 @@ describe('member onboarding', () => {
   it('starts a new member at the beginning, whatever the column says', async () => {
     const member = await freshMember('Onboarding Start');
     const state = await loadOnboarding(member);
-    expect(state.step).toBe('welcome');
-    expect(state.completed).toBe(false);
+    expect(state, 'a seeded member must have a profile').not.toBeNull();
+    expect(state!.step).toBe('welcome');
+    expect(state!.completed).toBe(false);
   });
 
   it('saves each step and advances, so a half-finished form is not lost', async () => {
@@ -154,9 +155,10 @@ describe('member onboarding', () => {
 
     expect((await saveGoals(member, { primaryGoal: 'fat_loss', experienceLevel: 'beginner', heightCm: 165, startingWeightKg: 72 })).ok).toBe(true);
     let state = await loadOnboarding(member);
-    expect(state.step).toBe('schedule');
-    expect(state.primaryGoal).toBe('fat_loss');
-    expect(state.heightCm).toBe(165);
+    expect(state).not.toBeNull();
+    expect(state!.step).toBe('schedule');
+    expect(state!.primaryGoal).toBe('fat_loss');
+    expect(state!.heightCm).toBe(165);
 
     expect(
       (
@@ -169,9 +171,10 @@ describe('member onboarding', () => {
       ).ok,
     ).toBe(true);
     state = await loadOnboarding(member);
-    expect(state.step).toBe('health');
-    expect(state.trainingDaysPerWeek).toBe(4);
-    expect(state.preferredDays).toEqual(['mon', 'wed', 'fri', 'sat']);
+    expect(state).not.toBeNull();
+    expect(state!.step).toBe('health');
+    expect(state!.trainingDaysPerWeek).toBe(4);
+    expect(state!.preferredDays).toEqual(['mon', 'wed', 'fri', 'sat']);
   });
 
   it('rejects an impossible schedule rather than storing it', async () => {
@@ -198,9 +201,10 @@ describe('member onboarding', () => {
     expect(result.escalation).toBeUndefined();
 
     const state = await loadOnboarding(member);
-    expect(state.hasScreening).toBe(true);
-    expect(state.progressionHoldReason).toBeNull();
-    expect(state.step).toBe('preferences');
+    expect(state, 'a seeded member must have a profile').not.toBeNull();
+    expect(state!.hasScreening).toBe(true);
+    expect(state!.progressionHoldReason).toBeNull();
+    expect(state!.step).toBe('preferences');
   });
 
   it('escalates chest pain, pauses progression and raises a case a human owns', async () => {
@@ -299,9 +303,10 @@ describe('member onboarding', () => {
     expect(result.ok, result.message).toBe(true);
 
     const state = await loadOnboarding(member);
-    expect(state.completed).toBe(true);
-    expect(state.step).toBe('plan');
-    expect(state.assignedProgramName).toBeTruthy();
+    expect(state, 'a seeded member must have a profile').not.toBeNull();
+    expect(state!.completed).toBe(true);
+    expect(state!.step).toBe('plan');
+    expect(state!.assignedProgramName).toBeTruthy();
 
     const { rows } = await owner.query<{ assignment_source: string; state: string; lifecycle_stage: string }>(
       `select pa.assignment_source, pa.state, mp.lifecycle_stage
@@ -338,11 +343,12 @@ describe('member onboarding', () => {
     expect(result.ok, result.message).toBe(true);
 
     const state = await loadOnboarding(member);
-    expect(state.completed).toBe(true);
-    expect(state.progressionHoldReason).toBeTruthy();
+    expect(state, 'a seeded member must have a profile').not.toBeNull();
+    expect(state!.completed).toBe(true);
+    expect(state!.progressionHoldReason).toBeTruthy();
     // No template was assigned: a plan nobody is confident in is worse than none.
-    expect(state.assignedProgramName).toBeNull();
-    expect(state.needsHumanPlan).toBe(true);
+    expect(state!.assignedProgramName).toBeNull();
+    expect(state!.needsHumanPlan).toBe(true);
   });
 });
 

@@ -186,7 +186,10 @@ try {
   // Every page in the application. `allow` lists the roles that should get a
   // rendered page; everyone else must be redirected, never shown a crash.
   const ROUTES = [
-    ['/', 'all'], ['/sign-in', 'all'],
+    // '/' renders for everyone. '/sign-in' deliberately bounces an already
+    // signed-in user to their own home, so it is listed as nobody's page —
+    // being redirected away from it is the correct outcome, not a fault.
+    ['/', 'all'], ['/sign-in', []],
     ['/dashboard', 'staff'], ['/dashboard/members', 'staff'],
     [`/dashboard/members/${member}`, 'staff'],
     ['/dashboard/enrol', ['owner', 'manager', 'frontDesk']],

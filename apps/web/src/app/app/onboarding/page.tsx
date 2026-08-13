@@ -172,6 +172,8 @@ export default async function OnboardingPage({
 }) {
   const [{ actor }, params] = await Promise.all([requireMember(), searchParams]);
   const state = await loadOnboarding(actor);
+  // A guardian has no onboarding of their own to complete.
+  if (!state) redirect('/app');
 
   const stepIndex = ONBOARDING_STEPS.indexOf(state.step);
   const previous = stepIndex > 0 ? ONBOARDING_STEPS[stepIndex - 1] : null;
