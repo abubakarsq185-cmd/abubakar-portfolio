@@ -290,11 +290,22 @@ try {
 
     for (const [route, allow] of ROUTES) {
       const allowed = new Set(expand(allow));
-      const response = await page.goto(BASE + route, { waitUntil: 'domcontentloaded', timeout: 20_000 }).catch(() => null);
+      let navError = '';
+      const response = await page.goto(BASE + route, { waitUntil: 'domcontentloaded', timeout: 20_000 })
+        .catch((e) => { navError = e.message.split('\n')[0].replace('page.goto: ', ''); return null; });
       const body = await page.locator('body').innerText().catch(() => '');
       const status = response?.status() ?? 0;
-      const landed = page.url().replace(BASE, '').split('?')[0];
+      const landed = navError ? navError : page.url().replace(BASE, '').split('?')[0];
       checked += 1;
+
+      // The browser never reached the server at all. Say so in those words:
+      // reporting this as a permissions mismatch sends the reader hunting
+      // through policy code for a fault that is in the network path.
+      if (navError) {
+        wrongAccess += 1;
+        detail.push(`${route} as ${role}: ${navError}`);
+        continue;
+      }
 
       // A crash is always a failure, whoever asked for the page.
       if (/Application error|server-side exception|Digest:/i.test(body) || status >= 500) {

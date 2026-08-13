@@ -210,15 +210,30 @@ actor has a member profile. A guardian pays for a dependent and has none.
 
 Worth recording, because both produce results that look like product failures.
 
-**Playwright sent localhost through the environment's proxy.** It applies
-`HTTP_PROXY` / `HTTPS_PROXY` to every request the browser makes and ignores
-`NO_PROXY` when doing so. Measured against the same server `curl` was answering
-in 4ms: 12.8 seconds per page, consistently. Only Playwright's own
-`proxy: { server: 'direct://' }` overrides it — `--no-proxy-server` and
-`--proxy-bypass-list` do not, because Playwright sets the proxy above them. At
-that speed a 184-combination sweep takes forty minutes, which is
-indistinguishable from a hang. `tools/browser-launch.mjs` now asks for a direct
-connection whenever the target is loopback.
+**The browser sent localhost through the environment's proxy.** Chromium reads
+`http_proxy` / `https_proxy` from its own environment and routes everything
+through them, localhost included; a `NO_PROXY` list carrying CIDR ranges and
+`::` was not enough to bypass it. Measured against the same server `curl` was
+answering in 4ms, loading one page:
+
+| Launch | Time | Result |
+| --- | --- | --- |
+| default | 13051ms | 200 |
+| `proxy: { server: 'direct://' }` | 10ms | `ERR_PROXY_CONNECTION_FAILED` |
+| proxy with a bypass list | 42ms | 405 — the proxy refuses |
+| proxy variables removed | 184ms | 200 |
+
+At 13 seconds a page, a 184-combination sweep takes forty minutes, which is
+indistinguishable from a hang — and that is how it presented.
+
+`direct://` is the interesting row. It fails in 10ms, so a check that measures
+only elapsed time reports it as a thousandfold improvement. It was accepted as
+the fix on exactly that evidence, and the sweep kept failing until the
+navigation error was printed rather than swallowed. `tools/browser-launch.mjs`
+now removes the proxy variables from the browser's environment when the target
+is loopback, and the sweep reports the network error verbatim instead of
+recording "landed somewhere unexpected", which sent the reader hunting through
+policy code for a fault in the network path.
 
 **The robot rebuilt `.next` underneath the server it was about to drive.** It
 built the app in section 3 and then swept a `next start` someone else had left
