@@ -16,12 +16,13 @@
     "test": "vitest run",
     "test:unit": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
-    "test:e2e": "playwright test",
     "lint": "eslint .",
     "dev": "pnpm --filter @gymguide/web dev",
     "build": "pnpm --filter @gymguide/web build",
     "start": "pnpm --filter @gymguide/web start",
-    "mobile": "pnpm --filter @gymguide/mobile start"
+    "mobile": "pnpm --filter @gymguide/mobile start",
+    "check": "node tools/readiness.mjs",
+    "walkthrough": "node tools/walkthrough.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1",

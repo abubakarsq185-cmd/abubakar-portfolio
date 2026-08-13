@@ -206,6 +206,27 @@ asking "what is next?". The seed now schedules forward.
 **A guardian got a 500 on `/app/onboarding`.** `loadOnboarding` assumed every
 actor has a member profile. A guardian pays for a dependent and has none.
 
+### Two defects in the checkers themselves
+
+Worth recording, because both produce results that look like product failures.
+
+**Playwright sent localhost through the environment's proxy.** It applies
+`HTTP_PROXY` / `HTTPS_PROXY` to every request the browser makes and ignores
+`NO_PROXY` when doing so. Measured against the same server `curl` was answering
+in 4ms: 12.8 seconds per page, consistently. Only Playwright's own
+`proxy: { server: 'direct://' }` overrides it — `--no-proxy-server` and
+`--proxy-bypass-list` do not, because Playwright sets the proxy above them. At
+that speed a 184-combination sweep takes forty minutes, which is
+indistinguishable from a hang. `tools/browser-launch.mjs` now asks for a direct
+connection whenever the target is loopback.
+
+**The robot rebuilt `.next` underneath the server it was about to drive.** It
+built the app in section 3 and then swept a `next start` someone else had left
+running — from the previous build. The first navigations came back as bare
+`chrome-error://chromewebdata/`, reported as permission-matrix failures, with
+nothing wrong in the application at all. The robot now starts and owns its own
+server on its own port, and stops it when it is done.
+
 ## Not yet covered
 
 - **Accessibility.** Semantics, focus management, contrast and reduced-motion

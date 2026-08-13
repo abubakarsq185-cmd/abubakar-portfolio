@@ -16,7 +16,7 @@
  *            person with the standing to sign it off. Not a bug, and not
  *            something more code will clear.
  */
-import { execSync, spawnSync } from 'node:child_process';
+import { execSync, spawn, spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import pg from 'pg';
@@ -24,7 +24,15 @@ import { launchOptions } from './browser-launch.mjs';
 
 const require = createRequire(import.meta.url);
 const ROOT = new URL('..', import.meta.url).pathname;
-const BASE = process.env.CHECK_BASE_URL ?? 'http://localhost:3000';
+// With no CHECK_BASE_URL the robot builds the app and then serves it itself, on
+// a port of its own. That is deliberate. Driving a server someone else started
+// means rebuilding .next underneath a running `next start`, which swaps the
+// build out from under it mid-run — the first navigations then fail with a bare
+// chrome-error and the whole sweep is unreliable for reasons that have nothing
+// to do with the application. Owning the server also means one command is
+// genuinely enough.
+const EXTERNAL = process.env.CHECK_BASE_URL ?? null;
+let BASE = EXTERNAL ?? '';
 const QUICK = process.argv.includes('--quick');
 const PASSWORD = process.env.SEED_DEMO_PASSWORD ?? 'GymGuide!Demo2026';
 
@@ -162,6 +170,45 @@ section('4. Automated tests', 'the rules that must never regress');
 // =========================================================================
 section('5. Every route, every role', 'nothing 500s and nobody sees what they should not');
 // =========================================================================
+
+/** Wait for a URL to answer, or give up. Returns true if it ever answered. */
+async function waitForServer(url, seconds) {
+  const deadline = Date.now() + seconds * 1000;
+  while (Date.now() < deadline) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(4000) });
+      if (res.status < 500) return true;
+    } catch { /* not up yet */ }
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  return false;
+}
+
+let server = null;
+if (EXTERNAL) {
+  check('App reachable', await waitForServer(EXTERNAL, 20) ? 'PASS' : 'FAIL', EXTERNAL);
+} else if (!existsSync(`${ROOT}apps/web/.next/BUILD_ID`)) {
+  check('App reachable', 'FAIL', 'no production build — run `pnpm build`, or drop --quick so this does it for you');
+} else {
+  const port = Number(process.env.CHECK_PORT ?? 3210);
+  BASE = `http://localhost:${port}`;
+  process.stdout.write(`  ${D}starting its own server on ${port}${O}\n`);
+  // .env lives at the repo root, which Next — started from apps/web — will not
+  // find on its own, so hand it over explicitly.
+  server = spawn('npx', ['next', 'start', '--port', String(port)], {
+    cwd: `${ROOT}apps/web`, stdio: 'ignore', detached: true,
+    env: { ...process.env, ...env },
+  });
+  // Detached so the whole group can be killed: `next start` spawns a child, and
+  // killing only the parent leaves the port held.
+  const stop = () => { try { process.kill(-server.pid, 'SIGKILL'); } catch { /* already gone */ } };
+  process.on('exit', stop);
+  process.on('SIGINT', () => { stop(); process.exit(130); });
+
+  const up = await waitForServer(BASE, 60);
+  check('App reachable', up ? 'PASS' : 'FAIL', up ? `serving on ${port}` : `never came up on ${port}`);
+  if (!up) { stop(); server = null; }
+}
 const ROLES = {
   owner: 'owner@apexfitness.pk',
   manager: 'manager.dha@apexfitness.pk',
@@ -175,6 +222,7 @@ const ROLES = {
 
 let sweepFailures = 0;
 try {
+  if (!BASE) throw new Error('no server to check against');
   const { chromium } = require('@playwright/test');
   const { randomBytes, createHash } = await import('node:crypto');
 
@@ -272,7 +320,7 @@ try {
     wrongAccess === 0 ? 'PASS' : 'FAIL', wrongAccess ? detail.filter((d) => !d.includes('SERVER')).slice(0, 3).join('; ') : '');
   sweepFailures = crashes + wrongAccess;
 } catch (error) {
-  check('Route sweep', 'FAIL', `${error.message.split('\n')[0]} — is the app running on ${BASE}?`);
+  check('Route sweep', 'FAIL', `${error.message.split('\n')[0]}${BASE ? ` — against ${BASE}` : ''}`);
   sweepFailures = 1;
 }
 
@@ -282,18 +330,23 @@ section('6. The journeys a gym runs on', 'end to end, through the real interface
 {
   if (QUICK) {
     check('43-step journey walk', 'GATE', 'skipped with --quick');
+  } else if (!BASE) {
+    check('Journey walk', 'FAIL', 'no server to walk through');
   } else {
-    const walk = run('node tools/walkthrough.mjs');
+    const walk = run(`WALK_BASE_URL=${BASE} SEED_DEMO_PASSWORD=${JSON.stringify(PASSWORD)} node tools/walkthrough.mjs`);
     const match = walk.out.match(/(\d+) steps — (\d+) pass, (\d+) fail/);
     if (match) {
       const [, total, passed, failed] = match;
       check(`${total} steps across 8 journeys`, Number(failed) === 0 ? 'PASS' : 'FAIL',
         `${passed} passed, ${failed} failed`);
     } else {
-      check('Journey walk', 'FAIL', 'did not complete — is the app running?');
+      check('Journey walk', 'FAIL', 'did not complete — see the output above');
     }
   }
 }
+
+// Nothing below here needs the app, so give the port back.
+if (server) { try { process.kill(-server.pid, 'SIGKILL'); } catch { /* already gone */ } server = null; }
 
 // =========================================================================
 section('7. Go-live gates', 'not code — these need a contract, a server, or a person');

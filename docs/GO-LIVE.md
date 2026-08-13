@@ -18,9 +18,13 @@ Gates are not bugs. Writing more code will not clear a single one of them.
 ## Stage 0 — Run the robot first
 
 ```bash
-./start.sh                       # in one terminal, leave it running
-node tools/readiness.mjs         # in another
+pnpm check          # or: node tools/readiness.mjs
 ```
+
+That is the whole command. You do **not** need the app running: the robot builds
+it and then serves it itself, on its own port, and stops it afterwards. It has to
+work that way — building while someone else's `next start` is serving swaps the
+build out from under it mid-run, and the results stop meaning anything.
 
 It writes `readiness-report.html`. Open it. Seven sections, every check labelled
 PASS, FAIL or GATE, and an exit code you can put in CI.
@@ -28,7 +32,14 @@ PASS, FAIL or GATE, and an exit code you can put in CI.
 A full run takes about ten minutes because it typechecks, builds, runs 241
 tests, opens all 23 pages as all 8 roles, and walks 43 steps through eight
 journeys. `--quick` skips the build and the journey walk if you just want the
-security and route checks.
+security and route checks — it then needs a build to already exist.
+
+To check something you have deployed, point it at the URL instead. It will not
+build or start anything in that case:
+
+```bash
+CHECK_BASE_URL=https://gym.example.com node tools/readiness.mjs
+```
 
 **If anything says FAIL, stop and fix it.** Everything below assumes the robot
 is clean.

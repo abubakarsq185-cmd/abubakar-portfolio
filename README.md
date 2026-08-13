@@ -65,13 +65,18 @@ pnpm test:integration      # tenant isolation, idempotency, ledger integrity
 pnpm build                 # production build of the web app
 ```
 
-With the app running on :3000, three tools drive it rather than describe it:
+Three tools drive the application rather than describe it:
 
 ```bash
-node tools/readiness.mjs     # the full audit — environment, RLS posture,
+pnpm check                   # the full audit — environment, RLS posture,
                              # typecheck, build, tests, every page as every
-                             # role. Writes readiness-report.html, exits
-                             # non-zero on any failure. Start here.
+                             # role, every journey. Writes
+                             # readiness-report.html and exits non-zero on any
+                             # failure. Needs nothing running: it builds the
+                             # app, serves it itself, and stops it after.
+                             # Start here.
+
+# these two need the app running (./start.sh):
 node tools/walkthrough.mjs   # 43 steps through 8 journeys, asserting each one.
 node tools/make-preview.mjs  # one self-contained HTML file of every screen,
                              # openable with no server. A preview, not the app.
