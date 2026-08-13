@@ -198,6 +198,10 @@ audited, and nothing has been tested above a handful of users.
 - [ ] Confirm `.env` is not in git: `git ls-files .env` must print nothing.
 - [ ] Run `node tools/readiness.mjs` against the deployed URL
       (`CHECK_BASE_URL=https://…`) and keep the report.
+- [ ] Build the archive you are actually handing over:
+      `node tools/package-release.mjs`. It writes `dist/gymguide-<sha>.tar.gz`,
+      a `.zip`, and `SHA256SUMS`. It builds from `git archive HEAD`, so it
+      cannot contain your `.env` — and it refuses to run on a dirty tree.
 - [ ] Agree who the gym calls when something breaks, and when.
 
 ---
