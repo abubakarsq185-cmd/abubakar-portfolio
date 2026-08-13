@@ -29,7 +29,7 @@ build out from under it mid-run, and the results stop meaning anything.
 It writes `readiness-report.html`. Open it. Seven sections, every check labelled
 PASS, FAIL or GATE, and an exit code you can put in CI.
 
-A full run takes about ten minutes because it typechecks, builds, runs 241
+A full run takes about ten minutes because it typechecks, builds, runs 248
 tests, opens all 23 pages as all 8 roles, and walks 43 steps through eight
 journeys. `--quick` skips the build and the journey walk if you just want the
 security and route checks — it then needs a build to already exist.
@@ -219,7 +219,7 @@ audited, and nothing has been tested above a handful of users.
 
 ## What "done" honestly looks like
 
-The software is finished and verified: 241 automated tests, 43 journey steps
+The software is finished and verified: 248 automated tests, 43 journey steps
 through the real interface, and every page opened as every role without a
 server error.
 

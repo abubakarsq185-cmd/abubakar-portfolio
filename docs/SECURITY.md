@@ -92,10 +92,28 @@ Opening a health record writes a `read_sensitive` audit entry naming the actor,
 the subject and the time. A guardian sees a dependent's billing but **not** their
 health data unless `family_links.can_view_health` was explicitly granted.
 
-Platform administrators do not get silent access. `app.health_row_visible()`
-requires an **active, unexpired support access session** for that organization,
-and creating one requires a written reason of at least twelve characters plus an
-expiry. Support access is listed for the gym owner to see.
+Platform administrators do not get silent access — to anything. Every tenant
+policy resolves through `app.has_support_access(org)`, which requires an
+**active, unexpired support access session** held by that platform user for that
+organization. Creating one requires a written reason of at least twelve
+characters plus an expiry, and it is listed for the gym owner to see.
+
+This was not always true, and the gap is worth recording. `health_row_visible()`
+enforced it from the start, but `in_tenant_scope()` — which every generated
+tenant policy is built on — returned true on the platform flag alone. Against
+the demo gym with no support session open, `support@gymguide.app` could read 20
+member profiles, 68 invoices and 10 notes including coach-only and restricted
+ones, and `/dashboard/members` rendered the gym's members by name. Health data
+was the exception that proved the rule was missing everywhere else.
+`0020_support_access_gates_tenant_data.sql` closes it, `requireStaff()` sends
+platform staff to `/platform` without a session so the interface agrees with the
+database, and `tests/integration/rls-isolation.test.ts` asserts both directions:
+nothing readable without a session, the gym readable with one, and shut again
+the moment it ends or expires.
+
+What platform staff can still see without a session is the platform's own
+business: which gyms exist, what they pay, the plan catalogue, feature flags and
+the support ledger itself. Not a single row of member data.
 
 ## Consent
 

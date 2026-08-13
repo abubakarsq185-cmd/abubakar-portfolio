@@ -1,9 +1,9 @@
 # Testing
 
 ```bash
-pnpm test              # everything — 241 tests
+pnpm test              # everything — 248 tests
 pnpm test:unit         # 120 tests, no database, ~70ms
-pnpm test:integration  # 23 tests against real PostgreSQL
+pnpm test:integration  # 30 tests against real PostgreSQL
 ```
 
 Integration tests need a migrated and seeded database:
@@ -40,7 +40,7 @@ prove nothing.
 
 | File | Tests | Covers |
 | --- | --- | --- |
-| `rls-isolation.test.ts` | 26 | Cross-tenant reads and writes, member self-scope, coach caseload, branch scope, permission-gated health and financial data, equipment visibility, unauthenticated access, append-only enforcement |
+| `rls-isolation.test.ts` | 33 | Cross-tenant reads and writes, member self-scope, coach caseload, branch scope, permission-gated health and financial data, equipment visibility, unauthenticated access, append-only enforcement |
 | `data-integrity.test.ts` | 23 | RBAC matrix parity between code and database, enum parity, ledger balance, invoice state consistency, seed shape, RLS coverage, `security_invoker` on every view |
 | `enrolment-payment.test.ts` | 6 | Acceptance criterion 1 driven through the real services as a front-desk actor: enrolment artefacts, joining fee, balanced ledger, payment idempotency, audit trail |
 | `onboarding.test.ts` | 15 | Acceptance criteria 2 and 4 from the member's side: step resumption, validation, clean screening, chest-pain escalation with a restricted high-priority case, movement restriction without a full hold, template matching, coach hand-off; plus nutrition logging and diary isolation |
@@ -205,6 +205,16 @@ asking "what is next?". The seed now schedules forward.
 
 **A guardian got a 500 on `/app/onboarding`.** `loadOnboarding` assumed every
 actor has a member profile. A guardian pays for a dependent and has none.
+
+**Platform staff could read a gym without a support session.** The sweep noticed
+only that `support@gymguide.app` rendered a gym's staff dashboard. What it had
+actually caught was `app.in_tenant_scope()` returning true on the platform flag
+alone, so every generated tenant policy admitted platform staff: 20 member
+profiles, 68 invoices and 10 notes — including coach-only and restricted ones —
+with no reason recorded, no expiry and nothing in the gym's audit trail. Health
+data was correctly gated, which is exactly why nobody had looked at the rest.
+Fixed in `0020_support_access_gates_tenant_data.sql`; seven tests in
+`rls-isolation.test.ts` now assert it in both directions.
 
 ### Two defects in the checkers themselves
 

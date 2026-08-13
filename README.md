@@ -59,7 +59,7 @@ pnpm dev                   # http://localhost:3000
 row-level security — and it is the role the application and the tests use.
 
 ```bash
-pnpm test                  # 241 tests: unit + integration against real Postgres
+pnpm test                  # 248 tests: unit + integration against real Postgres
 pnpm test:unit             # pure domain logic, no database
 pnpm test:integration      # tenant isolation, idempotency, ledger integrity
 pnpm build                 # production build of the web app
@@ -128,13 +128,13 @@ packages/
   domain/               Coaching engine, safety engine, billing, nutrition, AI contract
   ui/                   Design tokens, CSS design system, React primitives, charts
 db/
-  migrations/           19 SQL migrations — schema, RLS, RBAC reference, views,
+  migrations/           20 SQL migrations — schema, RLS, RBAC reference, views,
                         atomic document numbering, append-only semantics
   seed/                 "Apex Fitness Lahore" demo tenant
   scripts/              Migration runner and CLI
 tests/
   unit/                 120 tests — engines, money, safety, adherence
-  integration/          23 tests — isolation, idempotency, parity, ledger
+  integration/          30 tests — isolation, idempotency, parity, ledger
 docs/                   Architecture, security, permissions, integrations
 ```
 
@@ -235,7 +235,7 @@ Being precise about this matters more than a longer feature list.
 - Automations: every sequence with its trigger, channels, frequency ceiling,
   quiet hours and skip reasons — with marketing consent and escalation urgency
   enforced in the service rather than left to whoever edits the form
-- The full database, RLS, seed and 241 tests
+- The full database, RLS, seed and 248 tests
 
 ### Not built
 
@@ -247,7 +247,7 @@ Being precise about this matters more than a longer feature list.
   and `family_links` isolation all exist and are tested; there is no dedicated
   interface for a parent paying for a child.
 - **Accessibility automation, load testing and a browser matrix.** Verification
-  today is 241 unit and integration tests, 43 asserted journey steps through the
+  today is 248 unit and integration tests, 43 asserted journey steps through the
   real interface, and every page opened as every role — all in Chromium, none of
   it audited for accessibility or tested above a handful of users.
 
