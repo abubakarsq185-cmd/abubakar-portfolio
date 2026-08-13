@@ -184,6 +184,21 @@ async function waitForServer(url, seconds) {
   return false;
 }
 
+// The journey walk enrols members, takes payments, publishes programs and
+// completes an onboarding wizard. It changes the data it walks through, so the
+// second run over one database is not checking what the first one checked: the
+// member who was mid-onboarding has finished onboarding, and the step that
+// asserts she resumes at the health question fails — correctly, and for a
+// reason that has nothing to do with the code. The seed is deterministic, so
+// restoring it is what makes the result mean the same thing every time.
+const RESEED = !EXTERNAL && !QUICK && !process.argv.includes('--keep-data');
+if (RESEED) {
+  process.stdout.write(`  ${D}restoring the demo database${O}\n`);
+  const seeded = run('pnpm db:bootstrap');
+  check('Demo data restored to a known state', seeded.ok ? 'PASS' : 'FAIL',
+    seeded.ok ? 'so this run means the same as the last one' : seeded.out.split('\n').slice(-2).join(' ').slice(0, 160));
+}
+
 let server = null;
 if (EXTERNAL) {
   check('App reachable', await waitForServer(EXTERNAL, 20) ? 'PASS' : 'FAIL', EXTERNAL);

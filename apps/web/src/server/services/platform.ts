@@ -265,6 +265,29 @@ export interface OpenSupportAccessInput {
  * the platform looked. Write access additionally requires the gym to have
  * agreed — support cannot grant itself the ability to change a customer's data.
  */
+/**
+ * Does this platform actor currently hold an open support session for any gym?
+ *
+ * The database asks the same question per organization (app.has_support_access),
+ * which is what actually stops the data being read. This is the interface-level
+ * half: without a session there is nothing for platform staff to see inside a
+ * gym, so they are sent back to the platform console rather than shown an empty
+ * dashboard that looks like a fault.
+ */
+export async function hasOpenSupportAccess(actor: Actor): Promise<boolean> {
+  if (!actor.isPlatformAdmin) return false;
+  return withOwner(async (db) => {
+    const { rows } = await db.query<{ open: boolean }>(
+      `select exists (
+         select 1 from support_access_sessions
+          where platform_user_id = $1 and ended_at is null and expires_at > now()
+       ) as open`,
+      [actor.userId],
+    );
+    return rows[0]?.open ?? false;
+  });
+}
+
 export async function openSupportAccess(
   actor: Actor,
   input: OpenSupportAccessInput,

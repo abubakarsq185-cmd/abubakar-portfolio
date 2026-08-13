@@ -24,6 +24,7 @@ import { withOwner, type TenantSession } from '../db/pool';
 import { generateToken, hashToken, needsRehash, hashPassword, verifyPassword } from './password';
 import { recordAudit } from '../audit';
 import { checkRateLimit } from '../rate-limit';
+import { hasOpenSupportAccess } from '../services/platform';
 
 const COOKIE_NAME = 'gg_session';
 
@@ -333,6 +334,13 @@ export async function requireStaff(): Promise<SessionContext> {
   const session = await requireSession();
   const staff = ['gym_owner', 'branch_manager', 'coach', 'front_desk', 'nutrition_professional', 'platform_super_admin'];
   if (!staff.includes(session.actor.role)) redirect('/app');
+  // Platform staff belong in the platform console. They may enter a gym's own
+  // screens only while holding an open support session — which carries a written
+  // reason, an expiry, and an entry in that gym's audit trail. The database
+  // enforces the same rule on the rows themselves.
+  if (session.actor.isPlatformAdmin && !(await hasOpenSupportAccess(session.actor))) {
+    redirect('/platform');
+  }
   return session;
 }
 

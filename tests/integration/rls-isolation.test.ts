@@ -358,4 +358,104 @@ describe('row-level security', () => {
       expect(rows[0]!.has_delete).toBe(false);
     });
   });
+
+  /**
+   * Platform support access.
+   *
+   * The requirement is that support access is time-limited, auditable and
+   * carries an explicit reason. Health data honoured that from the start;
+   * everything else did not. A platform administrator with no session open
+   * could read a gym's members, invoices and coach-only notes with nothing
+   * recorded anywhere — see 0020_support_access_gates_tenant_data.sql.
+   *
+   * These tests fail in both directions on purpose: silently open is a breach,
+   * and permanently shut would make support impossible.
+   */
+  describe('a platform administrator without a support session', () => {
+    let platform: ActorContext;
+    let apexOrgId: string;
+
+    beforeAll(async () => {
+      const { rows } = await owner.query<{ id: string; email: string }>(
+        `select id, email from users where is_platform_admin limit 1`,
+      );
+      platform = {
+        userId: rows[0]!.id,
+        organizationId: null,
+        role: 'platform_super_admin',
+        branchIds: [],
+        permissions: [],
+        isPlatformAdmin: true,
+      };
+      const org = await owner.query<{ id: string }>(
+        `select id from organizations where slug = 'apex-fitness-lahore'`,
+      );
+      apexOrgId = org.rows[0]!.id;
+      await owner.query(`update support_access_sessions set ended_at = now() where ended_at is null`);
+    });
+
+    const countOf = (table: string) =>
+      asActor(app, platform, async (db) => {
+        const { rows } = await db.query<{ n: string }>(`select count(*)::int as n from ${table}`);
+        return Number(rows[0]!.n);
+      });
+
+    it('cannot read a gym\'s members', async () => {
+      expect(await countOf('member_profiles')).toBe(0);
+    });
+
+    it('cannot read a gym\'s money', async () => {
+      expect(await countOf('invoices')).toBe(0);
+      expect(await countOf('payments')).toBe(0);
+      expect(await countOf('ledger_entries')).toBe(0);
+    });
+
+    it('cannot read a gym\'s notes, conversations or audit trail', async () => {
+      expect(await countOf('notes')).toBe(0);
+      expect(await countOf('conversations')).toBe(0);
+      expect(await countOf('audit_logs')).toBe(0);
+    });
+
+    it('cannot read health data', async () => {
+      expect(await countOf('health_screenings')).toBe(0);
+    });
+
+    it('sees itself and nobody else', async () => {
+      expect(await countOf('users')).toBe(1);
+    });
+
+    it('reads the gym once a reasoned, time-limited session is open, and stops when it ends', async () => {
+      const { rows } = await owner.query<{ id: string }>(
+        `insert into support_access_sessions
+           (organization_id, platform_user_id, reason, scope, expires_at)
+         values ($1, $2, 'Investigating a billing discrepancy the owner reported', 'read_only', now() + interval '1 hour')
+         returning id`,
+        [apexOrgId, platform.userId],
+      );
+      try {
+        expect(await countOf('member_profiles')).toBeGreaterThan(0);
+        expect(await countOf('invoices')).toBeGreaterThan(0);
+      } finally {
+        await owner.query(`update support_access_sessions set ended_at = now() where id = $1`, [rows[0]!.id]);
+      }
+      // Ending the session closes the door again in the same breath.
+      expect(await countOf('member_profiles')).toBe(0);
+    });
+
+    it('an expired session grants nothing', async () => {
+      const { rows } = await owner.query<{ id: string }>(
+        `insert into support_access_sessions
+           (organization_id, platform_user_id, reason, scope, started_at, expires_at)
+         values ($1, $2, 'Session that has already run out of time', 'read_only',
+                 now() - interval '3 hours', now() - interval '1 hour')
+         returning id`,
+        [apexOrgId, platform.userId],
+      );
+      try {
+        expect(await countOf('member_profiles')).toBe(0);
+      } finally {
+        await owner.query(`delete from support_access_sessions where id = $1`, [rows[0]!.id]);
+      }
+    });
+  });
 });
